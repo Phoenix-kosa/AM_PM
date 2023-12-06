@@ -9,7 +9,7 @@ import phoenix.AM_PM.domain.notice.dto.NoticeDTO;
 import phoenix.AM_PM.domain.notice.entity.Notice;
 import phoenix.AM_PM.domain.notice.repository.NoticeRepository;
 
-import java.util.Map;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,6 +21,7 @@ public class NoticeController {
     @PostMapping
     public ResponseEntity<String> addNotice(@RequestBody NoticeDTO dto) {
         Notice noticeEntity = Notice.builder()
+                .projectId(dto.getProjectId())
                 .title(dto.getTitle())
                 .content(dto.getContent())
                 .build();
@@ -42,12 +43,16 @@ public class NoticeController {
 
     @PutMapping("/{noticeId}")
     public ResponseEntity<String> editNotice(@PathVariable int noticeId, @RequestBody NoticeDTO dto) {
-
+        Notice targetNotice = noticeRepository.findById(noticeId);
+        targetNotice.setTitle(dto.getTitle());
+        targetNotice.setContent(dto.getContent());
         return ResponseEntity.ok("successful");
     }
 
-    @GetMapping
-    public ResponseEntity<String> getNotice() {
+    @GetMapping("{projectId}")
+    public ResponseEntity<String> getNotice(@PathVariable int projectId) {
+        List<Notice> byProjectId = noticeRepository.findByProjectId(projectId);
+
         return ResponseEntity.ok("successful");
     }
 }

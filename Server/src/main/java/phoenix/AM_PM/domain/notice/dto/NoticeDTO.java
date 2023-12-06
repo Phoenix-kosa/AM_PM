@@ -8,6 +8,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class NoticeDTO {
+    private int projectId;
     private String title;
     private String content;
 }

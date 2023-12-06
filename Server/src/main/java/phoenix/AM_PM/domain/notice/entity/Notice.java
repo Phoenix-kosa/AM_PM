@@ -15,7 +15,7 @@ public class Notice {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
-  private int Project;
+  private int projectId;
   private String userId;
   private String content;
   private String title;
