@@ -3,18 +3,26 @@ package phoenix.AM_PM.domain.user.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.data.annotation.Id;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import jakarta.persistence.Id;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Getter
 @Entity
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 public class User {
 
   @Id
@@ -35,5 +43,16 @@ public class User {
 
   @Column(nullable = false)
   private String roles;
+
+  public List<String> getRoleList(){
+    if(this.roles.length() > 0){
+      return Arrays.asList(this.roles.split(","));
+    }
+    return new ArrayList<>();
+  }
+
+//  public static User createUser(String userId, String pw, PasswordEncoder passwordEncoder, String nickname, String profileImg, String email,String role) {
+//    return new User(userId, passwordEncoder.encode(pw), nickname, profileImg, email, role);
+//  }
 
 }
