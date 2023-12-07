@@ -1,6 +1,8 @@
-import './assets/main.css'
+import "./assets/css/global.css";
 
-import { createApp } from 'vue'
-import App from './App.vue'
+import { createApp } from "vue";
+import App from "./App.vue";
+import router from "./router";
+import { createPinia } from "pinia";
 
-createApp(App).mount('#app')
+createApp(App).use(router).use(createPinia()).mount("#app");
