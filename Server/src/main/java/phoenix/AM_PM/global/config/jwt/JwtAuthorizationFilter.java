@@ -2,6 +2,9 @@ package phoenix.AM_PM.global.config.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.jwt.interfaces.JWTVerifier;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,6 +37,34 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter{
 			chain.doFilter(request, response);
                         return;
 		}
+
+		// Access Token 만료 시 Refresh Token을 사용하여 새로운 Access Token을 발급합니다.
+		if (header != null && header.startsWith(JwtProperties.REFRESH_TOKEN_PREFIX)) {
+			String refreshToken = header.replace(JwtProperties.REFRESH_TOKEN_PREFIX, "");
+			try {
+				// Refresh Token 검증 및 새로운 Access Token 발급
+				Algorithm algorithm = Algorithm.HMAC512(JwtProperties.SECRET);
+				JWTVerifier verifier = JWT.require(algorithm).build();
+				DecodedJWT decodedJWT = verifier.verify(refreshToken);
+
+				String userId = decodedJWT.getSubject();
+				User user = userRepository.findByUserId(userId).get();
+
+				// Refresh Token의 사용자 정보를 기반으로 새로운 Access Token 발급
+				MyUserDetails principalDetails = new MyUserDetails(user);
+				Authentication authentication =
+						new UsernamePasswordAuthenticationToken(
+								principalDetails,
+								null,
+								principalDetails.getAuthorities());
+
+				SecurityContextHolder.getContext().setAuthentication(authentication);
+			} catch (JWTVerificationException exception) {
+				// Refresh Token이 유효하지 않은 경우 처리
+				SecurityContextHolder.clearContext();
+			}
+		}
+
 		System.out.println("header : "+header);
 		String token = header.replace(JwtProperties.TOKEN_PREFIX, "");
 		
