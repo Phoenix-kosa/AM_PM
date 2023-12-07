@@ -1,0 +1,28 @@
+.header_container {
+  background-color: #eeeeee;
+  height: 105px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px 30px;
+  border-bottom-left-radius: 35px;
+}
+
+.main_logo_img {
+  height: 90%;
+}
+
+.login_container {
+  display: flex;
+  gap: 40px;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.login_container p {
+  margin: 0px;
+}
+
+.login_container a {
+  color: black;
+}
