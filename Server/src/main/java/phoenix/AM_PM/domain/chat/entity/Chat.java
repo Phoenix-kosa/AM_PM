@@ -1,15 +1,52 @@
 package phoenix.AM_PM.domain.chat.entity;
 
+import jakarta.persistence.*;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import phoenix.AM_PM.domain.project.entity.Project;
+import phoenix.AM_PM.domain.user.entity.User;
+
 import java.time.LocalDateTime;
 
+@Entity
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
+@ToString
 public class Chat {
-  private String id;
-  private String userId;
-  private int projectId;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
+
+  @OneToOne
+  @JoinColumn(name = "user_id")
+  private User user;
+
+  @ManyToOne
+  @JoinColumn(name = "project_id")
+  private Project project;
+
+  @Column(nullable = false)
   private String message;
-  private LocalDateTime regDate;
+
+  @CreatedDate
+  @Column(name = "created_date")
+  private LocalDateTime createdDate;
+
   private Integer unread;
+
+  @Column(name = "who_read")
   private String whoRead;
 
-  // Constructors, getters, and setters
+  // setter 대신 update
+  public void updateUnread(Integer unread) {
+    this.unread = unread;
+  }
+
+  public void updateWhoRead(String whoRead) {
+    this.whoRead = whoRead;
+  }
 }
