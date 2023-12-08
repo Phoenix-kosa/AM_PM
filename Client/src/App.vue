@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer v-model="drawer" :rail="rail" permanent>
+    <!-- <v-navigation-drawer v-model="drawer" :rail="rail" permanent>
       <v-list-item>
         <v-list-item-avatar>
           <img src="https://randomuser.me/api/portraits/men/85.jpg">
@@ -23,7 +23,7 @@
           <div>{{ menu.title }}</div>
         </v-list-item>
       </v-list>
-    </v-navigation-drawer>
+    </v-navigation-drawer> -->
 
     <v-main>
       <router-view></router-view>
