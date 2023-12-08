@@ -10,8 +10,8 @@ public class AmPmApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(AmPmApplication.class, args);
 	}
-	@Bean
+/*	@Bean
 	public ServerEndpointExporter serverEndpointExporter(){
 		return new ServerEndpointExporter();
-	}
+	} */
 }

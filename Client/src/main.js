@@ -1,5 +1,6 @@
 import './assets/main.css'
-import 'vuetify/styles' // Vuetify 스타일 추가
+import 'vuetify/styles' 
+
 
 import { createApp } from 'vue'
 import App from './App.vue'
