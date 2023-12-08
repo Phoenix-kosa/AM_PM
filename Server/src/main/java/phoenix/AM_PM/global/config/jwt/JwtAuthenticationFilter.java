@@ -82,7 +82,8 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 		System.out.println("successfulAuthentication ");
 		
 		MyUserDetails principalDetailis = (MyUserDetails) authResult.getPrincipal();
-		
+
+
 		String jwtToken = JWT.create()
 				.withSubject(principalDetailis.getUsername())
 				.withExpiresAt(new Date(System.currentTimeMillis()+JwtProperties.EXPIRATION_TIME))
@@ -90,6 +91,15 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 				.sign(Algorithm.HMAC512(JwtProperties.SECRET));
 		
 		response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX+jwtToken);
+
+		// Refresh Token 생성
+		String refreshToken = JWT.create()
+				.withSubject(principalDetailis.getUsername())
+				.withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.REFRESH_TOKEN_EXPIRATION_TIME))
+				.sign(Algorithm.HMAC512(JwtProperties.SECRET));
+
+		// Refresh Token을 헤더에 추가하여 클라이언트에 전달
+		response.addHeader(JwtProperties.REFRESH_TOKEN_HEADER, JwtProperties.REFRESH_TOKEN_PREFIX + refreshToken);
 	}
 	
 }
