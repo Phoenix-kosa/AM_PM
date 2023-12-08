@@ -32,7 +32,7 @@
 import { reactive } from 'vue';
 import axios from 'axios';
 
-axios.defaults.withCredentials = true;
+// axios.defaults.withCredentials = true;
 
 import { useRouter } from 'vue-router';
 
@@ -52,8 +52,11 @@ const login = () => {
             if (response.status == 200) {
                 // 로그인 성공 시 메인 페이지로
                 console.log(response.headers.authorization);
-                sessionStorage.setItem("token", response.headers.authorization);
-                router.push("/")
+                console.log(response.headers.refreshtoken);
+
+                sessionStorage.setItem("access-token", response.headers.authorization);
+                sessionStorage.setItem("refresh-token", response.headers.refreshtoken);
+                router.push("/testtoken")
             } else {
                 console.log(response)
                 // 로그인 실패 시 오류 메시지를 팝업 창으로 표시
@@ -63,7 +66,10 @@ const login = () => {
             }
         })
         .catch(error => {
+            console.log("efefef");
+            alert("로그인 실패");
             console.error(error);
+            console.log(error.response.status)
         });
 }
 </script>

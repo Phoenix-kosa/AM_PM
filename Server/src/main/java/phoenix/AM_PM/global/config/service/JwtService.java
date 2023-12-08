@@ -9,5 +9,5 @@ public interface JwtService {
 
     boolean isValid(String token);
 
-    int getId(String token);
+    String getId(String token);
 }
