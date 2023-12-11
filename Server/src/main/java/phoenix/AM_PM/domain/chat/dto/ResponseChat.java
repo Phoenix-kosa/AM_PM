@@ -1,10 +1,12 @@
 package phoenix.AM_PM.domain.chat.dto;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.AllArgsConstructor;
 import phoenix.AM_PM.domain.chat.entity.Chat;
 
 import java.time.LocalDateTime;
 
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @AllArgsConstructor
 public class ResponseChat {
     private Integer id;

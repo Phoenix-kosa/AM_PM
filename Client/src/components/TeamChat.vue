@@ -7,21 +7,24 @@
 
 <script setup>
 import { ref } from 'vue';
-const projectId = 1;
+
 const websocket = new WebSocket("ws://localhost:8090/api/chat");
 websocket.onmessage = onMessage;
 websocket.onclose = onClose;
 websocket.onopen = onOpen;
 
 const msg = ref(null);
+const projectId = ref(1);
+const userId = ref("frog");
 
 function send() {
-  let text = msg.value;
-  let data = {message : text, projectId : 1, user_id : 1};
-  msg.value = data;
+  let data = {
+    message : msg.value, 
+    projectId : projectId.value, 
+    userId : userId.value
+  };
 
-  console.log("msg : " + msg.value);
-  websocket.send(msg.value);
+  websocket.send(JSON.stringify(data));
   msg.value = '';
 }
 
