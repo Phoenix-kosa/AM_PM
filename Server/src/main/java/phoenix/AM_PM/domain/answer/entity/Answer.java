@@ -1,24 +1,26 @@
 package phoenix.AM_PM.domain.answer.entity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
 @Entity
-public class Answer {
 
+@Data
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+public class Answer {
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Id
   private int id;
-  private int bulletinId;
+  private int bulletinId; //작성자 ID
   private String title;
   private String content;
 
