@@ -11,14 +11,14 @@ import axios from 'axios';
 import { ref } from 'vue';
 
 const msg = ref(null);
-const projectId = ref(1);
-const userId = ref(1);
+const projectId = ref(2);
+const userId = ref(2);
 const pageNum = ref(1);
 
 function loadData(page) {
   axios.get(`http://localhost:8090/api/chat/${projectId.value}?page=${page}`)
   .then((response) => {
-    console.log(response.data);
+    console.log(response.data.pageInfo);
     if(page >= response.data.pageInfo.totalPages - 1) {
       document.getElementById("loadData").style.display = 'none';
     }

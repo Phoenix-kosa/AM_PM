@@ -2,6 +2,7 @@ package phoenix.AM_PM.domain.chat.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.mapping.ToOne;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import phoenix.AM_PM.domain.project.entity.Project;
@@ -21,7 +22,7 @@ public class Chat {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
-  @OneToOne
+  @ManyToOne
   @JoinColumn(name = "user_id")
   private User user;
 

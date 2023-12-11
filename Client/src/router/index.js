@@ -5,6 +5,7 @@ import DevPage from "@/pages/DevPage.vue";
 import TeamChat from "@/components/TeamChat.vue";
 import MyPage from "@/pages/MyPage.vue";
 import MainLayout from "../layouts/MainLayout.vue";
+import TeamChat2 from "@/components/TeamChat2.vue";
 
 const index = createRouter({
   history: createWebHistory(),
@@ -19,6 +20,7 @@ const index = createRouter({
     },
     { path: "/excel", component: Excel },
     { path: "/team-chat", component: TeamChat },
+    { path: "/team-chat2", component: TeamChat2 },
   ],
 });
 

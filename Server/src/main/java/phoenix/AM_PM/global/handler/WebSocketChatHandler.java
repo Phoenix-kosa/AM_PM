@@ -21,13 +21,15 @@ import phoenix.AM_PM.global.exception.ExceptionCode;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Component
 public class WebSocketChatHandler extends TextWebSocketHandler {
 
-    private static List<WebSocketSession> list = new ArrayList<>();
+    private static Map<String, List<WebSocketSession>> sessionList = new HashMap<>();
     private final ChatRepository chatRepository;
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
@@ -42,8 +44,13 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession webSocketSession) {
-        list.add(webSocketSession);
         log.info(webSocketSession + " 접속");
+        String projectId = String.valueOf(webSocketSession.getUri()).split("chat/")[1];
+        if(!sessionList.containsKey(projectId))
+            sessionList.put(projectId, new ArrayList<>());
+        sessionList.get(projectId).add(webSocketSession);
+
+        sessionList.get(projectId).stream().forEach(System.out::println);
     }
 
     @Override
@@ -56,7 +63,7 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
 
         Chat entity = new Chat().builder()
                 .message(requestChat.getMessage())
-                .user(userRepository.findByUserId(requestChat.getUserId()).orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND)))
+                .user(userRepository.findById(requestChat.getUserId()).orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND)))
                 .project(projectRepository.findById(requestChat.getProjectId()).orElseThrow(() -> new BusinessLogicException(ExceptionCode.PROJECT_NOT_FOUND)))
                 .unread(0) // 임시
                 .whoRead("") // 임시
@@ -66,13 +73,14 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         String json = objectMapper.writeValueAsString(ResponseChat.from(chat));
         textMessage = new TextMessage(json);
 
-        for(WebSocketSession w : list)
+        for(WebSocketSession w : sessionList.get(String.valueOf(requestChat.getProjectId())))
             w.sendMessage(textMessage);
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession webSocketSession, CloseStatus closeStatus) {
+        String projectId = String.valueOf(webSocketSession.getUri()).split("chat/")[1];
         log.info(webSocketSession + " 접속 해제");
-        list.remove(webSocketSession);
+        sessionList.get(projectId).remove(webSocketSession);
     }
 }

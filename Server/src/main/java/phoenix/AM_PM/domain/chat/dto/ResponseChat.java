@@ -14,7 +14,7 @@ public class ResponseChat {
     private String nickName;
     private String profileImg;
     private String message;
-    private LocalDateTime CreatedDate;
+    private LocalDateTime createdDate;
     private Integer unread;
     private String whoRead;
 
