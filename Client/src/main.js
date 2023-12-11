@@ -5,8 +5,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
+import axios from 'axios'
 import { createVuetify } from "vuetify";
 import { createPinia } from "pinia";
+
 
 const vuetify = createVuetify({
   theme: {
@@ -14,4 +16,9 @@ const vuetify = createVuetify({
   },
 });
 
-createApp(App).use(vuetify).use(router).use(createPinia()).mount("#app");
+const app = createApp(App)
+app.config.globalProperties.$axios = axios;
+app.config.globalProperties.$serverUrl = '//localhost:8090'
+app.use(router).mount('#app')
+
+// createApp(App).use(vuetify).use(router).use(createPinia()).mount("#app");

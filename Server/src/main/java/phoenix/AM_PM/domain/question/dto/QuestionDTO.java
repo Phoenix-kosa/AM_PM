@@ -1,14 +1,16 @@
 package phoenix.AM_PM.domain.question.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
+@Data
 @Getter
 @Setter
 @ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class QuestionDTO {
     private int id;
     private String userId;

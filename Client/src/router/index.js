@@ -4,6 +4,7 @@ import Excel from "@/components/Excel/main.vue";
 import DevPage from "@/pages/DevPage.vue";
 import MyPage from "@/pages/MyPage.vue";
 import MainLayout from "../layouts/MainLayout.vue";
+import QnA from "@/pages/QnA.vue";
 
 const index = createRouter({
   history: createWebHistory(),
@@ -17,6 +18,7 @@ const index = createRouter({
       ],
     },
     { path: "/excel", component: Excel },
+    { path: "/question", component: QnA},
   ],
 });
 

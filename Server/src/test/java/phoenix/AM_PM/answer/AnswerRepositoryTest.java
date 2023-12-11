@@ -24,10 +24,23 @@ public class AnswerRepositoryTest {
     }
 
     @Order(1)
+    //@Test
+    void saveBoard(){
+        Answer answer = Answer.builder().id(1).build();
+        answerR.save(answer);
+    }
+
+    @Order(2)
     @Test
     public void testFindAll() {
         List<Answer> answer = answerR.findAll();
         answer.forEach(System.out::println);
+    }
+
+    @Order(3)
+    //@Test
+    void answerDelete(){
+        answerR.delete(Answer.builder().bulletinId("").build());
     }
 
 }

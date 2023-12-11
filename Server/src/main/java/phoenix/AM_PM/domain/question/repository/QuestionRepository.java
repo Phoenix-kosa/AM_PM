@@ -9,9 +9,7 @@ import java.util.List;
 
 public interface QuestionRepository extends JpaRepository<Question, Integer> {
 
-    @Query("SELECT q from Question q")
-    List<Question> selectList();
-
-
+//    @Query("SELECT q from Question q")
+//    List<Question> selectList();
 
 }
