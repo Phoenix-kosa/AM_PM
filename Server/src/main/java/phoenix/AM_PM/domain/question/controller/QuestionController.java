@@ -11,6 +11,7 @@ import phoenix.AM_PM.domain.question.service.QuestionService;
 
 import java.util.List;
 
+
 @Slf4j
 @RestController
 @RequestMapping("/api/question")
@@ -21,6 +22,11 @@ public class QuestionController {
     @GetMapping("")
     public List<QuestionDTO> questionlist(){
         return questionService.getQuestionList();
+    }
+
+    @GetMapping("/{question-id}")
+    public QuestionDTO getQuestion(@PathVariable(name = "question-id") int id){
+        return questionService.getQuestion(id);
     }
 
     @PostMapping("")
