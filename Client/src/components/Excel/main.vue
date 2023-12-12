@@ -1,5 +1,5 @@
 <template> 
-  <v-container fluid>
+  <v-container fluid class="excel_container">
     <v-row class="mt-3 mx-1"> 
       <v-col class="px-1" cols="12" xs="12" sm="12" md="12" lg="12"> 
         <div id="spreadsheet" ref="spreadsheet"></div>
@@ -27,12 +27,12 @@ export default {
       return {
         data: this.data,
         columns: [
-          { type: 'text', title: '요구사항 ID', width: 120},
-          { type: 'text', title: '대분류', width: 150, align: 'center'},
+          { type: 'text', title: '요구사항 ID', width: 100},
+          { type: 'text', title: '대분류', width: 100, align: 'center'},
           { type: 'text', title: '소분류', width: 80, align: 'center'},
           { type: 'text', title: '이름', width: 180, align: 'center' },
           { type: 'text', title: '설명', width: 500, align: 'center' },
-          { type: 'text', title: '우선순위', width: 90, align: 'center' },
+          { type: 'text', title: '우선순위', width: 70, align: 'center' },
           { type: 'text', title: '비고', width: 300, align: 'center' }
         ]
       }
@@ -43,3 +43,8 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+@import "../../assets/css/excel.css";
+width: 50%;
+</style>

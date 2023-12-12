@@ -1,5 +1,6 @@
 <template>
-  <header class="header_container">
+  <div class="parent">
+      <header class="child">
     <img
       class="main_logo_img"
       src="../assets/images/main_logo.png"
@@ -11,6 +12,7 @@
       <a href="">Log out</a>
     </div>
   </header>
+</div>
 </template>
 
 <script setup></script>
