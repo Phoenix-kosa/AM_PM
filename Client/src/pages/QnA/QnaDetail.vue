@@ -1,21 +1,36 @@
 <template>
-  <div class="board-detail">
-    <div class="common-buttons">
-      <button type="button" class="btn btn-outline-primary" v-on:click="fnUpdate">수정</button>
-      <button type="button" class="btn btn-outline-primary" v-on:click="fnDelete">삭제</button>
-      <button type="button" class="btn btn-outline-primary" v-on:click="fnList">목록</button>
-    </div>
-    <div class="board-contents">
-      <h3>{{ title }}</h3>
-      <div>
-        <span class="">{{ userId }}</span>
-        <br>
-        <span>{{ createdDate }}</span>
-      </div>
-    </div>
-    <div class="board-contents">
-      <span>{{ content }}</span>
-    </div>
+  <div class="container">
+    <h1>1:1 문의게시판</h1>
+    <div class="row row1">
+      <table class="table">
+        <tr>
+          <th width=20% class="text-center warning">번호</th>
+          <td width=30% class="text-center">{{ id }}</td>
+          <th width=20% class="text-center warning">작성일</th>
+          <td width=30% class="text-center">{{ createdDate }}</td>
+        </tr>
+        <tr>
+          <th width=20% class="text-center warning">이름</th>
+          <td width=30% class="text-center">{{ userId }}</td>
+          <th width=20% class="text-center warning"></th>
+          <td width=30% class="text-center"></td>
+        </tr>
+        <tr>
+          <th width=20% class="text-center warning">제목</th>
+          <td colspan="3">{{ title }}</td>
+        </tr>
+        <tr>
+          <td colspan="4" class="text-left" valign="top" height="200">
+            <pre style="white-space: pre-wrap;border:none;background-color: white;">{{ content }}</pre>
+          </td>
+        </tr>
+        <div class="common-buttons">
+        <button type="button" class="btn btn-outline-primary" v-on:click="fnUpdate">수정</button>
+        <button type="button" class="btn btn-outline-primary" v-on:click="fnDelete">삭제</button>
+        <button type="button" class="btn btn-outline-primary" v-on:click="fnList">목록</button>
+        </div>
+      </table>     
+    </div>   
   </div>
 </template>
 
