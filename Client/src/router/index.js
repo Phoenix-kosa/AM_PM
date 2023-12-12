@@ -16,11 +16,12 @@ const index = createRouter({
       children: [
         { path: "dev", component: DevPage },
         { path: "mypage", component: MyPage },
+        { path: "/excel", component: Excel },
+        { path: "/question", component: QnaPage},
+        { path: "/detail", component: QnaDetail},
       ],
     },
-    { path: "/excel", component: Excel },
-    { path: "/question", component: QnaPage},
-    { path: "/detail", component: QnaDetail},
+    
   ],
 });
 
