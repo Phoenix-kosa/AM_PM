@@ -14,11 +14,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories
 @EnableJpaAuditing
 public class AmPmApplication {
+
 	public static void main(String[] args) {
 		SpringApplication.run(AmPmApplication.class, args);
 	}
-	@Bean
-	public ServerEndpointExporter serverEndpointExporter(){
-		return new ServerEndpointExporter();
-	}
+
 }
