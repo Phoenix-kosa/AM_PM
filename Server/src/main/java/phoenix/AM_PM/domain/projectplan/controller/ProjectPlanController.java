@@ -10,7 +10,7 @@ import phoenix.AM_PM.domain.projectplan.service.ProjectPlanService;
 
 import java.io.IOException;
 import java.util.List;
-
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/plan")
 public class ProjectPlanController {
@@ -20,13 +20,13 @@ public class ProjectPlanController {
 
 
     @GetMapping("/project-plan/{id}")
-    public ResponseEntity<ProjectPlanDTO> getProjectPlan(@PathVariable int id) {
+    public ResponseEntity<ProjectPlanDTO> getProjectPlan(@PathVariable(name="id") int id) {
         ProjectPlanDTO projectPlanDTO = projectPlanService.getProjectPlanById(id);
         return ResponseEntity.ok(projectPlanDTO);
     }
 
     @GetMapping("/erd-example")
-    public ResponseEntity<ProjectPlanDTO> getErdExample(@RequestParam int id) {
+    public ResponseEntity<ProjectPlanDTO> getErdExample(@RequestParam("id") int id) {
         ProjectPlanDTO projectPlanDTO = projectPlanService.getErdExample(id);
         return ResponseEntity.ok(projectPlanDTO);
     }
