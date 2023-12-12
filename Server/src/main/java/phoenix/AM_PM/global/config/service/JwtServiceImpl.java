@@ -25,11 +25,11 @@ public class JwtServiceImpl implements JwtService {
 //        log.info(d.toString() +" : " + d.getTime());
 
         byte[] secretByteKey = DatatypeConverter.parseBase64Binary(secretKey);
-        Key signKey = new SecretKeySpec(secretByteKey, SignatureAlgorithm.HS256.getJcaName());
+        Key signKey = new SecretKeySpec(secretByteKey, SignatureAlgorithm.HS512.getJcaName());
 
         Map<String, Object> headerMap = new HashMap<>();
         headerMap.put("typ", "JWT");
-        headerMap.put("alg", "HS256");
+        headerMap.put("alg", "HS512");
 
         Map<String, Object> map = new HashMap<>();
         map.put(key, value);
@@ -37,23 +37,26 @@ public class JwtServiceImpl implements JwtService {
         JwtBuilder builder = Jwts.builder().setHeader(headerMap)
                 .setClaims(map)
                 .setExpiration(d)
-                .signWith(signKey, SignatureAlgorithm.HS256);
+                .signWith(signKey, SignatureAlgorithm.HS512);
         return "Bearer "+builder.compact();
     }
 
     @Override
-    public Claims getClaims(String token) {
-        log.info("getClaims() 호출 : "+token);
-        if (token != null && !"".equals(token)) {
-            token = token.replace("Bearer ", "");
+    public Claims getClaims(String Token) {
+        log.info("getClaims() 호출 : "+Token);
+        if (Token != null && !"".equals(Token)) {
+            String token = Token.replace(JwtProperties.TOKEN_PREFIX, "");
             try {
-                byte[] secretByteKey = DatatypeConverter.parseBase64Binary(secretKey);
-                Key signKey = new SecretKeySpec(secretByteKey, SignatureAlgorithm.HS256.getJcaName());
+//                byte[] secretByteKey = DatatypeConverter.parseBase64Binary(secretKey);
+                Key signKey = new SecretKeySpec(secretKey.getBytes(), SignatureAlgorithm.HS512.getJcaName());
                 return Jwts.parserBuilder().setSigningKey(signKey).build().parseClaimsJws(token).getBody();
             } catch (ExpiredJwtException e) {
                 log.error("토큰 만료");
+                System.out.println("토큰 만료!!");
             } catch (JwtException e) {
                 log.error("토큰 유효하지 않음");
+                System.out.println("유효 토큰 x");
+                System.out.println(e);
             }
         }
         return null;
@@ -65,11 +68,11 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public int getId(String token) {
+    public String getId(String token) {
         Claims claims = this.getClaims(token);
         if(claims != null){
-            return Integer.parseInt(claims.get("id").toString());
+            return claims.get("userId").toString();
         }
-        return 0;
+        return "";
     }
 }

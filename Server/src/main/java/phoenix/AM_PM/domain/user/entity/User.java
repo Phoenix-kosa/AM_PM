@@ -26,7 +26,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class User {
 
   @Id
-  @Column(name = "user_id", nullable = false,unique = true)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
+
+  @Column(name = "user_id", nullable = false)
   private String userId;
 
   @Column(nullable = false)
