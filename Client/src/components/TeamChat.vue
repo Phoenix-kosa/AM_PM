@@ -12,14 +12,14 @@ import { ref } from 'vue';
 
 const msg = ref(null);
 const projectId = ref(1);
-const userId = ref(1);
-const pageNum = ref(1);
+const userId = ref(2);
+const pageNum = ref(null);
 
-function loadData(page) {
-  axios.get(`http://localhost:8090/api/chat/${projectId.value}?page=${page}`)
+function loadData(cursor) {
+  axios.get(`http://localhost:8090/api/chat/${projectId.value}?cursorId=${cursor}`)
   .then((response) => {
-    console.log(response.data);
-    if(page >= response.data.pageInfo.totalPages - 1) {
+    console.log(response.data.pageInfo);
+    if(!response.data.pageInfo.hasNext) {
       document.getElementById("loadData").style.display = 'none';
     }
     
@@ -32,6 +32,7 @@ function loadData(page) {
       htmlData += `<span>${res.createdDate}</span>`;
       htmlData += `<span>${res.unread}</span></div>`;
       msgArea.innerHTML = htmlData + msgArea.innerHTML;
+      pageNum.value = res.id;
     }
   })
   .catch((err) => console.error(err));
@@ -58,7 +59,7 @@ function onClose() {
 }
 
 function onOpen() {
-  loadData(0);
+  loadData(-1);
   console.log("입장");
 }
 

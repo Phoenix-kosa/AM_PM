@@ -2,6 +2,7 @@ package phoenix.AM_PM.domain.chat.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import phoenix.AM_PM.domain.chat.entity.Chat;
 import phoenix.AM_PM.domain.chat.repository.ChatRepository;
@@ -18,8 +19,8 @@ public class ChatService {
         this.chatRepository = chatRepository;
     }
 
-    public PageResponseDto<Chat> readChat(Integer projectId, Pageable pageable) {
-        Page<Chat> chatList = chatRepository.findByProjectIdOrderByCreatedDateDesc(projectId, pageable);
+    public PageResponseDto<Chat> readChat(Integer projectId, Pageable pageable, Integer cursorId) {
+        Slice<Chat> chatList = chatRepository.chatPage(pageable, projectId, cursorId);
         List<Chat> chats = chatList.stream().collect(Collectors.toList());
         return new PageResponseDto<>(chats, chatList);
     }
