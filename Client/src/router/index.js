@@ -12,6 +12,9 @@ import Login from '@/components/Auth/login.vue'
 import Register from '@/components/Auth/register.vue'
 import TestToken from '@/components/Auth/testtoken.vue'
 import ProjectPlanPage from "@/pages/ProjectPlanPage.vue"
+import QnaPage from "@/pages/QnaPage.vue";
+import QnaDetail from "@/pages/QnA/QnaDetail.vue"
+
 
 const index = createRouter({
   history: createWebHistory(),
@@ -29,6 +32,8 @@ const index = createRouter({
         { path: 'erd', component: ProjectPlanPage, props: { pageType: 'ERD' } },
         { path: 'usecase', component: ProjectPlanPage, props: { pageType: 'USECASE' } },
         { path: 'ui', component: ProjectPlanPage, props: { pageType: 'UI' } },
+        { path: "question", component: QnaPage},
+        { path: "detail", component: QnaDetail},
       ],
     },
   ],
