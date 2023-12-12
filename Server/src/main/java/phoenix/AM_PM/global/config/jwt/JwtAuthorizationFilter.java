@@ -109,6 +109,9 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter{
 			System.out.println("토큰 만료");
 			System.out.println(tokenExpiredException);
 			response.setStatus(401);
+		} catch (Exception e) {
+			System.out.println("JWT Exception 오류");
+			System.out.println(e);
 		}
 	}
 	

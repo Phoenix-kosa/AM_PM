@@ -7,7 +7,6 @@ import TeamChat from "@/components/TeamChat.vue";
 import MyPage from "@/pages/MyPage.vue";
 import MainLayout from "../layouts/MainLayout.vue";
 import TeamChat2 from "@/components/TeamChat2.vue";
-import Excel from '@/components/Excel/main.vue'
 import Login from '@/components/Auth/login.vue'
 import Register from '@/components/Auth/register.vue'
 import TestToken from '@/components/Auth/testtoken.vue'
@@ -34,6 +33,7 @@ const index = createRouter({
         { path: 'ui', component: ProjectPlanPage, props: { pageType: 'UI' } },
         { path: "question", component: QnaPage},
         { path: "detail", component: QnaDetail},
+        { path: "team-chat", component: TeamChat},
       ],
     },
   ],
