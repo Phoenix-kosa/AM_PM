@@ -11,8 +11,9 @@ import Login from '@/components/Auth/login.vue'
 import Register from '@/components/Auth/register.vue'
 import TestToken from '@/components/Auth/testtoken.vue'
 import ProjectPlanPage from "@/pages/ProjectPlanPage.vue"
-import QnaPage from "@/pages/QnaPage.vue";
+import QnaPage from "@/pages/QnaPage.vue"
 import QnaDetail from "@/pages/QnA/QnaDetail.vue"
+import QnaWrite from "@/pages/QnA/QnaWrite.vue"
 
 
 const index = createRouter({
@@ -34,6 +35,7 @@ const index = createRouter({
         { path: "question", component: QnaPage},
         { path: "detail", component: QnaDetail},
         { path: "team-chat", component: TeamChat},
+        { path: "write", component: QnaWrite},
       ],
     },
   ],

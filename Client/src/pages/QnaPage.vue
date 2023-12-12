@@ -1,7 +1,7 @@
 <template>
   <div class="">
     <div class="">
-      <button type="button" class="btn btn-primary" v-on:click="">문의등록</button>
+      <button type="button" class="btn btn-primary" v-on:click="fnWrite">문의등록</button>
     </div>
     <table class="table">
       <thead class="table-primary">

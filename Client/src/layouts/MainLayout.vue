@@ -1,8 +1,8 @@
 <template>
-  <Header />
+  <!-- <Header /> -->
   <router-view />
-  <Sidebar />
-  <Footer />
+  <!-- <Sidebar /> -->
+  <!-- <Footer /> -->
 </template>
 
 <script setup>
