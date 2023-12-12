@@ -86,6 +86,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 		String jwtToken = JWT.create()
 				.withSubject(principalDetailis.getUsername())
 				.withExpiresAt(new Date(System.currentTimeMillis()+JwtProperties.EXPIRATION_TIME))
+				.withClaim("id", principalDetailis.getUser().getId())
 				.withClaim("userId", principalDetailis.getUser().getUserId())
 				.sign(Algorithm.HMAC512(JwtProperties.SECRET));
 
@@ -95,6 +96,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 		String refreshToken = JWT.create()
 				.withSubject(principalDetailis.getUsername())
 				.withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.REFRESH_TOKEN_EXPIRATION_TIME))
+				.withClaim("id", principalDetailis.getUser().getId())
 				.withClaim("userId", principalDetailis.getUser().getUserId())
 				.sign(Algorithm.HMAC512(JwtProperties.SECRET));
 

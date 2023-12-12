@@ -50,23 +50,6 @@ let checkToken = () => {
                 "Authorization" : sessionStorage.getItem("access-token") }
             })
         .then(response => {
-            // if (response.status == 401) {
-            // console.log("토큰 만료");
-            // // 토큰 만료 시, access token 재발급 로직 수행
-            // axios.get("http://localhost:8090/api/rtoken", {
-            //     headers: { 
-            //         "RefreshToken" : sessionStorage.getItem("refresh-token"),
-            //         "Authorization" : sessionStorage.getItem("access-token") }
-            //     }).then(response => {
-            //         if(response.status == 200){
-            //             console.log("토큰 재발급");
-            //             console.log(response.headers.authorization);
-            //             sessionStorage.setItem("access-token", response.headers.authorization);
-            //         } else {
-            //             console.log("토큰 재발급 실패");
-            //         }
-            //     }).catch(error => {console.error(error);})
-            // } 
             if (response.status == 200) {
                 // 로그인 성공 시 메인 페이지로
                 console.log(response.headers.authorization);
@@ -75,23 +58,6 @@ let checkToken = () => {
                 // sessionStorage.setItem("access-token", response.headers.authorization);
                 // sessionStorage.setItem("refresh-token", response.headers.refreshtoken);
                 // router.push("/testtoken")
-            } 
-            else if(response.status == 205) {
-                console.log("토큰 만료");
-
-                axios.get("http://localhost:8090/api/rtoken", {
-                    headers: { 
-                        "RefreshToken" : sessionStorage.getItem("refresh-token"),
-                        "Authorization" : sessionStorage.getItem("access-token") }
-                    }).then(response => {
-                        if(response.status == 200){
-                            console.log("토큰 재발급");
-                            console.log(response.headers.authorization);
-                            sessionStorage.setItem("access-token", response.headers.authorization);
-                        } else {
-                            console.log("토큰 재발급 실패");
-                        }
-                    }).catch(error => {console.error(error);})
             } 
             else {
                 console.log(response)
@@ -103,6 +69,24 @@ let checkToken = () => {
         })
         .catch(error => {
             console.error(error);
+            if(error.response.status == 401) {
+                console.log("토큰 만료");
+
+                axios.get("http://localhost:8090/api/rtoken", {
+                    headers: { 
+                        "RefreshToken" : sessionStorage.getItem("refresh-token"),
+                        "Authorization" : sessionStorage.getItem("access-token") }
+                    }).then(response => {
+                        console.log(response)
+                        if(response.status == 200){
+                            console.log("토큰 재발급");
+                            console.log(response.headers.authorization);
+                            sessionStorage.setItem("access-token", response.headers.authorization);
+                        } else {
+                            console.log("토큰 재발급 실패");
+                        }
+                    }).catch(error => {console.error(error);})
+            } 
         });
 }
 

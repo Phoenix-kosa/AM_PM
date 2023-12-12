@@ -41,22 +41,6 @@ public class UserController {
   @PostMapping("/api/auth/local")
   public ResponseEntity<String> login(@RequestBody LoginRequestDto loginDto,
       HttpServletResponse res) {
-//    User user = userRepository.findByUserId(loginDto.getUserId()).get();
-//    System.out.println("Login 성공 유저 정보" + user);
-//    System.out.println("로그인 rest api 진입");
-//    if (user != null) {
-//      String userId = user.getUserId();
-//      String token = jwtService.getToken("userId", userId);
-//      MultiValueMap<String, String> header = new LinkedMultiValueMap<>();
-//      header.add(jwtProperties.HEADER_STRING, token);
-//
-//      System.out.println("로그인 성공");
-
-//      return new ResponseEntity<>("로그인 성공", header, HttpStatus.OK);
-//      // authorization
-//    }
-//
-//    throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     return new ResponseEntity<>("로그인 성공", HttpStatus.OK);
   }
 
@@ -86,9 +70,9 @@ public class UserController {
   @GetMapping("/api/rtoken")
   public ResponseEntity<String> test2(@RequestHeader(value = "RefreshToken", required = false) String token, HttpServletResponse res) {
     System.out.println("토큰 재발급");
-    MultiValueMap<String, String> header = new LinkedMultiValueMap<>();
-    header.add("Authorization", "delete");
-    return new ResponseEntity<>("로그아웃 성공", header, HttpStatus.OK);
+    System.out.println(jwtService.getId(token));
+    System.out.println(jwtService.getClaims(token));
+    return new ResponseEntity<>("토큰 재발급", HttpStatus.OK);
   }
 
 

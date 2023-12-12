@@ -65,6 +65,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter{
 				String newAccessToken = JWT.create()
 						.withSubject(user.getUserId())
 						.withExpiresAt(new Date(System.currentTimeMillis()+JwtProperties.EXPIRATION_TIME))
+						.withClaim("id", user.getId())
 						.withClaim("userId", user.getUserId())
 						.sign(algorithm);
 
@@ -74,12 +75,12 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter{
 				// Refresh Token이 유효하지 않은 경우 처리
 				SecurityContextHolder.clearContext();
 			}
+			chain.doFilter(request, response);
 			return;
 		}
 
 		// 토큰 검증 (이게 인증이기 때문에 AuthenticationManager도 필요 없음)
 		// 내가 SecurityContext에 집적접근해서 세션을 만들때 자동으로 UserDetailsService에 있는 loadByUsername이 호출됨.
-
 		try {
 			String userId = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET.getBytes())).build()
 					.verify(token)
@@ -107,7 +108,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter{
 		} catch (TokenExpiredException tokenExpiredException) {
 			System.out.println("토큰 만료");
 			System.out.println(tokenExpiredException);
-			response.setStatus(205);
+			response.setStatus(401);
 		}
 	}
 	
