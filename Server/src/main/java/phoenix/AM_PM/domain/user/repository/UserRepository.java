@@ -4,7 +4,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import phoenix.AM_PM.domain.user.entity.User;
 
-public interface UserRepository extends JpaRepository<User, String> {
+public interface UserRepository extends JpaRepository<User, Integer> {
 
   public Optional<User> findByUserId(String user_id);
 

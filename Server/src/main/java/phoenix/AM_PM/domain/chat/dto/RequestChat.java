@@ -14,5 +14,5 @@ import java.time.LocalDateTime;
 public class RequestChat {
     private String message;
     private Integer projectId;
-    private String userId;
+    private Integer userId;
 }

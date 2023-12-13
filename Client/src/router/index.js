@@ -16,10 +16,10 @@ const index = createRouter({
       children: [
         { path: "dev", component: DevPage },
         { path: "mypage", component: MyPage },
+        { path: "/team-chat", component: TeamChat },
       ],
     },
     { path: "/excel", component: Excel },
-    { path: "/team-chat", component: TeamChat },
     { path: "/team-chat2", component: TeamChat2 },
   ],
 });
