@@ -25,8 +25,7 @@ h5 {
 
 .footer_container {
   box-shadow: 0px -3px 10px rgba(0, 0, 0, 0.2);
-
-  /* background-color: bisque; */
+  margin-left: 255px;
   padding: 30px 0;
 }
 
