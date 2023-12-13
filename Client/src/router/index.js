@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import Excel from "@/components/Excel/main.vue";
 import DevPage from "@/pages/DevPage.vue";
+import MainPage from "@/pages/MainPage.vue";
 import TeamChat from "@/components/TeamChat.vue";
 import MyPage from "@/pages/MyPage.vue";
 import MainLayout from "../layouts/MainLayout.vue";
@@ -19,6 +20,7 @@ import QnaWrite from "@/pages/QnA/QnaWrite.vue"
 const index = createRouter({
   history: createWebHistory(),
   routes: [
+    { path: "/", component: MainPage },
     {
       path: "/",
       component: MainLayout,
