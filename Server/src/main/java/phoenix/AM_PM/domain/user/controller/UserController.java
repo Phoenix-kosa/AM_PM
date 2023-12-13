@@ -11,6 +11,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -18,30 +19,40 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import phoenix.AM_PM.domain.user.dto.LoginRequestDto;
+import phoenix.AM_PM.domain.user.dto.SaveUserDto;
 import phoenix.AM_PM.domain.user.entity.User;
 import phoenix.AM_PM.domain.user.repository.UserRepository;
+import phoenix.AM_PM.domain.user.service.UserService;
 import phoenix.AM_PM.global.config.jwt.JwtProperties;
 import phoenix.AM_PM.global.config.service.JwtService;
 import phoenix.AM_PM.global.config.service.JwtServiceImpl;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins="http://localhost:5173", allowedHeaders = "*", exposedHeaders="Authorization", allowCredentials = "true")
 public class UserController {
 
   private final UserRepository userRepository;
+  private final UserService userService;
   private final BCryptPasswordEncoder bCryptPasswordEncoder;
   private final JwtServiceImpl jwtService;
 
   private JwtProperties jwtProperties;
-//  @PostMapping("/user")
-//  public b
 
   // 로그인
   @PostMapping("/api/auth/local")
   public ResponseEntity<String> login(@RequestBody LoginRequestDto loginDto,
       HttpServletResponse res) {
     return new ResponseEntity<>("로그인 성공", HttpStatus.OK);
+  }
+
+  // 회원 가입
+  @PostMapping("/api/user")
+  public ResponseEntity<String> join(@RequestBody SaveUserDto dto,  HttpServletResponse res) {
+    if(userService.save(dto)) {
+      return new ResponseEntity<>("성공적으로 회원 가입이 진행되었습니다.", HttpStatus.CREATED);
+    }
+    return new ResponseEntity<>("회원가입 오류", HttpStatus.BAD_REQUEST);
+
   }
 
 
@@ -75,5 +86,28 @@ public class UserController {
     return new ResponseEntity<>("토큰 재발급", HttpStatus.OK);
   }
 
+  @GetMapping("/api/user/user_id/{userId}")
+  public ResponseEntity<Boolean> checkUserId(@PathVariable("userId")String userId){
+    Boolean body;
+    try{
+      userService.findbyUserId(userId).get();
+      body = false;
+    } catch (Exception e){
+      body = true;
+    }
+    return new ResponseEntity<>(body, HttpStatus.OK);
+  }
+
+  @GetMapping("/api/user/email/{email}")
+  public ResponseEntity<Boolean> checkEmail(@PathVariable("email")String email){
+    Boolean body;
+    try{
+      userService.findbyEmail(email).get();
+      body = false;
+    } catch (Exception e){
+      body = true;
+    }
+    return new ResponseEntity<>(body, HttpStatus.OK);
+  }
 
 }
