@@ -39,6 +39,7 @@ const index = createRouter({
         { path: "write", component: QnaWrite},
       ],
     },
+    { path: "/team-chat2", component: TeamChat2},
     { path: '/login', component: Login },
     { path: '/register', component: Register },
   ],
