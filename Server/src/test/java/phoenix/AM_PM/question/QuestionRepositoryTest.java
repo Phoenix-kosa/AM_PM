@@ -1,5 +1,6 @@
 package phoenix.AM_PM.question;
 
+import org.aspectj.lang.annotation.After;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -32,18 +33,25 @@ public class QuestionRepositoryTest {
         answer.forEach(System.out::println);
     }
 
-    @Order(2)
-    @Test
-    public QuestionDTO getQuestion(int id){
-        Question question = questionR.findById(id).orElseThrow(() -> new RuntimeException("게시글 없음"));
-        return QuestionDTO.builder()
-                .id(question.getId())
-                .userId(question.getUserId())
-                .title(question.getTitle())
-                .content(question.getContent())
-                .createdDate(question.getCreatedDate())
-                .build();
-    }
+
+    //@Order(2)
+//    @Test
+//    public void teardown() {
+//        questionR.deleteAll();
+//        this.questionR
+//                .createNativeQuer("ALTER TABLE users ALTER COLUMN `id` RESTART                                                                     WITH 1")
+//                .executeUpdate();
+//    }
+//    public QuestionDTO getQuestion(int id){
+//        Question question = questionR.findById(id).orElseThrow(() -> new RuntimeException("게시글 없음"));
+//        return QuestionDTO.builder()
+//                .id(question.getId())
+//                .userId(question.getUserId())
+//                .title(question.getTitle())
+//                .content(question.getContent())
+//                .createdDate(question.getCreatedDate())
+//                .build();
+//    }
 //    //게시글 등록
 //    public Question create(QuestionDTO questionDTO){
 //        Question question = Question.builder()

@@ -11,5 +11,4 @@ import java.util.List;
 public interface AnswerRepository extends JpaRepository<Answer, Integer> {
     //조회
     List<Answer> findAll();
-
 }
