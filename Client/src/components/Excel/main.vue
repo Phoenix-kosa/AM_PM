@@ -46,5 +46,4 @@ export default {
 
 <style scoped>
 @import "../../assets/css/excel.css";
-width: 50%;
 </style>

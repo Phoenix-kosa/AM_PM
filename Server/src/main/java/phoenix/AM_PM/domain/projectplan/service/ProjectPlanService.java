@@ -22,9 +22,10 @@ public class ProjectPlanService {
     @Autowired
     private ProjectPlanRepository projectPlanRepository;
 
-    private final Path erdLocation = Paths.get("erd_storage");
-    private final Path usecaseLocation = Paths.get("usecase_storage");
-    private final Path uiLocation = Paths.get("ui_storage");
+    private final Path erdLocation = Paths.get("C:\\kosastudy\\AM_PM\\Server\\src\\main\\resources\\static\\img\\plan");
+
+    private final Path usecaseLocation = Paths.get("C:\\kosastudy\\AM_PM\\Server\\src\\main\\resources\\static\\img\\plan");
+    private final Path uiLocation = Paths.get("C:\\kosastudy\\AM_PM\\Server\\src\\main\\resources\\static\\img\\plan");
 
     public ProjectPlanDTO getProjectPlanById(int id) {
         ProjectPlan projectPlan = projectPlanRepository.findById(id)
@@ -63,18 +64,25 @@ public class ProjectPlanService {
 
     private void storeFile(int id, MultipartFile file, Path location, BiConsumer<ProjectPlan, String> filePathSetter) {
         try {
+            if (!Files.exists(location)) {
+                Files.createDirectories(location);
+            }
+
             Path destinationFile = location.resolve(Paths.get(file.getOriginalFilename()))
                     .normalize().toAbsolutePath();
+
             Files.copy(file.getInputStream(), destinationFile, StandardCopyOption.REPLACE_EXISTING);
 
             ProjectPlan projectPlan = projectPlanRepository.findById(id)
                     .orElseThrow(() -> new IllegalArgumentException("잘못된 아이디: " + id));
             filePathSetter.accept(projectPlan, destinationFile.toString());
+
             projectPlanRepository.save(projectPlan);
         } catch (IOException e) {
             throw new RuntimeException("파일을 저장하지 못했습니다.", e);
         }
     }
+
 
     public ProjectPlanDTO createNewEtcPage(int projectId, MultipartFile file, String sampleUrl, String sampleImg) throws IOException {
         int etcCount = projectPlanRepository.countByProjectIdAndTitleStartingWith(projectId, "ETC");
