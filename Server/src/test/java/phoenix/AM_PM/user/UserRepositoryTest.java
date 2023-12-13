@@ -35,6 +35,14 @@ public class UserRepositoryTest {
           .nickname("맹")
           .roles("USERS")
           .build());
+      userR.save(User.builder()
+          .userId("pinix")
+          .password(passwordEncoder.encode("1111"))
+          .email("phoenix@nae.com")
+          .profileImg("")
+          .nickname("불사조")
+          .roles("USERS")
+          .build());
     } catch (Exception e){
       System.out.println(e);
     }

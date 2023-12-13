@@ -5,7 +5,7 @@
       <p>참고 사이트: <a :href="sampleUrl" target="_blank">{{ sampleUrl }}</a></p>
       <input type="file" @change="handleFileUpload" />
       <button @click="uploadFile">파일 업로드</button><br><br>
-      <img :src="imagePreview" alt="Preview" v-if="imagePreview" />
+      <img :src="imagePreview" alt="Preview" v-if="imagePreview" height="650px" width="850px"/>
     </div>
   </div>
 </template>

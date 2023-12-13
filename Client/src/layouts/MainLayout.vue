@@ -1,7 +1,9 @@
 <template>
   <Header />
-  <router-view />
   <Sidebar />
+  <div class="main_contents">
+    <router-view />
+  </div>
   <Footer />
 </template>
 
@@ -9,5 +11,7 @@
 import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
 import Sidebar from "@/components/Sidebar.vue";
-
 </script>
+<style scoped>
+@import "../assets/css/mainLayout.css";
+</style>

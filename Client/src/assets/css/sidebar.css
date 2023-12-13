@@ -1,20 +1,20 @@
-.sidebar_container {
-  background-color: #166ADC;
+#sidebar_container {
+  background-color: #166adc;
   padding-top: 15px;
   border-top-right-radius: 35px;
-  margin-top:7.3%;
+
   position: sticky;
-  top: 10%;          
-  left: 0;         
-  height: 100vh;   
-  z-index: 1000;  
+  top: 20px;
+  left: 0;
+  height: 100vh;
+  z-index: 1000;
+  margin-top: 105px;
 }
 
 .p {
   color: white;
   padding-left: 15px;
 }
-
 
 .f {
   color: white;
@@ -28,5 +28,5 @@
 
 .v-navigation-drawer__content {
   -ms-overflow-style: none !important;
-  scrollbar-width: none !important; 
+  scrollbar-width: none !important;
 }

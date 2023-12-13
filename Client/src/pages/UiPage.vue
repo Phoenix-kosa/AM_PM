@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<script>
+<script >
 import ProjectPlan from '@/components/ProjectPlan.vue';
 
 export default {
@@ -13,3 +13,7 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+
+</style>
