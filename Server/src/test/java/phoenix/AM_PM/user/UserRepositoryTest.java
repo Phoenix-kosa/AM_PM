@@ -28,20 +28,18 @@ public class UserRepositoryTest {
 
     try {
       userR.save(User.builder()
-          .userId("maeng")
+          .userId("ampm")
           .password(passwordEncoder.encode("1234"))
           .email("mmm@nae.com")
-          .profileImg("")
-          .nickname("맹")
-          .roles("USERS")
+          .nickname("AM_PM")
+          .roles("ADMIN")
           .build());
       userR.save(User.builder()
-          .userId("pinix")
-          .password(passwordEncoder.encode("1111"))
-          .email("phoenix@nae.com")
-          .profileImg("")
+          .userId("admin")
+          .password(passwordEncoder.encode("1234"))
+          .email("admin@nae.com")
           .nickname("불사조")
-          .roles("USERS")
+          .roles("ADMIN")
           .build());
     } catch (Exception e){
       System.out.println(e);

@@ -1,5 +1,6 @@
 package phoenix.AM_PM.domain.user.service;
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,9 +22,8 @@ public class UserService {
         .userId(user.getUserId())
         .password(bCryptPasswordEncoder.encode(user.getPassword()))
         .nickname(user.getNickname())
-        .profileImg("")
         .email(user.getEmail())
-        .roles(user.getRoles())
+        .roles("USERS")
         .build();
 
     try {
@@ -36,12 +36,12 @@ public class UserService {
   }
 
   // userId 중복 체크
-  public boolean findbyUserId(String userId) {
-    return repository.findByUserId(userId).isEmpty();
+  public Optional<User> findbyUserId(String userId) {
+    return repository.findByUserId(userId);
   }
 
   // email 중복 체크
-  public boolean findbyEmail(String email) {
-    return repository.findByEmail(email).isEmpty();
+  public Optional<User> findbyEmail(String email) {
+    return repository.findByEmail(email);
   }
 }
