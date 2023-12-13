@@ -1,0 +1,48 @@
+.mypage_container {
+  width: 100%;
+  background-color: red;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mypage_wrapper {
+  width: 60%;
+  min-width: 700px;
+  background-color: #e1ecfa;
+  border-radius: 16px;
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+}
+
+.mypage_wrapper img {
+  width: 10%;
+}
+
+.input_container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.input_container input {
+  background-color: white;
+  border-radius: 8px;
+  width: 50%;
+  padding: 4px 12px;
+}
+
+.input_container label {
+  font-weight: 900;
+  width: 40%;
+  text-align: center;
+}
+
+.form_container {
+  background-color: red;
+  width: 70%;
+  margin-top: 30px;
+}

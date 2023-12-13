@@ -15,7 +15,9 @@
           초보자부터 숙련된 개발자까지 안전하고 편리한
         </h4>
         <h4>최고의 개발 환경을 경험해보세요.</h4>
-        <button class="canvaas_login_btn hidden">START</button>
+        <router-link to="/login">
+          <button class="canvaas_login_btn hidden">START</button>
+        </router-link>
       </div>
     </div>
     <canvas></canvas>
@@ -42,6 +44,7 @@
 import MainContent from "@/components/MainPage/MainContent.vue";
 import { onMounted } from "vue";
 import Footer from "@/components/Footer.vue";
+window.scrollTo(0, 0);
 
 onMounted(() => {
   const mainLogo = document.querySelector(".canvas_img");
@@ -66,9 +69,6 @@ onMounted(() => {
   let interval = 1000 / 60;
   let now, delta;
   let then = Date.now();
-
-  const feGaussianBlur = document.querySelector("feGaussianBlur");
-  const feColorMatrix = document.querySelector("feColorMatrix");
 
   class Particle {
     constructor(x, y, radius, vy) {
@@ -154,6 +154,10 @@ onMounted(() => {
 
     then = now - (delta % interval);
   }
+  window.addEventListener("popstate", (event) => {
+    init();
+    animate();
+  });
 
   window.addEventListener("load", () => {
     init();
