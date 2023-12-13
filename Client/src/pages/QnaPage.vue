@@ -1,7 +1,7 @@
 <template>
   <div class="">
-    <div class="">
-      <button type="button" class="btn btn-primary" v-on:click="fnWrite">문의등록</button>
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+      <button type="button" class="w3-button text-white bg-blue" v-on:click="fnWrite">문의등록</button>
     </div>
     <table class="table">
       <thead class="table-primary">

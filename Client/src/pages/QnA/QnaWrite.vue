@@ -1,14 +1,16 @@
 <template>
-  <div class="">
-    <button type="button" class="" v-on:click="fnSave">저장</button>
-    <button type="button" class="" v-on:click="fnList">목록</button>
-  </div>
   <div>
-    <input type="text" v-model="title" class="" placeholder="제목을 입력하세요.">
-    <input type="text" v-model="userId" class="" placeholder="작성자를 입력하세요.">
-  </div>
-  <div>
-    <textarea name="" id="" cols="30" rows="10" v-model="content" class="" style=""></textarea>
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+      <button type="button" class="w3-button text-white bg-dark" v-on:click="fnSave">저장</button>
+      <button type="button" class="w3-button text-black bg-white" v-on:click="fnList">목록</button>
+    </div>
+    <div class="board-contents">
+      제목: <input type="text" v-model="title" class="w3-input w3-border" placeholder="제목을 입력하세요." required>
+      작성자: <input type="text" v-model="userId" class="w3-input w3-border" placeholder="작성자를 입력하세요." v-if="id === undefined" required>
+    </div>
+    <div class="board-contents">
+      내용: <textarea name="" id="" cols="30" rows="10" v-model="content" class="w3-input w3-border" style="resize: none;"></textarea>
+    </div>
   </div>
 </template>
 
@@ -19,8 +21,8 @@ export default {
   data(){
     return {
       requestBody: this.$route.query,
-      id: this.$route.query.idx,
-
+      id: this.$route.query.id,
+      errors: [],
       title: '',
       userId: '',
       content: '',
@@ -31,6 +33,16 @@ export default {
     this.fnGetView()
   },
   methods: {
+    checkForm(e) {
+      e.preventDefault();
+      this.errors = [];
+      if (!this.title){
+        this.errors.push("제목을 입력하세요")
+      }
+      if (!this.content) {
+        this.errors.push("내용을 입력하세요")
+      }
+    },
     fnGetView(){
       if (this.id !== undefined) {
         axios.get("http://localhost:8090/api/question/"+this.id,{
