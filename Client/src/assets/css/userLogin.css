@@ -1,3 +1,20 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #166ADC;
+}
+
+img {
+    width: 300px;
+    /* padding-bottom: 30px; */
+}
+
+.mt-5 {
+    display: block;
+}
 .card-header.text-center {
     background-color: white;
     border-bottom: none;
@@ -6,16 +23,16 @@
 
 button.btn.btn-primary.btn-block {
     margin-bottom: 8px;
-    background-color: #5302FE;
+    background-color: #166ADC;
 
 }
 
 button#register_button {
-    border-color: #5302FE;
+    border-color: #166ADC;
     background-color: white;
 }
 #register_text {
-    color: #5302FE;
+    color: #166ADC;
 }
 
 #id_card {
@@ -33,8 +50,8 @@ div#register_card {
 }
 
 button.btn.btn-primary {
-    background: #5302FE;
-    border-color: #5302FE;
+    background: #166ADC;
+    border-color: #166ADC;
 }
 
 
@@ -46,21 +63,15 @@ button.btn.btn-primary {
 /* 입력 필드와 회원가입 버튼의 너비를 동일하게 만듭니다. */
 .form-control, .btn {
     width: 100%;
+    background: linear-gradient(0deg, rgba(22, 106, 220, 0.2), rgba(22, 106, 220, 0.2)), #FFFFFF;
 }
 
-/* 페이지를 가운데 정렬합니다. */
-body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-}
 button#register_button {
     width: 436px;
 }
 .form-group {
     text-align: start;
+    width: 80%;
 }
 .card-body {
     text-align: -webkit-center;
