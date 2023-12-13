@@ -4,7 +4,23 @@
       <div class="buttonContainer">
         <button @click="loadData(pageNum++)" id="loadData">불러오기</button>
       </div>
-      <div id="msgArea"></div>
+      <div id="msgArea" v-for="data in chatList">
+        <div class="contentContainer">
+          <div class="imgContainer">
+            <img v-if="data.user" :src="data.user.profileImg"/>
+            <img v-else="data.user" :src="data.profileImg"/>
+          </div>
+          <div class="message">
+            <div class="details">
+              <span v-if="data.user" class="nickname" v-text="data.user.nickname"></span>
+              <span v-else="data.user" class="nickname" v-text="data.nickName"></span>
+              <span class="date">{{ data.createdDate.substring(0, 10) }} {{data.createdDate.substring(11, 16)}}</span>
+              <span class="unread" v-text="data.unread"></span>
+            </div>
+            <span v-text="data.message"></span>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="inputContainer">
       <input class="inputBox" @keyup.enter="send" type="text" placeholder="메시지 작성" v-model="msg" maxlength="250">
@@ -19,8 +35,9 @@ import { ref } from 'vue';
 
 const msg = ref(null);
 const projectId = ref(1);
-const userId = ref(1);
+const userId = ref(2);
 const pageNum = ref(null);
+const chatList = ref([]);
 
 function loadData(cursor) {
   axios.get(`http://localhost:8090/api/chat/${projectId.value}?cursorId=${cursor}`, {
@@ -29,34 +46,12 @@ function loadData(cursor) {
             }
             )
   .then((response) => {
-    console.log(response)
-    console.log(response.data.pageInfo);
     if(!response.data.pageInfo.hasNext) {
       document.getElementById("loadData").style.display = 'none';
     }
-    
-    const msgArea = document.getElementById("msgArea");
 
     for(var res of response.data.data) {
-      let htmlData = `<div class="contentContainer"><div class="imgBox"><img src="${res.user.profileImg}"></img></div>`;
-      htmlData += `<div class="message"><div class="details"><span class="nickname">${res.user.nickname}</span>`;
-      var date = new Date(res.createdDate);
-      var today = new Date();
-      if(date.getDate() == today.getDate()) {
-        var time = "오전";
-        var hour = date.getHours();
-        if(hour > 12) {hour -= 12;}
-        if(date.getHours() >= 12) {
-          time = "오후";
-        }
-        htmlData += `<span class="date">${time} ${hour}시${date.getMinutes()}분</span>`;
-      }
-      else {
-        htmlData += `<span class="date">${date.getMonth() + 1}월${date.getDate()}일 ${date.getHours()}시${date.getMinutes()}분</span>`;
-      }
-      htmlData += `<span class="unread">${res.unread}</span></div>`;
-      htmlData += `<span>${res.message}</span></div></div>`;
-      msgArea.innerHTML = htmlData + msgArea.innerHTML;
+      chatList.value.unshift(res);
       pageNum.value = res.id;
     }
   })
@@ -113,22 +108,7 @@ function onMessage(message) {
   let data = JSON.parse(message.data);
   console.log(data);
 
-  const msgArea = document.getElementById("msgArea");
-
-  var html = `<div class="contentContainer"><div class="imgBox"><img src="${data.profileImg}"></img></div>`;
-  html += `<div class="message"><div class="details"><span class="nickname">${data.nickName}</span>`;
-  var date = new Date(data.createdDate);
-      
-  var time = "오전";
-  var hour = date.getHours();
-  if(hour > 12) {hour -= 12;}
-  if(date.getHours() >= 12) {
-    time = "오후";
-  }
-  html += `<span class="date">${time} ${hour}시${date.getMinutes()}분</span>`;
-  html += `<span class="unread">${data.unread}</span></div>`;
-  html += `<span>${data.message}</span></div></div>`;
-  msgArea.innerHTML += html;
+  chatList.value.push(data);
 }
 </script>
 
@@ -182,9 +162,8 @@ function onMessage(message) {
 }
 .contentContainer {
   display: flex;
-  
 }
-.imgBox {
+.imgContainer {
   width: 50px;
   height: 50px;
 }
