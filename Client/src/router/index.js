@@ -36,6 +36,7 @@ const index = createRouter({
         { path: "team-chat", component: TeamChat},
       ],
     },
+    { path: "/team-chat2", component: TeamChat2},
   ],
 });
 

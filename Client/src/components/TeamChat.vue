@@ -19,7 +19,7 @@ import { ref } from 'vue';
 
 const msg = ref(null);
 const projectId = ref(1);
-const userId = ref(3);
+const userId = ref(1);
 const pageNum = ref(null);
 
 function loadData(cursor) {
@@ -150,6 +150,7 @@ function onMessage(message) {
   background-color: #d9d9d9;
   color: black;
   width: 150px;
+  border-radius: 20px;
 }
 .msgContainer {
   height: 500px;
