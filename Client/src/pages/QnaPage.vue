@@ -1,7 +1,8 @@
 <template>
   <div class="">
+    <h1>1:1 문의</h1>
     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-      <button type="button" class="w3-button text-white bg-blue" v-on:click="fnWrite">문의등록</button>
+      <button type="button" class="text-white bg-blue" v-on:click="fnWrite">문의등록</button>
     </div>
     <table class="table">
       <thead class="table-primary">
@@ -18,7 +19,7 @@
           <td>{{ row.id }}</td>
           <td><a v-on:click="fnView(`${row.id}`)">{{ row.title}}</a></td>
           <td>{{ row.userId }}</td>
-          <td>{{ row.status }}</td>
+          <td v-if="row.status == false" class="text-primary">답변대기</td>
           <td>{{ row.createdDate }}</td>
         </tr>
       </tbody>

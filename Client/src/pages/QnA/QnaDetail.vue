@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h1>1:1 문의게시판</h1>
+    <h2>1:1 문의</h2>
     <div class="row row1">
       <table class="table">
         <tr>
@@ -24,10 +24,10 @@
             <pre style="white-space: pre-wrap;border:none;background-color: white;">{{ content }}</pre>
           </td>
         </tr>
-        <div class="common-buttons">
-        <button type="button" class="btn btn-outline-primary" v-on:click="fnUpdate">수정</button>
-        <button type="button" class="btn btn-outline-primary" v-on:click="fnDelete">삭제</button>
-        <button type="button" class="btn btn-outline-primary" v-on:click="fnList">목록</button>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+          <button type="button" class="btn btn-outline-primary" v-on:click="fnUpdate">수정</button>
+          <button type="button" class="btn btn-outline-primary" v-on:click="fnDelete">삭제</button>
+          <button type="button" class="btn btn-outline-primary" v-on:click="fnList">목록</button>
         </div>
       </table>     
     </div>   
@@ -88,3 +88,4 @@ export default{
   }  
 }
 </script>
+<style scoped></style>

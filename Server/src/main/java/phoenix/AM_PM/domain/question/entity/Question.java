@@ -11,22 +11,19 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
 
 public class Question {
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
   private String userId;
   private int projectId;
   private String title;
   private String content;
-
-  @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
   private LocalDateTime createdDate;
   private boolean status;
 
