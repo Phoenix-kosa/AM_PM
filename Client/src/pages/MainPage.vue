@@ -35,11 +35,13 @@
   <div class="main_container">
     <MainContent></MainContent>
   </div>
+  <Footer class="mainpage_footer"></Footer>
 </template>
 
 <script setup>
 import MainContent from "@/components/MainPage/MainContent.vue";
 import { onMounted } from "vue";
+import Footer from "@/components/Footer.vue";
 
 onMounted(() => {
   const mainLogo = document.querySelector(".canvas_img");
@@ -167,4 +169,8 @@ onMounted(() => {
 
 <style scoped>
 @import "../assets/css/mainPage.css";
+
+.mainpage_footer {
+  margin: 0;
+}
 </style>
