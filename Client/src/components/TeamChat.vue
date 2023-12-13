@@ -19,13 +19,18 @@ import { ref } from 'vue';
 
 const msg = ref(null);
 const projectId = ref(1);
-const userId = ref(2);
+const userId = ref(3);
 const pageNum = ref(null);
 
 function loadData(cursor) {
-  axios.get(`http://localhost:8090/api/chat/${projectId.value}?cursorId=${cursor}`)
+  axios.get(`http://localhost:8090/api/chat/${projectId.value}?cursorId=${cursor}`, {
+            headers: { 
+                "Authorization" : sessionStorage.getItem("access-token") }
+            }
+            )
   .then((response) => {
-    console.log(response.data);
+    console.log(response)
+    console.log(response.data.pageInfo);
     if(!response.data.pageInfo.hasNext) {
       document.getElementById("loadData").style.display = 'none';
     }
@@ -55,7 +60,28 @@ function loadData(cursor) {
       pageNum.value = res.id;
     }
   })
-  .catch((err) => console.error(err));
+  .catch((err) => {
+    console.log(err)
+    if(err.response.status == 401) {
+      console.log("토큰 만료");
+
+      axios.get("http://localhost:8090/api/rtoken", {
+          headers: { 
+              "RefreshToken" : sessionStorage.getItem("refresh-token"),
+              "Authorization" : sessionStorage.getItem("access-token") }
+          }).then(response => {
+              console.log(response)
+              if(response.status == 200){
+                  console.log("토큰 재발급");
+                  console.log(response.headers.authorization);
+                  sessionStorage.setItem("access-token", response.headers.authorization);
+              } else {
+                  console.log("토큰 재발급 실패");
+              }
+          }).catch(error => {console.error(error);})
+    } 
+  });
+  
 }
 
 const websocket = new WebSocket("ws://localhost:8090/chat/" + projectId.value);

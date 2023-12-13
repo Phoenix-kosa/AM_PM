@@ -31,7 +31,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 	}
 	
 	// Authentication 객체 만들어서 리턴 => 의존 : AuthenticationManager
-	// 인증 요청시에 실행되는 함수 => /login
+	// 인증 요청시에 실행되는 함수 => /api/auth/local
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
 			throws AuthenticationException {
@@ -82,14 +82,26 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 		System.out.println("successfulAuthentication ");
 		
 		MyUserDetails principalDetailis = (MyUserDetails) authResult.getPrincipal();
-		
+
 		String jwtToken = JWT.create()
 				.withSubject(principalDetailis.getUsername())
 				.withExpiresAt(new Date(System.currentTimeMillis()+JwtProperties.EXPIRATION_TIME))
+				.withClaim("id", principalDetailis.getUser().getId())
 				.withClaim("userId", principalDetailis.getUser().getUserId())
 				.sign(Algorithm.HMAC512(JwtProperties.SECRET));
-		
+
 		response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX+jwtToken);
+
+		// Refresh Token 생성
+		String refreshToken = JWT.create()
+				.withSubject(principalDetailis.getUsername())
+				.withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.REFRESH_TOKEN_EXPIRATION_TIME))
+				.withClaim("id", principalDetailis.getUser().getId())
+				.withClaim("userId", principalDetailis.getUser().getUserId())
+				.sign(Algorithm.HMAC512(JwtProperties.SECRET));
+
+		// Refresh Token을 헤더에 추가하여 클라이언트에 전달
+		response.addHeader(JwtProperties.REFRESH_TOKEN_HEADER, JwtProperties.REFRESH_TOKEN_PREFIX + refreshToken);
 	}
 	
 }

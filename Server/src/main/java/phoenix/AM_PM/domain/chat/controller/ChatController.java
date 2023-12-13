@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import phoenix.AM_PM.domain.chat.service.ChatService;
 
@@ -22,7 +24,7 @@ public class ChatController {
 
     // 채팅 내역 5개씩
     @GetMapping("/api/chat/{project-id}")
-    public ResponseEntity readChat(@PathVariable(value = "project-id") Integer projectId, @PageableDefault(size = 5) Pageable pageable, @Param("cursorId") Integer cursorId) {
-        return new ResponseEntity(chatService.readChat(projectId, pageable, cursorId), HttpStatus.OK);
+        public ResponseEntity readChat(@RequestHeader(value = "Authorization", required = false) String token, @PathVariable(value = "project-id") Integer projectId, @PageableDefault(size = 5) Pageable pageable, @RequestParam("cursorId") Integer cursorId) {
+            return new ResponseEntity(chatService.readChat(projectId, pageable, cursorId), HttpStatus.OK);
     }
 }
