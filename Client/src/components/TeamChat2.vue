@@ -132,7 +132,7 @@ function onMessage(message) {
 }
 </script>
 
-<style>
+<style scoped>
 .chatContainer {
   border-color: #166adc;
   border-radius: 20px;
