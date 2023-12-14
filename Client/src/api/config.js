@@ -21,11 +21,11 @@ export const authFileApi = axios.create(apiFileConfig);
 
 // 인터 셉터
 authApi.interceptors.request.use((config) => {
-  config.headers.Authorization = `Bearer ${getLocalStorageToken()}`;
+  config.headers.Authorization = getLocalStorageToken();
   return config;
 });
 
 const getLocalStorageToken = () => {
-  const token = localStorage.getItem("accessToken");
+  const token = sessionStorage.getItem("access-token");
   return token;
 };

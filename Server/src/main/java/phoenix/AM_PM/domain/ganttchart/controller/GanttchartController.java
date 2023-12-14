@@ -9,7 +9,7 @@ import phoenix.AM_PM.domain.ganttchart.repository.GanttchartRepository;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class GanttchartController {
-    private final GanttchartRepository ganttchartRepository;
+//    private final GanttchartRepository ganttchartRepository;
 
     @PostMapping("/gantt/{projectId}")
     public ResponseEntity<String> addGantt(){
