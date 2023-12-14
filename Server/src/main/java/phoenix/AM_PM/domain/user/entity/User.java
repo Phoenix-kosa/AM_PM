@@ -9,15 +9,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+
+import lombok.*;
 import jakarta.persistence.Id;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Getter
+@Setter
 @Entity
 @Builder
 @AllArgsConstructor

@@ -49,10 +49,11 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { getMyInfoReq, editMyInfoReq } from "../api/common";
+
 const editMyInfo = ref({
   nickname: "",
   email: "",
-  profilImg: "",
+  profilImg: "dvvsd",
   password: "",
   confirmPassword: "",
 });
@@ -66,7 +67,6 @@ const getMyInfo = () => {
   getMyInfoReq()
     .then((res) => res.data)
     .then((data) => {
-      console.log(data);
       const { nickname, email, profilImg } = data;
       editMyInfo.value = {
         nickname,
@@ -81,20 +81,35 @@ const getMyInfo = () => {
 
 const submitForm = () => {
   if (validateForm()) {
-    editMyInfoReq()
+    editMyInfoReq(editMyInfo.value)
       .then((res) => {
         console.log("성공");
+        console.log(res.data);
+        alert("회원정보 수정 완료");
         // router.push("/login");
       })
       .catch((error) => {
         window.scrollTo(0, 0);
+        alert("회원정보 수정 실패!");
         console.log(error);
       });
+  } else {
+    alert("회원정보 수정 실패!");
   }
 };
 
 const validateForm = () => {
-  return true;
+  const { nickname, email, password, confirmPassword } = editMyInfo.value;
+
+  if (password !== confirmPassword) return false;
+  if (
+    nickname.trim() === "" ||
+    email.trim() === "" ||
+    password.trim() === "" ||
+    confirmPassword.trim() === ""
+  ) {
+    return false;
+  } else return true;
 };
 </script>
 
