@@ -7,7 +7,7 @@ import jakarta.persistence.Id;
 import lombok.*;
 import phoenix.AM_PM.domain.project.dto.RequestProject;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Builder
@@ -19,8 +19,8 @@ public class Project {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
-  private LocalDateTime startDate;
-  private LocalDateTime endDate;
+  private LocalDate startDate;
+  private LocalDate endDate;
   private String title;
   private String content;
 
@@ -38,10 +38,10 @@ public class Project {
   public void updateContent(String content) {
     this.content = content;
   }
-  public void updateStartDate(LocalDateTime startDate) {
+  public void updateStartDate(LocalDate startDate) {
     this.startDate = startDate;
   }
-  public void updateEndDate(LocalDateTime endDate) {
+  public void updateEndDate(LocalDate endDate) {
     this.endDate = endDate;
   }
 
