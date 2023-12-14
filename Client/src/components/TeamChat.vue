@@ -1,6 +1,6 @@
 <template>
   <div class="chatContainer">
-    <div class="msgContainer">
+    <div class="msgContainer" id="msgScroll">
       <div class="buttonContainer">
         <button @click="loadData(pageNum++)" id="loadData">불러오기</button>
       </div>
@@ -116,6 +116,11 @@ function onOpen() {
 function onMessage(message) {
   let data = JSON.parse(message.data);
   chatList.value.push(data);
+
+  setTimeout(function () {
+    var msgArea = document.getElementById("msgScroll");
+  msgArea.scrollTop = msgArea.scrollHeight;
+  }, 100);
 }
 </script>
 
