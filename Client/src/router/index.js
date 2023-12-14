@@ -6,13 +6,15 @@ import MainPage from "@/pages/MainPage.vue";
 import TeamChat from "@/components/TeamChat.vue";
 import MyPage from "@/pages/MyPage.vue";
 import MainLayout from "../layouts/MainLayout.vue";
-import TeamChat2 from "@/components/TeamChat2.vue";
 import Login from '@/pages/Auth/login.vue'
 import Register from "@/pages/Auth/register.vue"
 import TestToken from '@/pages/Auth/testtoken.vue'
 import QnaPage from "@/pages/QnaPage.vue";
 import QnaDetail from "@/pages/QnA/QnaDetail.vue"
 import ProjectPlan from "@/components/ProjectPlan.vue"; 
+import ProjectList from "@/pages/ProjectList.vue";
+import CreateProject from "@/pages/CreateProject.vue";
+import ModifyProject from "@/pages/ModifyProject.vue";
 
 const index = createRouter({
   history: createWebHistory(),
@@ -35,9 +37,11 @@ const index = createRouter({
         { path: "team-chat", component: TeamChat},
 
 
+        { path: "project-list", component: ProjectList },
+        { path: "create-project", component: CreateProject },
+        { path: "modify-project", component: ModifyProject },
       ],
     },
-    { path: "/team-chat2", component: TeamChat2},
     { path: '/login', component: Login },
     { path: '/register', component: Register },
   ],
