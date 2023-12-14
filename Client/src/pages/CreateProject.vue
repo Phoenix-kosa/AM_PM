@@ -4,6 +4,10 @@
       <input type="text" placeholder="제목" v-model="title">
       <textarea placeholder="설명" v-model="content"></textarea>
     </div>
+    <div class="dateBox">
+      <label>시작 날짜<input type="date" v-model="startDate"></label>
+      <label>종료 날짜<input type="date" v-model="endDate"></label>
+    </div>
     <div class="buttonBox">
       <button @click="createProject">프로젝트 생성</button>
     </div>
@@ -15,46 +19,53 @@ import { ref } from 'vue';
 
 const title = ref(null);
 const content = ref(null);
+const startDate = ref(null);
+const endDate = ref(null);
 function createProject() {
-  var requestProject = {
-    title:title.value,
-    content:content.value,
-    startDate:null,
-    endDate:null
+  if(title.value == null) {
+    window.alert("제목을 입력하세요.");
   }
-  axios.post(`http://localhost:8090/api/project`, 
-  requestProject,
-  {
-    headers: { 
-        "Authorization" : sessionStorage.getItem("access-token") 
-    },
-  })
-  .then((response) => {
-    if(response.status == 201) {
-      location.href = "/project";
+  else {
+    var requestProject = {
+      title:title.value,
+      content:content.value,
+      startDate:startDate.value,
+      endDate:endDate.value
     }
-  })
-  .catch((err) => {
-    console.log(err)
-    if(err.response.status == 401) {
-      console.log("토큰 만료");
+    axios.post(`http://localhost:8090/api/project`, 
+    requestProject,
+    {
+      headers: { 
+          "Authorization" : sessionStorage.getItem("access-token") 
+      },
+    })
+    .then((response) => {
+      if(response.status == 201) {
+        location.href = "/project-list";
+      }
+    })
+    .catch((err) => {
+      console.log(err)
+      if(err.response.status == 401) {
+        console.log("토큰 만료");
 
-      axios.get("http://localhost:8090/api/rtoken", {
-          headers: { 
-              "RefreshToken" : sessionStorage.getItem("refresh-token"),
-              "Authorization" : sessionStorage.getItem("access-token") }
-          }).then(response => {
-              console.log(response)
-              if(response.status == 200){
-                  console.log("토큰 재발급");
-                  console.log(response.headers.authorization);
-                  sessionStorage.setItem("access-token", response.headers.authorization);
-              } else {
-                  console.log("토큰 재발급 실패");
-              }
-          }).catch(error => {console.error(error);})
-    } 
-  });
+        axios.get("http://localhost:8090/api/rtoken", {
+            headers: { 
+                "RefreshToken" : sessionStorage.getItem("refresh-token"),
+                "Authorization" : sessionStorage.getItem("access-token") }
+            }).then(response => {
+                console.log(response)
+                if(response.status == 200){
+                    console.log("토큰 재발급");
+                    console.log(response.headers.authorization);
+                    sessionStorage.setItem("access-token", response.headers.authorization);
+                } else {
+                    console.log("토큰 재발급 실패");
+                }
+            }).catch(error => {console.error(error);})
+      } 
+    });
+  }
 }
 </script>
 <style scoped>
@@ -81,6 +92,14 @@ textarea {
   display: block;
   width: 100%;
   height: 200px;
+}
+.dateBox {
+  width: 90%;
+  margin: auto;
+}
+.dateBox > label {
+  width: 45%;
+  margin-right: 5%;
 }
 .buttonBox {
   text-align: center;

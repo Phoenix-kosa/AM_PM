@@ -34,17 +34,23 @@ import axios from 'axios';
 import { ref } from 'vue';
 
 const msg = ref(null);
-const projectId = ref(1);
-const userId = ref(2);
+const projectId = sessionStorage.getItem("projectId");
+const userId = ref(null);
 const pageNum = ref(null);
 const chatList = ref([]);
 
+function decodeToken(token) {
+  const base64Url = token.split('.')[1];
+  const base64 = base64Url.replace('-', '+').replace('_', '/');
+  return JSON.parse(atob(base64));
+}
+
 function loadData(cursor) {
-  axios.get(`http://localhost:8090/api/chat/${projectId.value}?cursorId=${cursor}`, {
-            headers: { 
-                "Authorization" : sessionStorage.getItem("access-token") }
-            }
-            )
+  axios.get(`http://localhost:8090/api/chat/${projectId}?cursorId=${cursor}`, {
+      headers: { 
+          "Authorization" : sessionStorage.getItem("access-token") }
+    }
+    )
   .then((response) => {
     if(!response.data.pageInfo.hasNext) {
       document.getElementById("loadData").style.display = 'none';
@@ -79,7 +85,9 @@ function loadData(cursor) {
   
 }
 
-const websocket = new WebSocket("ws://localhost:8090/chat/" + projectId.value);
+const websocket = new WebSocket("ws://localhost:8090/chat/" + projectId);
+const decodedPayload = decodeToken(sessionStorage.getItem("access-token"));
+userId.value = decodedPayload.id;
 websocket.onmessage = onMessage;
 websocket.onclose = onClose;
 websocket.onopen = onOpen;
@@ -87,7 +95,7 @@ websocket.onopen = onOpen;
 function send() {
   let data = {
     message : msg.value, 
-    projectId : projectId.value, 
+    projectId : projectId, 
     userId : userId.value
   };
 

@@ -4,8 +4,8 @@
       <div class="project" @click="go(data.id)">
         <span class="title">{{ data.title }}</span>
         <span class="content">{{ data.content }}</span>
-        <span>{{ data.startDate }}</span>
-        <span>{{ data.endDate }}</span>
+        <span v-if="data.startDate" class="startDate">시작 날짜 : {{ data.startDate }}</span>
+        <span v-if="data.endDate" class="endDate">종료 날짜 : {{ data.endDate }}</span>
       </div>
     </div>
     <div class="buttonBox">
@@ -20,7 +20,8 @@ import { ref } from 'vue';
 const projectList = ref([]);
 
 function go(projectId) {
-  console.log(projectId);
+  sessionStorage.setItem("projectId", projectId);
+  location.href = "/erd";
 }
 
 function moveToCreate() {
@@ -93,6 +94,14 @@ loadData();
   display: block;
 }
 .content{
+  display: block;
+  overflow: hidden;
+  height: 50%;
+}
+.startDate {
+  display: block;
+}
+.endDate {
   display: block;
 }
 .buttonBox {

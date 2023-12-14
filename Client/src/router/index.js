@@ -13,8 +13,9 @@ import TestToken from '@/pages/Auth/testtoken.vue'
 import ProjectPlanPage from "@/pages/ProjectPlanPage.vue"
 import QnaPage from "@/pages/QnaPage.vue";
 import QnaDetail from "@/pages/QnA/QnaDetail.vue"
-import Project from "@/pages/Project.vue";
+import ProjectList from "@/pages/ProjectList.vue";
 import CreateProject from "@/pages/CreateProject.vue";
+import ModifyProject from "@/pages/ModifyProject.vue";
 
 const index = createRouter({
   history: createWebHistory(),
@@ -35,8 +36,9 @@ const index = createRouter({
         { path: "question", component: QnaPage},
         { path: "detail", component: QnaDetail},
         { path: "team-chat", component: TeamChat},
-        { path: "project", component: Project },
-        { path: "Create-project", component: CreateProject },
+        { path: "project-list", component: ProjectList },
+        { path: "create-project", component: CreateProject },
+        { path: "modify-project", component: ModifyProject },
       ],
     },
     { path: '/login', component: Login },
