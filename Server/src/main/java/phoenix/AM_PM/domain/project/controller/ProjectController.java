@@ -35,7 +35,8 @@ public class ProjectController {
     }
     // 생성
     @PostMapping
-    public ResponseEntity createProject(@RequestBody RequestProject requestProject, @AuthenticationPrincipal MyUserDetails myUserDetails) {
+    public ResponseEntity createProject(@RequestBody RequestProject requestProject,
+                                        @AuthenticationPrincipal MyUserDetails myUserDetails) {
         ResponseProject project = projectService.createProject(requestProject, myUserDetails.getUser());
         return new ResponseEntity(project, HttpStatus.CREATED);
     }

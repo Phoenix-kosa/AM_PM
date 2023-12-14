@@ -105,6 +105,7 @@ function send() {
 
 function onClose() {
   console.log("퇴장");
+  onOpen();
 }
 
 function onOpen() {
@@ -114,8 +115,6 @@ function onOpen() {
 
 function onMessage(message) {
   let data = JSON.parse(message.data);
-  console.log(data);
-
   chatList.value.push(data);
 }
 </script>
