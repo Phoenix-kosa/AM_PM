@@ -12,15 +12,16 @@ import phoenix.AM_PM.domain.user.repository.UserRepository;
 @Service
 public class UserService {
   private final UserRepository repository;
-  private final BCryptPasswordEncoder bCryptPasswordEncoder;
+//  private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
   // user 저장/ 회원가입 service
   public boolean save(SaveUserDto user) {
+    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
     boolean result = true;
 
     User newUser = User.builder()
         .userId(user.getUserId())
-        .password(bCryptPasswordEncoder.encode(user.getPassword()))
+        .password(encoder.encode(user.getPassword()))
         .nickname(user.getNickname())
         .email(user.getEmail())
         .roles("USERS")
@@ -41,7 +42,8 @@ public class UserService {
   }
 
   // email 중복 체크
-  public Optional<User> findbyEmail(String email) {
-    return repository.findByEmail(email);
+  public User findbyEmail(String email) {
+
+    return repository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("Unexpected user"));
   }
 }

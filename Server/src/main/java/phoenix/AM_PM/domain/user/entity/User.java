@@ -54,4 +54,8 @@ public class User {
     return new ArrayList<>();
   }
 
+  public User update(String nickname){
+    this.nickname = nickname;
+    return this;
+  }
 }

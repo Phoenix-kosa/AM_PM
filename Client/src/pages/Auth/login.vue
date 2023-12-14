@@ -23,7 +23,7 @@
                         </div>
                         <button type="submit" class="btn btn-primary btn-block">로그인</button>
                     </form>
-                    <button type="submit" class="btn btn-primary btn-block">간편 로그인</button>
+                    <button type="submit" class="btn btn-primary btn-block" @click="simpleLogin">간편 로그인</button>
                     <button id="register_button" class="btn btn-primary btn-block" @click="$router.push('/register')">
                     <span id="register_text">회원가입</span></button>
                 </div>
@@ -74,6 +74,15 @@ const login = () => {
             console.error(error);
             console.log(error.response.status)
         });
+}
+
+const simpleLogin = () => {
+    axios.get("http://localhost:8090/api/auth/google")
+    .then(response => {
+        console.log(response);
+    }).catch(error => {
+        console.log(error);
+    })
 }
 </script>
 

@@ -45,6 +45,12 @@ public class UserController {
     return new ResponseEntity<>("로그인 성공", HttpStatus.OK);
   }
 
+  @GetMapping("/api/auth/google")
+  public ResponseEntity<String> googlelogin(HttpServletResponse res) {
+    System.out.println("google login");
+    return new ResponseEntity<>("로그인 성공", HttpStatus.OK);
+  }
+
   // 회원 가입
   @PostMapping("/api/user")
   public ResponseEntity<String> join(@RequestBody SaveUserDto dto,  HttpServletResponse res) {
@@ -102,7 +108,7 @@ public class UserController {
   public ResponseEntity<Boolean> checkEmail(@PathVariable("email")String email){
     Boolean body;
     try{
-      userService.findbyEmail(email).get();
+      userService.findbyEmail(email);
       body = false;
     } catch (Exception e){
       body = true;

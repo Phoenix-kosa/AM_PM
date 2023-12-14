@@ -1,5 +1,6 @@
 package phoenix.AM_PM.global.config;
 
+		import lombok.RequiredArgsConstructor;
 		import org.springframework.beans.factory.annotation.Autowired;
 		import org.springframework.context.annotation.Bean;
 		import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,7 @@ package phoenix.AM_PM.global.config;
 		import phoenix.AM_PM.domain.user.repository.UserRepository;
 		import phoenix.AM_PM.global.config.jwt.JwtAuthenticationFilter;
 		import phoenix.AM_PM.global.config.jwt.JwtAuthorizationFilter;
+		import phoenix.AM_PM.global.config.oauth.Oauth2UserCustomService;
 
 @Configuration
 @EnableWebSecurity // 시큐리티 활성화 -> 기본 스프링 필터체인에 등록
@@ -27,6 +29,9 @@ public class SpringSecurityConfig {
 
 	@Autowired
 	private AuthenticationConfiguration authenticationConfiguration;
+
+	@Autowired
+	private Oauth2UserCustomService oauth2UserCustomService;
 
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
@@ -51,10 +56,12 @@ public class SpringSecurityConfig {
 				.httpBasic((httpBasic) -> httpBasic.disable())
 				.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
 				.addFilter(jwtAuthorizationFilter())
-				.authorizeRequests()
+				.authorizeRequests(authorizeRequests ->
+						authorizeRequests
+								.requestMatchers("/**").permitAll()
+								.anyRequest().authenticated());
 //				.requestMatchers("/api/auth/local", "api/auth").permitAll()
-				.requestMatchers("/**").permitAll()
-				.anyRequest().authenticated();
+
 		return http.build();
 	}
 
