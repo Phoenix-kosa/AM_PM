@@ -1,24 +1,24 @@
-import './assets/css/global.css';
-import 'vuetify/styles';
+import "./assets/css/global.css";
+import "vuetify/styles";
 import "bootstrap/dist/css/bootstrap.min.css";
 import * as components from "vuetify/components";
 import * as directives from "vuetify/directives";
 
 import { fa } from "vuetify/iconsets/fa";
 import { aliases, mdi } from "vuetify/lib/iconsets/mdi";
-import { createApp } from 'vue';
-import App from './App.vue';
+import { createApp } from "vue";
+import App from "./App.vue";
 import router from "./router";
-import { createVuetify } from 'vuetify';
-import {createPinia} from "pinia";
+import { createVuetify } from "vuetify";
+import { createPinia } from "pinia";
+import ganttastic from "@infectoone/vue-ganttastic";
 
-import "bootstrap/dist/css/bootstrap.min.css"
-import "bootstrap/dist/js/bootstrap.bundle.min.js"
-
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 const vuetify = createVuetify({
   theme: {
-    defaultTheme: 'light'
+    defaultTheme: "light",
   },
   icons: {
     defaultSet: "mdi",
@@ -32,4 +32,9 @@ const vuetify = createVuetify({
   directives,
 });
 
-createApp(App).use(vuetify).use(router).use(createPinia()).mount("#app");
+createApp(App)
+  .use(ganttastic)
+  .use(vuetify)
+  .use(router)
+  .use(createPinia())
+  .mount("#app");
