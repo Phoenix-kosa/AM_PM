@@ -22,7 +22,6 @@ public class Answer {
   private String title;
   private String content;
   @Column(name = "created_date")
-  @CreatedDate
   private LocalDateTime createdDate;
 
 }
