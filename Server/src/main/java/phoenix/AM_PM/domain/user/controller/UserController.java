@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import phoenix.AM_PM.domain.user.dto.EditUserDto;
 import phoenix.AM_PM.domain.user.dto.LoginRequestDto;
 import phoenix.AM_PM.domain.user.dto.MypageUserDto;
 import phoenix.AM_PM.domain.user.dto.SaveUserDto;
@@ -129,8 +130,22 @@ public class UserController {
     }
 
     @PutMapping("/api/user")
-    public ResponseEntity<String> editUserInfo() {
-        return ResponseEntity.ok("successful");
+    public ResponseEntity<String> editUserInfo(@AuthenticationPrincipal MyUserDetails userDetails, @RequestBody EditUserDto dto) {
+        String userId = userDetails.getUser().getUserId();
+        Optional<User> userInfoOptional = userService.findbyUserId(userId);
+
+        if (userInfoOptional.isPresent()) {
+            User userInfo = userInfoOptional.get();
+            userInfo.setEmail(dto.getEmail());
+            userInfo.setNickname(dto.getNickname());
+            userInfo.setProfileImg(dto.getProfileImg());
+            userInfo.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
+
+            userRepository.save(userInfo);
+            return ResponseEntity.ok("successful");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
     }
 
 }
