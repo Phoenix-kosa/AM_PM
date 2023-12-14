@@ -36,6 +36,7 @@ public class ProjectController {
     // 생성
     @PostMapping
     public ResponseEntity createProject(@RequestBody RequestProject requestProject) { // 로그인 사용자 가져다쓰기
+        System.out.println(requestProject);
         ResponseProject project = projectService.createProject(requestProject);
         return new ResponseEntity(project, HttpStatus.CREATED);
     }

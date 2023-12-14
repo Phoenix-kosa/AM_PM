@@ -16,22 +16,23 @@ import { ref } from 'vue';
 const title = ref(null);
 const content = ref(null);
 function createProject() {
-  var data = {
+  var requestProject = {
     title:title.value,
     content:content.value,
     startDate:null,
     endDate:null
   }
-  var requestProject = JSON.stringify(data);
-  console.log(requestProject);
-  axios.post(`http://localhost:8090/api/project`, {
+  axios.post(`http://localhost:8090/api/project`, 
+  requestProject,
+  {
     headers: { 
         "Authorization" : sessionStorage.getItem("access-token") 
     },
-    requestProject
   })
   .then((response) => {
-    console.log(response.data);
+    if(response.status == 201) {
+      location.href = "/project";
+    }
   })
   .catch((err) => {
     console.log(err)

@@ -106,6 +106,5 @@ loadData();
   background-color: #166adc;
   border-radius: 10px;
   color: white;
-  margin-top: 50px;
 }
 </style>
