@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import phoenix.AM_PM.domain.chat.dto.ResponseChat;
 import phoenix.AM_PM.domain.chat.entity.Chat;
 import phoenix.AM_PM.domain.chat.repository.ChatRepository;
 import phoenix.AM_PM.global.pagination.PageResponseDto;
