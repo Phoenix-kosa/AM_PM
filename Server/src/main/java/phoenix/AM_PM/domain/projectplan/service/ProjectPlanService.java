@@ -27,6 +27,12 @@ public class ProjectPlanService {
     private final Path usecaseLocation = Paths.get("C:\\kosastudy\\AM_PM\\Server\\src\\main\\resources\\static\\img\\plan");
     private final Path uiLocation = Paths.get("C:\\kosastudy\\AM_PM\\Server\\src\\main\\resources\\static\\img\\plan");
 
+    public void createDefaultProjectPlans(int projectId) {
+        createDefaultPlan(projectId, "ERD", "/img/plan/default-erd-image.png", "https://www.erdcloud.com/");
+        createDefaultPlan(projectId, "USECASE", "/img/plan/default-usecase-image.png", "https://example.com/usecase");
+        createDefaultPlan(projectId, "UI", "/img/plan/default-ui-image.png", "https://www.figma.com/");
+    }
+
     public ProjectPlanDTO getProjectPlanById(int id) {
         ProjectPlan projectPlan = projectPlanRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("잘못된 아이디: " + id));
@@ -76,6 +82,9 @@ public class ProjectPlanService {
             ProjectPlan projectPlan = projectPlanRepository.findById(id)
                     .orElseThrow(() -> new IllegalArgumentException("잘못된 아이디: " + id));
             filePathSetter.accept(projectPlan, destinationFile.toString());
+
+            String sampleImgPath = "/img/plan/" + file.getOriginalFilename();
+            projectPlan.setSampleImg(sampleImgPath);
 
             projectPlanRepository.save(projectPlan);
         } catch (IOException e) {
@@ -139,6 +148,22 @@ public class ProjectPlanService {
         }
     }
 
+    public ProjectPlanDTO updateSampleUrl(int id, String newSampleUrl) {
+        ProjectPlan projectPlan = projectPlanRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 아이디: " + id));
+        projectPlan.setSampleUrl(newSampleUrl);
+        ProjectPlan updatedProjectPlan = projectPlanRepository.save(projectPlan);
+        return convertToDTO(updatedProjectPlan);
+    }
+
+    private void createDefaultPlan(int projectId, String title, String sampleImg, String sampleUrl) {
+        ProjectPlan projectPlan = new ProjectPlan();
+        projectPlan.setProjectId(projectId);
+        projectPlan.setTitle(title);
+        projectPlan.setSampleImg(sampleImg);
+        projectPlan.setSampleUrl(sampleUrl);
+        projectPlanRepository.save(projectPlan);
+    }
     private ProjectPlanDTO convertToDTO(ProjectPlan projectPlan) {
         ProjectPlanDTO dto = new ProjectPlanDTO();
         dto.setId(projectPlan.getId());

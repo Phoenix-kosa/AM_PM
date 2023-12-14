@@ -8,9 +8,6 @@ import MyPage from "@/pages/MyPage.vue";
 import MainLayout from "../layouts/MainLayout.vue";
 import TeamChat2 from "@/components/TeamChat2.vue";
 import Login from '@/pages/Auth/login.vue'
-import Register from '@/pages/Auth/register.vue'
-import TestToken from '@/pages/Auth/testtoken.vue'
-import Login from '@/pages/Auth/login.vue'
 import Register from "@/pages/Auth/register.vue"
 import TestToken from '@/pages/Auth/testtoken.vue'
 import QnaPage from "@/pages/QnaPage.vue";
