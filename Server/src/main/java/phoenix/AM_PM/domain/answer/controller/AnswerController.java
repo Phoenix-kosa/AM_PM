@@ -1,11 +1,13 @@
 package phoenix.AM_PM.domain.answer.controller;
 
 
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import phoenix.AM_PM.domain.answer.dto.AnswerDTO;
 import phoenix.AM_PM.domain.answer.entity.Answer;
+import phoenix.AM_PM.domain.answer.repository.AnswerRepository;
 import phoenix.AM_PM.domain.answer.service.AnswerService;
 
 
@@ -16,6 +18,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/answer")
 public class AnswerController {
+
+    @NonNull
+    AnswerRepository answerR;
+
     @Autowired
     private AnswerService answerService;
 
@@ -29,7 +35,7 @@ public class AnswerController {
         return answerService.getAnswer(id);
     }
 
-    @PostMapping("")
+    @PostMapping("/{}")
     public Answer create(@RequestBody AnswerDTO answerDTO){
         return answerService.create(answerDTO);
     }
