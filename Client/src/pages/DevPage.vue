@@ -1,87 +1,17 @@
 <template>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
-  <div>개발 페이지 입니다.</div>
+  <h1>🛠 Development</h1>
+  <hr class="dev_title" />
+  <Gantt />
+  <Notice />
 </template>
 
-<script setup></script>
+<script setup>
+import Gantt from "@/components/Gantt.vue";
+import Notice from "@/components/Notice.vue";
+</script>
 
-<style scoped></style>
+<style scoped>
+.dev_title {
+  margin-bottom: 40px;
+}
+</style>

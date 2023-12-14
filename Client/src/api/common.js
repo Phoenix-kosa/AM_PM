@@ -1,5 +1,5 @@
 import axios from "axios";
-import { apiInstance } from "./config";
+import { authApi } from "./config";
 
 const api = async (url, method, data) => {
   return (
@@ -15,7 +15,12 @@ const api = async (url, method, data) => {
 
 export { api };
 
-export const myInfoReq = async (formData) => {
-  const response = await apiInstance.post("/signup", formData);
+export const getMyInfoReq = async () => {
+  const response = await authApi.get("/api/user");
+  return response;
+};
+
+export const editMyInfoReq = async () => {
+  const response = await authApi.get("/api/user");
   return response;
 };
