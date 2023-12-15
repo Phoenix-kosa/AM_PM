@@ -20,7 +20,7 @@ export const getMyInfoReq = async () => {
   return response;
 };
 
-export const editMyInfoReq = async () => {
-  const response = await authApi.get("/api/user");
+export const editMyInfoReq = async (updateData) => {
+  const response = await authApi.put("/api/user", updateData);
   return response;
 };
