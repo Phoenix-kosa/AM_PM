@@ -12,9 +12,12 @@ package phoenix.AM_PM.global.config;
 		import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 		import org.springframework.security.web.SecurityFilterChain;
 		import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+		import phoenix.AM_PM.domain.refrash.service.RefreshTokenService;
 		import phoenix.AM_PM.domain.user.repository.UserRepository;
+		import phoenix.AM_PM.domain.user.service.UserService;
 		import phoenix.AM_PM.global.config.jwt.JwtAuthenticationFilter;
 		import phoenix.AM_PM.global.config.jwt.JwtAuthorizationFilter;
+		import phoenix.AM_PM.global.config.oauth.OAuth2SuccessHandler;
 		import phoenix.AM_PM.global.config.oauth.Oauth2UserCustomService;
 
 @Configuration
@@ -32,6 +35,16 @@ public class SpringSecurityConfig {
 
 	@Autowired
 	private Oauth2UserCustomService oauth2UserCustomService;
+
+	@Autowired
+	private UserService userService;
+	@Autowired
+	private RefreshTokenService refreshTokenService;
+
+	@Bean
+	public OAuth2SuccessHandler oAuth2SuccessHandler() {
+		return new OAuth2SuccessHandler(userService, refreshTokenService);
+	}
 
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
@@ -59,8 +72,16 @@ public class SpringSecurityConfig {
 				.authorizeRequests(authorizeRequests ->
 						authorizeRequests
 								.requestMatchers("/**").permitAll()
-								.anyRequest().authenticated());
+								.anyRequest().authenticated())
 //				.requestMatchers("/api/auth/local", "api/auth").permitAll()
+				.oauth2Login(oauth2Login ->
+						oauth2Login
+								.redirectionEndpoint(redirectionEndpoint -> redirectionEndpoint.baseUri("/login/oauth2/code/**"))
+								.successHandler(oAuth2SuccessHandler())
+								.userInfoEndpoint(userInfoEndpoint ->
+										userInfoEndpoint.userService(oauth2UserCustomService)
+								)
+				);
 
 		return http.build();
 	}

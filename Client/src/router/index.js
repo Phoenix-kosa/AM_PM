@@ -8,9 +8,10 @@ import TeamChat from "@/components/TeamChat.vue";
 import MyPage from "@/pages/MyPage.vue";
 import MainLayout from "../layouts/MainLayout.vue";
 import TeamChat2 from "@/components/TeamChat2.vue";
-import Login from '@/pages/Auth/login.vue'
-import Register from "@/pages/Auth/register.vue"
-import TestToken from '@/pages/Auth/testtoken.vue'
+import Login from '@/pages/Auth/login.vue';
+import Register from "@/pages/Auth/register.vue";
+import Redirect from "@/pages/Auth/redirect.vue";
+import TestToken from '@/pages/Auth/testtoken.vue';
 import ProjectPlanPage from "@/pages/ProjectPlanPage.vue"
 import QnaPage from "@/pages/QnaPage.vue";
 import QnaDetail from "@/pages/QnA/QnaDetail.vue"
@@ -40,6 +41,7 @@ const index = createRouter({
     { path: "/team-chat2", component: TeamChat2},
     { path: '/login', component: Login },
     { path: '/register', component: Register },
+    { path: '/oauth2/redirect', component: Redirect}
   ],
 });
 

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import phoenix.AM_PM.domain.refrash.service.RefreshTokenService;
 import phoenix.AM_PM.domain.user.dto.LoginRequestDto;
 import phoenix.AM_PM.domain.user.dto.SaveUserDto;
 import phoenix.AM_PM.domain.user.entity.User;
@@ -35,6 +36,7 @@ public class UserController {
   private final UserService userService;
   private final BCryptPasswordEncoder bCryptPasswordEncoder;
   private final JwtServiceImpl jwtService;
+  private final RefreshTokenService refreshTokenService;
 
   private JwtProperties jwtProperties;
 
@@ -47,6 +49,12 @@ public class UserController {
 
   @GetMapping("/api/auth/google")
   public ResponseEntity<String> googlelogin(HttpServletResponse res) {
+    System.out.println("google login");
+    return new ResponseEntity<>("로그인 성공", HttpStatus.OK);
+  }
+
+  @GetMapping("/login/oauth2/code/google")
+  public ResponseEntity<String> googlelogin2(HttpServletResponse res) {
     System.out.println("google login");
     return new ResponseEntity<>("로그인 성공", HttpStatus.OK);
   }
@@ -67,7 +75,9 @@ public class UserController {
   public ResponseEntity<String> logout(@RequestHeader(value = "Authorization", required = false) String token, HttpServletResponse res) {
     System.out.println("로그아웃!!!!");
     MultiValueMap<String, String> header = new LinkedMultiValueMap<>();
+    refreshTokenService.delete(jwtService.getId(token));
     header.add("Authorization", "delete");
+
     return new ResponseEntity<>("로그아웃 성공", header, HttpStatus.OK);
   }
 

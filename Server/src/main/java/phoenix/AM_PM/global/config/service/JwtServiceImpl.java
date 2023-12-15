@@ -18,10 +18,10 @@ public class JwtServiceImpl implements JwtService {
     private final String secretKey = JwtProperties.SECRET;
 
     @Override
-    public String getToken(String key, Object value) {
+    public String getToken(String key, Object value, int addTime) {
         Date d = new Date();
 //        log.info(d.toString() +" : " + d.getTime());
-        d.setTime(d.getTime()+(60*3*1000));  // 테스트를 위해서 3분간만 유효한 토큰을 만듬
+        d.setTime(d.getTime()+(addTime));  // 테스트를 위해서 3분간만 유효한 토큰을 만듬
 //        log.info(d.toString() +" : " + d.getTime());
 
         byte[] secretByteKey = DatatypeConverter.parseBase64Binary(secretKey);

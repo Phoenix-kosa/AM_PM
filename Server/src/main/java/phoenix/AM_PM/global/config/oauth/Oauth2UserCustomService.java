@@ -17,6 +17,7 @@ public class Oauth2UserCustomService extends DefaultOAuth2UserService {
 
   @Override
   public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+    System.out.println("Oauth LoadUser");
     OAuth2User user = super.loadUser(userRequest);
     saveOrUpdate(user);
     return user;
@@ -28,10 +29,13 @@ public class Oauth2UserCustomService extends DefaultOAuth2UserService {
     String name = (String) attributes.get("name");
 
     User user= userRepository.findByEmail(email)
-        .map(entity -> entity.update(name))
+//        .map(entity -> entity.update(name))
         .orElse(User.builder()
+            .userId(name)
+            .password("default")
             .email(email)
             .nickname(name)
+            .roles("USERS")
             .build());
 
     return userRepository.save(user);
