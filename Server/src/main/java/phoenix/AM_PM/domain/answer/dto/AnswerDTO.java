@@ -2,6 +2,7 @@ package phoenix.AM_PM.domain.answer.dto;
 
 import lombok.*;
 import phoenix.AM_PM.domain.question.entity.Question;
+import phoenix.AM_PM.domain.user.entity.User;
 
 import java.time.LocalDateTime;
 
@@ -18,7 +19,8 @@ public class AnswerDTO {
     private String content;
     private String createdDate;
     private Question question;
-    public void chquestion(Question question){
-        this.question = question;
-    }
+    private String userId;
+
+    private User user;
+
 }

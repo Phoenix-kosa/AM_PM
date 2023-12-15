@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 public class Answer {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Id
-  private int id;
+  private Integer id;
   private String bulletinId; //작성자 ID
   private String title;
   private String content;
@@ -28,9 +28,11 @@ public class Answer {
   private LocalDateTime createdDate;
 
   @ManyToOne
+  @JoinColumn
   private Question question;
 
   @ManyToOne
+  @JoinColumn
   private User user;
 
   public void changeUserId(User userId){
