@@ -57,17 +57,17 @@ public class AnswerService {
 //                .build();
 //    }
 // 댓글 등록
-//    @Transactional
-//    public Answer create(AnswerDTO answerDTO, User user){
-//        Answer answer = Answer.from(answerDTO);
-//        Answer answer1 = answerR.save(answer);
-//        Answer answer2 = Answer.builder()
-//                .id(answerDTO.getId())
-//                .bulletinId(answerDTO.getBulletinId())
-//                .title(answerDTO.getTitle())
-//                .content(answerDTO.getContent())
-//                .createdDate(LocalDateTime.now())
-//                .build();
+    @Transactional
+    public Answer create(AnswerDTO answerDTO, User user){
+        Answer answer = Answer.from(answerDTO);
+        Answer answer1 = answerR.save(answer);
+        Answer answer2 = Answer.builder()
+                .id(answerDTO.getId())
+                .bulletinId(answerDTO.getBulletinId())
+                .title(answerDTO.getTitle())
+                .content(answerDTO.getContent())
+                .createdDate(LocalDateTime.now())
+                .build();
 //        answer.setUser(answerR.findById(userId));
 //        answer.setCreatedDate(LocalDateTime.now());
 //        System.out.println(answer);
