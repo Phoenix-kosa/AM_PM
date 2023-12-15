@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import phoenix.AM_PM.domain.answer.dto.AnswerDTO;
 import phoenix.AM_PM.domain.answer.entity.Answer;
 import phoenix.AM_PM.domain.answer.repository.AnswerRepository;
 
@@ -55,19 +56,23 @@ public class AnswerService {
 //                .createdDate(answer.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss")))
 //                .build();
 //    }
-    //댓글 등록
+// 댓글 등록
     @Transactional
-    public Answer create(Answer answer, User user, String userId){
-//        Answer answer = Answer.builder()
-//                .id(answerDTO.getId())
-//                .bulletinId(answerDTO.getBulletinId())
-//                .title(answerDTO.getTitle())
-//                .content(answerDTO.getContent())
-//                .createdDate(LocalDateTime.now())
-//                .build();
-        answer.setUser(answerR.findById(userId));
-        answer.setCreatedDate(LocalDateTime.now());
-        System.out.println(answer);
+    public Answer create(AnswerDTO answerDTO, User user){
+        Answer answer = Answer.from(answerDTO);
+        Answer answer1 = answerR.save(answer);
+        Answer answer2 = Answer.builder()
+                .id(answerDTO.getId())
+                .bulletinId(answerDTO.getBulletinId())
+                .title(answerDTO.getTitle())
+                .content(answerDTO.getContent())
+                .createdDate(LocalDateTime.now())
+                .build();
+//        answer.setUser(answerR.findById(userId));
+//        answer.setCreatedDate(LocalDateTime.now());
+//        System.out.println(answer);
+
+
         return answerR.save(answer);
     }
     //댓글 수정

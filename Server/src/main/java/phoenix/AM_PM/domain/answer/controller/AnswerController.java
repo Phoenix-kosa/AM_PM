@@ -41,10 +41,10 @@ public class AnswerController {
         return new ResponseEntity<>(this.answerService.getAnswerList(id),HttpStatus.CREATED);
     }
     //생성
-    @PostMapping("/{postNo}")
-    public ResponseEntity<List<Answer>> create(@PathVariable(name = "postNo") int id, @RequestBody AnswerDTO answerDTO, Principal principal, Answer answer){
-
-        answerService.create(answer);
+//    @PostMapping("/{postNo}")
+//    public ResponseEntity<List<Answer>> create(@PathVariable(name = "postNo") int id, @RequestBody AnswerDTO answerDTO, Principal principal, Answer answer){
+//
+//        answerService.create(answer);
         //        answerDTO.setId(id);
 //        answerDTO.setUserId(principal.getName());
 //        Optional<User> findNo=uR.findByUserId(principal.getName());
@@ -53,8 +53,8 @@ public class AnswerController {
 //            Answer answer = this.answerService.create(MapperUtil.convert(answerDTO, Answer.class),finduserNo,answerDTO.getId());
 //        });
 //        return new ResponseEntity<>(this.answerService.getAnswerList(id), HttpStatus.CREATED);
-        return ResponseEntity.status(HttpStatus.CREATED).body("create successfully");
-    }
+//        return ResponseEntity.status(HttpStatus.CREATED).body("create successfully");
+//    }
 
 //    @PutMapping("/{postNo}/{id}")
 //    public ResponseEntity<List<Answer>> update(@PathVariable(name = "postNo") int bulletinId, @PathVariable(name = "id") int id, @RequestBody AnswerDTO answerDTO, Principal principal){
