@@ -77,7 +77,8 @@ const login = () => {
 }
 
 const simpleLogin = () => {
-    window.location.href = "https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?response_type=code&client_id=291902724502-ut9eq50emujhsg46gui4j5spljbna2d2.apps.googleusercontent.com&scope=profile%20email&state=eWGve_0RK-mIdmwnGEcwpKvB3YRhNsoCED4mM79NUwU%3D&redirect_uri=http%3A%2F%2Flocalhost%3A8090%2Flogin%2Foauth2%2Fcode%2Fgoogle&service=lso&o2v=2&theme=glif&flowName=GeneralOAuthFlow"
+    // window.location.href = "https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?response_type=code&client_id=291902724502-ut9eq50emujhsg46gui4j5spljbna2d2.apps.googleusercontent.com&scope=profile%20email&state=eWGve_0RK-mIdmwnGEcwpKvB3YRhNsoCED4mM79NUwU%3D&redirect_uri=http%3A%2F%2Flocalhost%3A8090%2Flogin%2Foauth2%2Fcode%2Fgoogle&service=lso&o2v=2&theme=glif&flowName=GeneralOAuthFlow"
+    window.location.href = "http://localhost:8090/login/oauth2/code/google";
 }
 </script>
 

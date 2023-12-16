@@ -76,7 +76,6 @@ public class SpringSecurityConfig {
 //				.requestMatchers("/api/auth/local", "api/auth").permitAll()
 				.oauth2Login(oauth2Login ->
 						oauth2Login
-								.redirectionEndpoint(redirectionEndpoint -> redirectionEndpoint.baseUri("/login/oauth2/code/**"))
 								.successHandler(oAuth2SuccessHandler())
 								.userInfoEndpoint(userInfoEndpoint ->
 										userInfoEndpoint.userService(oauth2UserCustomService)
