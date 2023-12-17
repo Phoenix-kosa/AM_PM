@@ -31,44 +31,29 @@ public class AnswerController {
 
     private AnswerService answerService;
     private JwtServiceImpl jwtService;
-//    @GetMapping("")
-//    public List<AnswerDTO> answerlist(){
-//        return answerService.getAnswerList();
-//    }
+
     //가져오기
-    @GetMapping("/{postNo}")
-    public ResponseEntity<List<Answer>> read(@PathVariable(name = "postNo") int id){
-        return new ResponseEntity<>(this.answerService.getAnswerList(id),HttpStatus.CREATED);
+    @GetMapping("/{id}")
+    public ResponseEntity<Answer> getBoardById(@PathVariable int id) {
+        Answer answer = answerService.findById(id);
+        return ResponseEntity.ok(answer);
     }
     //생성
-    @PostMapping("/{postNo}")
-    public ResponseEntity<String> create(@RequestBody Answer answer, @RequestHeader(required = false, value = "Authorization") Integer token){
-
-
+    @PostMapping("/write")
+    public ResponseEntity<String> create(@RequestBody Answer answer, @RequestHeader(required = false, value = "Authorization") String token){
         answerService.create(answer, jwtService.getId(token));
-
         return ResponseEntity.status(HttpStatus.CREATED).body("Board created successfully");
     }
-//        answerService.create(answer);
-        //        answerDTO.setId(id);
-//        answerDTO.setUserId(principal.getName());
-//        Optional<User> findNo=uR.findByUserId(principal.getName());
-//        findNo.ifPresent(finduserNo->{
-//            AnswerDTO.setUserNo(finduserNo.getNickname().getId());
-//            Answer answer = this.answerService.create(MapperUtil.convert(answerDTO, Answer.class),finduserNo,answerDTO.getId());
-//        });
-//        return new ResponseEntity<>(this.answerService.getAnswerList(id), HttpStatus.CREATED);
-//        return ResponseEntity.status(HttpStatus.CREATED).body("create successfully");
-//    }
 
+    //수정
     @PutMapping("/{postNo}/{id}")
     public ResponseEntity<String> update(@PathVariable int id, @RequestBody Answer answer) {
         answerService.update(id, answer);
         return ResponseEntity.ok("Board updated successfully");
     }
+    //삭제
     @DeleteMapping("/{postNo}/{id}")
-    public ResponseEntity<List<Answer>> delete(@PathVariable(name = "postNo") int bulletinId, @PathVariable(name = "id") int id, @RequestBody AnswerDTO answerDTO, Principal principal){
-        answerDTO.setUserId(principal.getName());
-        return new ResponseEntity<>(this.answerService.delete(id,bulletinId),HttpStatus.CREATED);
+    public void deleteById(int id){
+        answerService.delete((int) id);
     }
 }
