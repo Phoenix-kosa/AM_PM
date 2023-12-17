@@ -13,6 +13,7 @@ import phoenix.AM_PM.domain.answer.repository.AnswerRepository;
 import phoenix.AM_PM.domain.answer.service.AnswerService;
 import phoenix.AM_PM.domain.user.entity.User;
 import phoenix.AM_PM.domain.user.repository.UserRepository;
+import phoenix.AM_PM.global.config.service.JwtServiceImpl;
 
 
 import java.security.Principal;
@@ -28,9 +29,8 @@ public class AnswerController {
     @NonNull
     UserRepository uR;
 
-    @Autowired
     private AnswerService answerService;
-
+    private JwtServiceImpl jwtService;
 //    @GetMapping("")
 //    public List<AnswerDTO> answerlist(){
 //        return answerService.getAnswerList();
@@ -41,9 +41,14 @@ public class AnswerController {
         return new ResponseEntity<>(this.answerService.getAnswerList(id),HttpStatus.CREATED);
     }
     //생성
-//    @PostMapping("/{postNo}")
-//    public ResponseEntity<List<Answer>> create(@PathVariable(name = "postNo") int id, @RequestBody AnswerDTO answerDTO, Principal principal, Answer answer){
-//
+    @PostMapping("/{postNo}")
+    public ResponseEntity<String> create(@RequestBody Answer answer, @RequestHeader(required = false, value = "Authorization") Integer token){
+
+
+        answerService.create(answer, jwtService.getId(token));
+
+        return ResponseEntity.status(HttpStatus.CREATED).body("Board created successfully");
+    }
 //        answerService.create(answer);
         //        answerDTO.setId(id);
 //        answerDTO.setUserId(principal.getName());
@@ -56,12 +61,11 @@ public class AnswerController {
 //        return ResponseEntity.status(HttpStatus.CREATED).body("create successfully");
 //    }
 
-//    @PutMapping("/{postNo}/{id}")
-//    public ResponseEntity<List<Answer>> update(@PathVariable(name = "postNo") int bulletinId, @PathVariable(name = "id") int id, @RequestBody AnswerDTO answerDTO, Principal principal){
-//        answerDTO.setUserId(principal.getName());
-//        return new ResponseEntity<>(this.answerService.update(MapperUtil.convert(answerDTO, Answer.class
-//        ),id,bulletinId),HttpStatus.CREATED);
-//    }
+    @PutMapping("/{postNo}/{id}")
+    public ResponseEntity<String> update(@PathVariable int id, @RequestBody Answer answer) {
+        answerService.update(id, answer);
+        return ResponseEntity.ok("Board updated successfully");
+    }
     @DeleteMapping("/{postNo}/{id}")
     public ResponseEntity<List<Answer>> delete(@PathVariable(name = "postNo") int bulletinId, @PathVariable(name = "id") int id, @RequestBody AnswerDTO answerDTO, Principal principal){
         answerDTO.setUserId(principal.getName());

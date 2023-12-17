@@ -11,6 +11,7 @@ import phoenix.AM_PM.domain.answer.repository.AnswerRepository;
 import phoenix.AM_PM.domain.question.entity.Question;
 import phoenix.AM_PM.domain.question.repository.QuestionRepository;
 import phoenix.AM_PM.domain.user.entity.User;
+import phoenix.AM_PM.domain.user.repository.UserRepository;
 import phoenix.AM_PM.domain.user.service.UserService;
 
 import java.time.LocalDateTime;
@@ -24,7 +25,7 @@ public class AnswerService {
 
     private final AnswerRepository answerR;
     private final QuestionRepository questionR;
-    private final UserService userR;
+    private final UserRepository userRepository;
     //목록 가져오기
     @Transactional
     public List<Answer> getAnswerList(int id){
@@ -44,7 +45,13 @@ public class AnswerService {
 //        }
         return this.answerR.getAnswer(id);
     }
-//    //게시글 가져오기
+    //게시글 가져오기
+    public Answer create(Answer answer, Integer user_idx){
+        answer.setUser(userRepository.findById(user_idx).get());
+        answer.setCreatedDate(LocalDateTime.now());
+        System.out.println(answer);
+        return answerR.save(answer);
+    }
 //    @Transactional
 //    public AnswerDTO getAnswer(int id){
 //        Answer answer = answerR.findById(id).orElseThrow(() -> new RuntimeException("게시글 없음"));
@@ -57,38 +64,32 @@ public class AnswerService {
 //                .build();
 //    }
 // 댓글 등록
-    @Transactional
-    public Answer create(AnswerDTO answerDTO, User user){
-        Answer answer = Answer.from(answerDTO);
-        Answer answer1 = answerR.save(answer);
-        Answer answer2 = Answer.builder()
-                .id(answerDTO.getId())
-                .bulletinId(answerDTO.getBulletinId())
-                .title(answerDTO.getTitle())
-                .content(answerDTO.getContent())
-                .createdDate(LocalDateTime.now())
-                .build();
+//    @Transactional
+//    public Answer create(AnswerDTO answerDTO, User user){
+//        Answer answer = Answer.from(answerDTO);
+//        Answer answer1 = answerR.save(answer);
+//        Answer answer2 = Answer.builder()
+//                .id(answerDTO.getId())
+//                .bulletinId(answerDTO.getBulletinId())
+//                .title(answerDTO.getTitle())
+//                .content(answerDTO.getContent())
+//                .createdDate(LocalDateTime.now())
+//                .build();
 //        answer.setUser(answerR.findById(userId));
 //        answer.setCreatedDate(LocalDateTime.now());
 //        System.out.println(answer);
-
-
-        return answerR.save(answer);
-    }
+//
+//
+//        return answerR.save(answer);
+//    }
     //댓글 수정
     @Transactional
-    public List<Answer> update(Answer answer, int bulletinId, int id){
-//        Answer answer = answerR.findById(answerDTO.getId()).orElseThrow(() -> new RuntimeException("댓글 x"));
-//        answer.setTitle(answerDTO.getTitle());
-//        answer.setContent(answerDTO.getContent());
-        Optional<Answer> update=this.answerR.findById(bulletinId);
-        update.ifPresent(origin->{
-            origin.setContent(answer.getContent());
-            this.answerR.save(origin);
-        });
-        return this.answerR.getAnswer(id);
+    public void update(long id, Answer request) {
+        Answer answer = answerR.findById((int) id)
+                .orElseThrow(() -> new IllegalArgumentException("not found : " + id));
+        answer.update(request.getTitle(), request.getContent());
     }
-    //댓글 삭제
+    //댓글 삭제s
     @Transactional
     public List<Answer> delete(int bulletinId, int id){
         this.answerR.deleteById(bulletinId);

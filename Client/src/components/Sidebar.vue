@@ -90,9 +90,8 @@
         ></v-divider>     
          </v-list>
         
-        
-        <v-list density="compact" nav>
         <p class="p">관리</p>
+        <v-list density="compact" nav>       
         <v-list-item
             prepend-icon="mdi-account"
             title="프로젝트 수정"
@@ -107,10 +106,14 @@
         <v-divider
           style="border-top-color: white; border-top-width: 2px"
         ></v-divider>
-        <p class="q">문의하기</p>
+        <p class="q"
+            prepend-icon="mdi-account"
+            title="문의"
+            value="/question"
+            style="color: white">문의하기
+        </p>
         <v-list density="compact" nav>
-          
-          </v-list>
+        </v-list>
 
 
 

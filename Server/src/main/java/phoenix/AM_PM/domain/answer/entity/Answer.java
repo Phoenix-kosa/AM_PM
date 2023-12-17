@@ -35,6 +35,10 @@ public class Answer {
   @JoinColumn
   private User user;
 
+  public void update(String title, String content) {
+    this.title = title;
+    this.content = content;
+  }
   public void changeUserId(User userId){
     this.user = userId;
   }
