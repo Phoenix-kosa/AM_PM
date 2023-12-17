@@ -47,6 +47,10 @@ export default{
       userId: '',
       content: '',
       createdDate: ''
+      comments:[],
+      commentform:{
+        "content":'',
+      }  
     }
   },
   mounted(){
@@ -84,7 +88,9 @@ export default{
         alert('삭제되었습니다.')
         this.fnList();
       })
-    }
+    },
+    
+
   }  
 }
 </script>
