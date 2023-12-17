@@ -22,9 +22,16 @@ public class ProjectPlanService {
     @Autowired
     private ProjectPlanRepository projectPlanRepository;
 
-    private final Path erdLocation = Paths.get("erd_storage");
-    private final Path usecaseLocation = Paths.get("usecase_storage");
-    private final Path uiLocation = Paths.get("ui_storage");
+    private final Path erdLocation = Paths.get("C:\\kosastudy\\AM_PM\\Server\\src\\main\\resources\\static\\img\\plan");
+
+    private final Path usecaseLocation = Paths.get("C:\\kosastudy\\AM_PM\\Server\\src\\main\\resources\\static\\img\\plan");
+    private final Path uiLocation = Paths.get("C:\\kosastudy\\AM_PM\\Server\\src\\main\\resources\\static\\img\\plan");
+
+    public void createDefaultProjectPlans(int projectId) {
+        createDefaultPlan(projectId, "ERD", "/img/plan/default-erd-image.png", "https://www.erdcloud.com/");
+        createDefaultPlan(projectId, "USECASE", "/img/plan/default-usecase-image.png", "https://example.com/usecase");
+        createDefaultPlan(projectId, "UI", "/img/plan/default-ui-image.png", "https://www.figma.com/");
+    }
 
     public ProjectPlanDTO getProjectPlanById(int id) {
         ProjectPlan projectPlan = projectPlanRepository.findById(id)
@@ -63,18 +70,28 @@ public class ProjectPlanService {
 
     private void storeFile(int id, MultipartFile file, Path location, BiConsumer<ProjectPlan, String> filePathSetter) {
         try {
+            if (!Files.exists(location)) {
+                Files.createDirectories(location);
+            }
+
             Path destinationFile = location.resolve(Paths.get(file.getOriginalFilename()))
                     .normalize().toAbsolutePath();
+
             Files.copy(file.getInputStream(), destinationFile, StandardCopyOption.REPLACE_EXISTING);
 
             ProjectPlan projectPlan = projectPlanRepository.findById(id)
                     .orElseThrow(() -> new IllegalArgumentException("잘못된 아이디: " + id));
             filePathSetter.accept(projectPlan, destinationFile.toString());
+
+            String sampleImgPath = "/img/plan/" + file.getOriginalFilename();
+            projectPlan.setSampleImg(sampleImgPath);
+
             projectPlanRepository.save(projectPlan);
         } catch (IOException e) {
             throw new RuntimeException("파일을 저장하지 못했습니다.", e);
         }
     }
+
 
     public ProjectPlanDTO createNewEtcPage(int projectId, MultipartFile file, String sampleUrl, String sampleImg) throws IOException {
         int etcCount = projectPlanRepository.countByProjectIdAndTitleStartingWith(projectId, "ETC");
@@ -131,6 +148,22 @@ public class ProjectPlanService {
         }
     }
 
+    public ProjectPlanDTO updateSampleUrl(int id, String newSampleUrl) {
+        ProjectPlan projectPlan = projectPlanRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 아이디: " + id));
+        projectPlan.setSampleUrl(newSampleUrl);
+        ProjectPlan updatedProjectPlan = projectPlanRepository.save(projectPlan);
+        return convertToDTO(updatedProjectPlan);
+    }
+
+    private void createDefaultPlan(int projectId, String title, String sampleImg, String sampleUrl) {
+        ProjectPlan projectPlan = new ProjectPlan();
+        projectPlan.setProjectId(projectId);
+        projectPlan.setTitle(title);
+        projectPlan.setSampleImg(sampleImg);
+        projectPlan.setSampleUrl(sampleUrl);
+        projectPlanRepository.save(projectPlan);
+    }
     private ProjectPlanDTO convertToDTO(ProjectPlan projectPlan) {
         ProjectPlanDTO dto = new ProjectPlanDTO();
         dto.setId(projectPlan.getId());

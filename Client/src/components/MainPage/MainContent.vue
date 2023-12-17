@@ -74,7 +74,9 @@
         src="../../assets/images/mainPage/down-arrow.png"
         alt="down arrow icon"
       />
-      <h1>지금 바로 시작하기</h1>
+      <router-link to="/login">
+        <h1 id="go_login_text">지금 바로 시작하기</h1>
+      </router-link>
     </div>
   </main>
 </template>

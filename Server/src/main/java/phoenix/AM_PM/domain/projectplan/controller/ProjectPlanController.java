@@ -8,8 +8,11 @@ import org.springframework.web.multipart.MultipartFile;
 import phoenix.AM_PM.domain.projectplan.dto.ProjectPlanDTO;
 import phoenix.AM_PM.domain.projectplan.service.ProjectPlanService;
 
+
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/plan")
@@ -17,6 +20,8 @@ public class ProjectPlanController {
 
     @Autowired
     private ProjectPlanService projectPlanService;
+
+
 
 
     @GetMapping("/project-plan/{id}")
@@ -44,7 +49,7 @@ public class ProjectPlanController {
     }
 
     @GetMapping("/usecase-example")
-    public ResponseEntity<ProjectPlanDTO> getUsecaseExample(@RequestParam int id) {
+    public ResponseEntity<ProjectPlanDTO> getUsecaseExample(@RequestParam("id") int id) {
         ProjectPlanDTO projectPlanDTO = projectPlanService.getUsecaseExample(id);
         return ResponseEntity.ok(projectPlanDTO);
     }
@@ -62,7 +67,7 @@ public class ProjectPlanController {
     }
 
     @GetMapping("/ui-example")
-    public ResponseEntity<ProjectPlanDTO> getUiExample(@RequestParam int id) {
+    public ResponseEntity<ProjectPlanDTO> getUiExample(@RequestParam("id") int id) {
         ProjectPlanDTO projectPlanDTO = projectPlanService.getUiExample(id);
         return ResponseEntity.ok(projectPlanDTO);
     }
@@ -119,6 +124,17 @@ public class ProjectPlanController {
     public ResponseEntity<?> deleteProjectPlan(@PathVariable int id) {
         projectPlanService.deleteProjectPlan(id);
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/update-url/{id}")
+    public ResponseEntity<?> updateSampleUrl(@PathVariable int id, @RequestBody Map<String, String> request) {
+        try {
+            String newSampleUrl = request.get("newSampleUrl");
+            ProjectPlanDTO updatedProjectPlan = projectPlanService.updateSampleUrl(id, newSampleUrl);
+            return ResponseEntity.ok(updatedProjectPlan);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("샘플 URL 업데이트 중 오류 발생: " + e.getMessage());
+        }
     }
 
 }
