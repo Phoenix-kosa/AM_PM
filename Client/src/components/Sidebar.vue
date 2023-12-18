@@ -103,14 +103,19 @@
             prepend-icon="mdi-account"
             title="멤버 추가"
             style="color: white"
+            to="add-member"
           ></v-list-item>
         </v-list>
         <v-divider
           style="border-top-color: white; border-top-width: 2px"
         ></v-divider>
-        <p class="q">문의하기</p>
         <v-list density="compact" nav>
-          
+          <v-list-item
+            prepend-icon="mdi-account"
+            title="문의하기"
+            to="question"
+            style="color: white"
+          ></v-list-item>
           </v-list>
 
 

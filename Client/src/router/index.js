@@ -15,6 +15,7 @@ import ProjectPlan from "@/components/ProjectPlan.vue";
 import ProjectList from "@/pages/ProjectList.vue";
 import CreateProject from "@/pages/CreateProject.vue";
 import ModifyProject from "@/pages/ModifyProject.vue";
+import AddMember from "@/pages/AddMember.vue";
 
 const index = createRouter({
   history: createWebHistory(),
@@ -35,11 +36,10 @@ const index = createRouter({
         { path: "question", component: QnaPage},
         { path: "detail", component: QnaDetail},
         { path: "team-chat", component: TeamChat},
-
-
         { path: "project-list", component: ProjectList },
         { path: "create-project", component: CreateProject },
         { path: "modify-project", component: ModifyProject },
+        { path: "add-member", component: AddMember },
       ],
     },
     { path: '/login', component: Login },
