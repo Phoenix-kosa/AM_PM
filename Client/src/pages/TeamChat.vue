@@ -1,9 +1,6 @@
 <template>
   <div class="chatContainer">
-    <div class="msgContainer">
-      <div class="buttonContainer">
-        <button @click="loadData(pageNum++)" id="loadData">불러오기</button>
-      </div>
+    <div class="msgContainer" id="msgScroll">
       <div id="msgArea" v-for="data in chatList">
         <div class="contentContainer">
           <div class="imgContainer">
@@ -15,7 +12,7 @@
               <span v-if="data.user" class="nickname" v-text="data.user.nickname"></span>
               <span v-else="data.user" class="nickname" v-text="data.nickName"></span>
               <span class="date">{{ data.createdDate.substring(0, 10) }} {{data.createdDate.substring(11, 16)}}</span>
-              <span class="unread" v-text="data.unread"></span>
+              <span v-if="data.unread > 0" class="unread" v-text="data.unread"></span>
             </div>
             <span v-text="data.message"></span>
           </div>
@@ -32,11 +29,11 @@
 <script setup>
 import axios from 'axios';
 import { ref } from 'vue';
+import Stomp from 'webstomp-client';
 
 const msg = ref(null);
 const projectId = sessionStorage.getItem("projectId");
 const userId = ref(null);
-const pageNum = ref(null);
 const chatList = ref([]);
 
 function decodeToken(token) {
@@ -45,52 +42,72 @@ function decodeToken(token) {
   return JSON.parse(atob(base64));
 }
 
-function loadData(cursor) {
-  axios.get(`http://localhost:8090/api/chat/${projectId}?cursorId=${cursor}`, {
-      headers: { 
-          "Authorization" : sessionStorage.getItem("access-token") }
-    }
-    )
-  .then((response) => {
-    if(!response.data.pageInfo.hasNext) {
-      document.getElementById("loadData").style.display = 'none';
-    }
-
-    for(var res of response.data.data) {
-      chatList.value.unshift(res);
-      pageNum.value = res.id;
-    }
-  })
-  .catch((err) => {
-    console.log(err)
-    if(err.response.status == 401) {
-      console.log("토큰 만료");
-
-      axios.get("http://localhost:8090/api/rtoken", {
-          headers: { 
-              "RefreshToken" : sessionStorage.getItem("refresh-token"),
-              "Authorization" : sessionStorage.getItem("access-token") }
-          }).then(response => {
-              console.log(response)
-              if(response.status == 200){
-                  console.log("토큰 재발급");
-                  console.log(response.headers.authorization);
-                  sessionStorage.setItem("access-token", response.headers.authorization);
-              } else {
-                  console.log("토큰 재발급 실패");
-              }
-          }).catch(error => {console.error(error);})
-    } 
-  });
-  
-}
-
-const websocket = new WebSocket("ws://localhost:8090/chat/" + projectId);
 const decodedPayload = decodeToken(sessionStorage.getItem("access-token"));
 userId.value = decodedPayload.id;
-websocket.onmessage = onMessage;
-websocket.onclose = onClose;
-websocket.onopen = onOpen;
+
+var websocket = new WebSocket('ws://localhost:8090/chat');
+var stomp = Stomp.over(websocket);
+stomp.connect({}, function() {
+  stomp.subscribe("/sub/chat/" + projectId + "/user/" + userId.value, function(chat) {
+    var data = JSON.parse(chat.body);
+    chatList.value = data;
+  });
+  loadData();
+  setTimeout(function () {
+      var msgArea = document.getElementById("msgScroll");
+      msgArea.scrollTop = msgArea.scrollHeight;
+  }, 200);
+  
+  stomp.subscribe("/sub/chat/" + projectId, function(chat) {
+    var data = JSON.parse(chat.body);
+    axios.get(`http://localhost:8090/api/read/${data.id}`, {
+      headers: { 
+          "Authorization" : sessionStorage.getItem("access-token") 
+      }
+    })
+    .then((response) => {
+      console.log(response.status);
+    })
+    .catch((err) => {
+      console.log(err)
+      if(err.response.status == 401) {
+        console.log("토큰 만료");
+
+        axios.get("http://localhost:8090/api/rtoken", {
+            headers: { 
+                "RefreshToken" : sessionStorage.getItem("refresh-token"),
+                "Authorization" : sessionStorage.getItem("access-token") }
+            }).then(response => {
+                console.log(response)
+                if(response.status == 200){
+                    console.log("토큰 재발급");
+                    console.log(response.headers.authorization);
+                    sessionStorage.setItem("access-token", response.headers.authorization);
+                } else {
+                    console.log("토큰 재발급 실패");
+                }
+            }).catch(error => {console.error(error);})
+      } 
+    });
+    chatList.value.push(data);
+    setTimeout(function () {
+      var msgArea = document.getElementById("msgScroll");
+      msgArea.scrollTop = msgArea.scrollHeight;
+    }, 100);
+  });
+  setInterval(() => {
+    loadData();
+  }, 5000);
+});
+
+function loadData() {
+  let data = {
+    message : null, 
+    projectId : projectId, 
+    userId : userId.value
+  };
+  stomp.send("/pub/chat/enter", JSON.stringify(data), {});
+}
 
 function send() {
   let data = {
@@ -99,24 +116,8 @@ function send() {
     userId : userId.value
   };
 
-  websocket.send(JSON.stringify(data));
+  stomp.send("/pub/chat/message", JSON.stringify(data), {});
   msg.value = '';
-}
-
-function onClose() {
-  console.log("퇴장");
-}
-
-function onOpen() {
-  loadData(-1);
-  console.log("입장");
-}
-
-function onMessage(message) {
-  let data = JSON.parse(message.data);
-  console.log(data);
-
-  chatList.value.push(data);
 }
 </script>
 
@@ -128,11 +129,6 @@ function onMessage(message) {
   border-style: dashed;
   padding: 10px;
   height: 600px;
-}
-.buttonContainer {
-  margin-top: 10px;
-  margin-bottom: 10px;
-  text-align: center;
 }
 #loadData {
   background-color: #d9d9d9;

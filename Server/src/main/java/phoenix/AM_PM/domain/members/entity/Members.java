@@ -1,4 +1,4 @@
-package phoenix.AM_PM.domain.member.entity;
+package phoenix.AM_PM.domain.members.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -26,5 +26,8 @@ public class Members {
   @Enumerated(value = EnumType.STRING)
   private Roles roles;
 
+  public void updateRoles(Roles roles) {
+    this.roles = roles;
+  }
   // Constructors, getters, and setters
 }

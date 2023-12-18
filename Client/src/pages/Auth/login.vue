@@ -60,7 +60,7 @@ const login = () => {
 
                 sessionStorage.setItem("access-token", response.headers.authorization);
                 sessionStorage.setItem("refresh-token", response.headers.refreshtoken);
-                router.push("/testtoken")
+                router.push("/project-list")
             } else {
                 console.log(response)
                 // 로그인 실패 시 오류 메시지를 팝업 창으로 표시
