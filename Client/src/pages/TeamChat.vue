@@ -31,7 +31,7 @@
 
 <script setup>
 import axios from 'axios';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import Stomp from 'webstomp-client';
 
 const msg = ref(null);
@@ -91,10 +91,39 @@ userId.value = decodedPayload.id;
 var websocket = new WebSocket('ws://localhost:8090/chat');
 var stomp = Stomp.over(websocket);
 stomp.connect({}, function() {
-  console.log("stomp 연결");
   loadData(-1);
   stomp.subscribe("/sub/chat/" + projectId, function(chat) {
-    chatList.value.push(JSON.parse(chat.body));
+    var data = JSON.parse(chat.body);
+    axios.get(`http://localhost:8090/api/read/${data.id}`, {
+      headers: { 
+          "Authorization" : sessionStorage.getItem("access-token") 
+      }
+    })
+    .then((response) => {
+      console.log(response.status);
+    })
+    .catch((err) => {
+      console.log(err)
+      if(err.response.status == 401) {
+        console.log("토큰 만료");
+
+        axios.get("http://localhost:8090/api/rtoken", {
+            headers: { 
+                "RefreshToken" : sessionStorage.getItem("refresh-token"),
+                "Authorization" : sessionStorage.getItem("access-token") }
+            }).then(response => {
+                console.log(response)
+                if(response.status == 200){
+                    console.log("토큰 재발급");
+                    console.log(response.headers.authorization);
+                    sessionStorage.setItem("access-token", response.headers.authorization);
+                } else {
+                    console.log("토큰 재발급 실패");
+                }
+            }).catch(error => {console.error(error);})
+      } 
+    });
+    chatList.value.push(data);
     setTimeout(function () {
       var msgArea = document.getElementById("msgScroll");
       msgArea.scrollTop = msgArea.scrollHeight;

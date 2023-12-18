@@ -36,13 +36,13 @@ public class Chat {
   @Column(name = "created_date")
   private LocalDateTime createdDate;
 
-  private Integer unread;
+  private Long unread;
 
   @Column(name = "who_read")
   private String whoRead;
 
   // setter 대신 update
-  public void updateUnread(Integer unread) {
+  public void updateUnread(Long unread) {
     this.unread = unread;
   }
 

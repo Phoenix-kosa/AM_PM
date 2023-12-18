@@ -30,7 +30,7 @@ public class QChat extends EntityPathBase<Chat> {
 
     public final phoenix.AM_PM.domain.project.entity.QProject project;
 
-    public final NumberPath<Integer> unread = createNumber("unread", Integer.class);
+    public final NumberPath<Long> unread = createNumber("unread", Long.class);
 
     public final phoenix.AM_PM.domain.user.entity.QUser user;
 

@@ -12,4 +12,5 @@ public interface MembersRepository extends JpaRepository<Members, Integer> {
     Optional<Members> findAllByUserIdAndProjectId(Integer userId, Integer projectId);
     List<Members> findAllByProjectId(Integer projectId);
     Optional<Members> findAllByProjectIdAndRoles(Integer projectId, Roles roles);
+    Long countByProjectId(Integer projectId);
 }
