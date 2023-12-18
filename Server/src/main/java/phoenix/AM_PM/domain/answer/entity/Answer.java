@@ -19,21 +19,19 @@ import java.time.LocalDateTime;
 public class Answer {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Id
-  private Integer id;
-  private String bulletinId; //작성자 ID
+  private Integer id; //답변 ID
+  private Integer bulletinId; //문의 ID
   private String title;
   private String content;
 
   @Column(name = "created_date")
   private LocalDateTime createdDate;
 
-  @ManyToOne
-  @JoinColumn
-  private Question question;
+  @ManyToOne(fetch = FetchType.LAZY)
+  private Question question;    // 댓글이 달린 게시판
 
-  @ManyToOne
-  @JoinColumn
-  private User user;
+  @ManyToOne(fetch = FetchType.LAZY)
+  private User user;  // 작성자
 
   public void update(String title, String content) {
     this.title = title;

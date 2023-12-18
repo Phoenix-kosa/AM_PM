@@ -2,25 +2,31 @@
   <div class="container">
     <h2>1:1 문의</h2>
     <div class="row row1">
-      <table class="table">
-        <tr>
-          <th width=20% class="text-center warning">번호</th>
-          <td width=30% class="text-center">{{ id }}</td>
-          <th width=20% class="text-center warning">작성일</th>
-          <td width=30% class="text-center">{{ createdDate }}</td>
+      <table class="table table-success table-striped">
+        <colgroup>
+					<col width="15%"/>
+					<col width="35%"/>
+					<col width="15%"/>
+					<col width="35%"/>
+				</colgroup>
+        <tr class="table-primary">
+          <th scope="row" class="text-center">번호</th>
+          <td class="text-center">{{ id }}</td>
+          <th scope="row" class="text-center warning">작성일</th>
+          <td class="text-center">{{ createdDate }}</td>
         </tr>
-        <tr>
+        <tr class="table-primary">
           <th width=20% class="text-center warning">이름</th>
           <td width=30% class="text-center">{{ userId }}</td>
           <th width=20% class="text-center warning"></th>
           <td width=30% class="text-center"></td>
         </tr>
         <tr>
-          <th width=20% class="text-center warning">제목</th>
-          <td colspan="3">{{ title }}</td>
+          <th class="text-center">제목</th>
+          <td>{{ title }}</td>
         </tr>
         <tr>
-          <td colspan="4" class="text-left" valign="top" height="200">
+          <td  colspan="4" class="text-left" valign="top" height="200">
             <pre style="white-space: pre-wrap;border:none;background-color: white;">{{ content }}</pre>
           </td>
         </tr>
@@ -30,7 +36,7 @@
           <button type="button" class="btn btn-outline-primary" v-on:click="fnList">목록</button>
         </div>
       </table>
-      <hr>
+      <hr><br>
       <table class="table">
         <h2>답변</h2>
         <tr>

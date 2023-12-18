@@ -11,6 +11,8 @@ import phoenix.AM_PM.domain.answer.dto.AnswerDTO;
 import phoenix.AM_PM.domain.answer.entity.Answer;
 import phoenix.AM_PM.domain.answer.repository.AnswerRepository;
 import phoenix.AM_PM.domain.answer.service.AnswerService;
+import phoenix.AM_PM.domain.question.repository.QuestionRepository;
+import phoenix.AM_PM.domain.question.service.QuestionService;
 import phoenix.AM_PM.domain.user.entity.User;
 import phoenix.AM_PM.domain.user.repository.UserRepository;
 import phoenix.AM_PM.global.config.service.JwtServiceImpl;
@@ -30,8 +32,15 @@ public class AnswerController {
     UserRepository uR;
 
     private AnswerService answerService;
+    private QuestionService questionService;
     private JwtServiceImpl jwtService;
 
+    //가져오기
+//    @GetMapping("/{id}")
+//    public ResponseEntity<Answer> getBoardById(@PathVariable int id) {
+//        Answer answer = answerService.findById(id);
+//        return ResponseEntity.ok(answer);
+//    }
     //가져오기
     @GetMapping("/{id}")
     public ResponseEntity<Answer> getBoardById(@PathVariable int id) {
@@ -41,16 +50,16 @@ public class AnswerController {
     //생성
     @PostMapping("/write")
     public ResponseEntity<String> create(@RequestBody Answer answer, @RequestHeader(required = false, value = "Authorization") String token){
-        answerService.create(answer, jwtService.getId(token));
+        answerService.create(answer, Integer.parseInt(jwtService.getId(token)));
         return ResponseEntity.status(HttpStatus.CREATED).body("Board created successfully");
     }
 
     //수정
-    @PutMapping("/{postNo}/{id}")
-    public ResponseEntity<String> update(@PathVariable int id, @RequestBody Answer answer) {
-        answerService.update(id, answer);
-        return ResponseEntity.ok("Board updated successfully");
-    }
+//    @PutMapping("/{postNo}/{id}")
+//    public ResponseEntity<String> update(@PathVariable int id, @RequestBody Answer answer) {
+//        answerService.update(id, answer);
+//        return ResponseEntity.ok("Board updated successfully");
+//    }
     //삭제
     @DeleteMapping("/{postNo}/{id}")
     public void deleteById(int id){

@@ -1,25 +1,24 @@
 <template>
   <form @submit.prevent="validateAndSave">
     <h2>1:1 문의</h2>
-    
-    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-      <button type="button" class="w3-button text-white bg-dark" v-on:click="validateAndSave">저장</button>
-      <button type="button" class="w3-button text-black bg-white" v-on:click="fnList">목록</button>
-    </div>
-    <div class="board-contents">
-      <label for="title">제목: </label>
-      <input type="text" v-model="title" class="w3-input w3-border" placeholder="제목을 입력하세요.">
+    <br>   
+    <div class="mb-3">
+      <label for="title" class="form-label">제목: </label>
+      <input type="text" v-model="title" class="form-control" placeholder="제목을 입력하세요.">
       <div v-if="!title" class="error-message"></div>
-      이름:<input type="text" v-model="userId" class="w3-input w3-border" placeholder="작성자를 입력하세요." v-if="id === undefined">
-      <div v-if="id === undefined && !userId" class="error-message"></div>
+      <!-- 이름:<input type="text" v-model="userId" class="w3-input w3-border" placeholder="작성자를 입력하세요." v-if="id === undefined">
+      <div v-if="id === undefined && !userId" class="error-message"></div> -->
     </div>
-    
     <br>
-    
-    <div class="board-contents">
-      <label for="content">내용: </label>
-      <textarea name="" id="" cols="90" rows="10" v-model="content" class="w3-input w3-border" style="resize: none;"></textarea>
+    <div class="mb-3">
+      <label for="content" class="form-label">내용: </label>
+      <textarea name="" id="" cols="90" rows="10" v-model="content" class="form-control" style="resize: none;"></textarea>
       <div v-if="!content" class="error-message"></div>
+    </div>
+
+    <div class="d-grid gap-3 d-md-flex justify-content-md-end">
+      <button type="button" class="btn btn-outline-dark text-white bg-dark" v-on:click="validateAndSave">저장</button>
+      <button type="button" class="btn btn-outline-dark text-black bg-white" v-on:click="fnList">목록</button>
     </div>
   </form>
 </template>
@@ -109,6 +108,7 @@ export default {
   }
 }
 </script>
+
 
 <style scoped>
 .error-message {

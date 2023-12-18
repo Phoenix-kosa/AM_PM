@@ -4,10 +4,12 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import phoenix.AM_PM.domain.answer.dto.AnswerCreateRequestDTO;
 import phoenix.AM_PM.domain.answer.dto.AnswerDTO;
 import phoenix.AM_PM.domain.answer.entity.Answer;
 import phoenix.AM_PM.domain.answer.repository.AnswerRepository;
 
+import phoenix.AM_PM.domain.member.entity.Roles;
 import phoenix.AM_PM.domain.question.entity.Question;
 import phoenix.AM_PM.domain.question.repository.QuestionRepository;
 import phoenix.AM_PM.domain.user.entity.User;
@@ -27,13 +29,14 @@ public class AnswerService {
     private final QuestionRepository questionR;
     private final UserRepository userRepository;
     //목록 가져오기
-    @Transactional
-    public List<Answer> getAnswerList(int id){
-        return this.answerR.getAnswer(id);
-    }
-    //게시글 가져오기
-    public Answer create(Answer answer, String user_idx){
-        answer.setUser(userRepository.findById(Integer.valueOf(user_idx)).get());
+//    @Transactional
+//    public List<Answer> getAnswerList(int id){
+//        return this.answerR.getAnswer(id);
+//    }
+
+    //댓글 작성
+    public Answer create(Answer answer, int id){
+        answer.setUser(userRepository.findById(id).get());
         answer.setCreatedDate(LocalDateTime.now());
         System.out.println(answer);
         return answerR.save(answer);
@@ -44,12 +47,12 @@ public class AnswerService {
                 .orElseThrow(() -> new IllegalArgumentException("not found : " + id));
     }
     //댓글 수정
-    @Transactional
-    public void update(long id, Answer request) {
-        Answer answer = answerR.findById((int) id)
-                .orElseThrow(() -> new IllegalArgumentException("not found : " + id));
-        answer.update(request.getTitle(), request.getContent());
-    }
+//    @Transactional
+//    public void update(long id, Answer request) {
+//        Answer answer = answerR.findById((int) id)
+//                .orElseThrow(() -> new IllegalArgumentException("not found : " + id));
+//        answer.update(request.getTitle(), request.getContent());
+//    }
     //댓글 삭제
     public void delete(int id){
         answerR.deleteById(id);

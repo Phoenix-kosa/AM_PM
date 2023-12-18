@@ -95,26 +95,28 @@
         <v-list-item
             prepend-icon="mdi-account"
             title="프로젝트 수정"
+            to="modify-project"
             style="color: white"
           ></v-list-item>
           <v-list-item
             prepend-icon="mdi-account"
             title="멤버 추가"
+            to=""
             style="color: white"
           ></v-list-item>
         </v-list>
         <v-divider
           style="border-top-color: white; border-top-width: 2px"
         ></v-divider>
-        <p class="q"
-            prepend-icon="mdi-account"
-            title="문의"
-            value="/question"
-            style="color: white">문의하기
-        </p>
+        
         <v-list density="compact" nav>
-        </v-list>
-
+          <v-list-item
+            prepend-icon="mdi-account"
+            title="문의하기"
+            to="question"
+            style="color: white"
+          ></v-list-item>
+          </v-list>
 
 
         <v-list-item nav>

@@ -1,9 +1,9 @@
 <template>
   <div class="">
-    <h1>1:1 문의</h1>
+    <h1>1:1 문의</h1><br>
     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-      <button type="button" class="text-white bg-blue" v-on:click="fnWrite">문의등록</button>
-    </div>
+      <button type="button" class="btn btn-outline-primary text-white bg-blue" v-on:click="fnWrite">문의등록</button>
+    </div><br>
     <table class="table">
       <thead class="table-primary">
         <tr>
