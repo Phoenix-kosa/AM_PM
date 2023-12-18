@@ -20,7 +20,7 @@ public class AnswerController {
 //    @NonNull
 //    UserRepository uR;
 
-    private final AnswerService answerService;
+    private AnswerService answerService;
     private QuestionService questionService;
 
 //    private JwtServiceImpl jwtService;
