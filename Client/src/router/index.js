@@ -9,7 +9,7 @@ import MainLayout from "../layouts/MainLayout.vue";
 import Login from '@/pages/Auth/login.vue'
 import Register from "@/pages/Auth/register.vue"
 import TestToken from '@/pages/Auth/testtoken.vue'
-// import ProjectPlanPage from "@/pages/ProjectPlanPage.vue"
+import ProjectPlanPage from "@/pages/ProjectPlanPage.vue"
 import QnaPage from "@/pages/QnaPage.vue"
 import QnaPage from "@/pages/QnaPage.vue";
 import QnaDetail from "@/pages/QnA/QnaDetail.vue"
