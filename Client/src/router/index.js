@@ -9,13 +9,15 @@ import MainLayout from "../layouts/MainLayout.vue";
 import Login from '@/pages/Auth/login.vue'
 import Register from "@/pages/Auth/register.vue"
 import TestToken from '@/pages/Auth/testtoken.vue'
-import QnaPage from "@/pages/QnaPage.vue";
-import QnaDetail from "@/pages/QnA/QnaDetail.vue"
+import QnaPage from "@/pages/QnaPage.vue"
 import ProjectPlan from "@/components/ProjectPlan.vue"; 
 import ProjectList from "@/pages/ProjectList.vue";
 import CreateProject from "@/pages/CreateProject.vue";
 import ModifyProject from "@/pages/ModifyProject.vue";
 import AddMember from "@/pages/AddMember.vue";
+import QnaDetail from "@/components/QnA/QnaDetail.vue"
+import QnaWrite from "@/components/QnA/QnaWrite.vue"
+import QnaAnswer from "@/components/QnA/QnaAnswer.vue"
 
 const index = createRouter({
   history: createWebHistory(),
@@ -40,6 +42,8 @@ const index = createRouter({
         { path: "create-project", component: CreateProject },
         { path: "modify-project", component: ModifyProject },
         { path: "add-member", component: AddMember },
+        { path: "write", component: QnaWrite},
+        { path: "answer", component: QnaAnswer},
       ],
     },
     { path: '/login', component: Login },

@@ -90,14 +90,13 @@
         ></v-divider>     
          </v-list>
         
-        
-        <v-list density="compact" nav>
         <p class="p">관리</p>
+        <v-list density="compact" nav>       
         <v-list-item
             prepend-icon="mdi-account"
             title="프로젝트 수정"
+            to="modify-project"
             style="color: white"
-            to="/modify-project"
           ></v-list-item>
           <v-list-item
             prepend-icon="mdi-account"
@@ -105,6 +104,7 @@
             style="color: white"
             to="add-member"
           ></v-list-item>
+
         </v-list>
         <v-divider
           style="border-top-color: white; border-top-width: 2px"
@@ -117,7 +117,6 @@
             style="color: white"
           ></v-list-item>
           </v-list>
-
 
 
         <v-list-item nav>

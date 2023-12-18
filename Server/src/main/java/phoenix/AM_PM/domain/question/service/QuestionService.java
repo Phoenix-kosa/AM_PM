@@ -8,6 +8,7 @@ import phoenix.AM_PM.domain.question.dto.QuestionDTO;
 import phoenix.AM_PM.domain.question.entity.Question;
 import phoenix.AM_PM.domain.question.repository.QuestionRepository;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,7 @@ public class QuestionService {
                     .userId(entity.getUserId())
                     .title(entity.getTitle())
                     .content(entity.getContent())
-                    .createdDate(entity.getCreatedDate())
+                    .createdDate(entity.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss")))
                     .build();
 
             questionDTO.add(questiondto);
@@ -45,7 +46,7 @@ public class QuestionService {
                 .userId(question.getUserId())
                 .title(question.getTitle())
                 .content(question.getContent())
-                .createdDate(question.getCreatedDate())
+                .createdDate(question.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss")))
                 .build();
     }
     //게시글 등록
@@ -55,7 +56,7 @@ public class QuestionService {
                 .userId(questionDTO.getUserId())
                 .title(questionDTO.getTitle())
                 .content(questionDTO.getContent())
-                .createdDate(questionDTO.getCreatedDate())
+                .createdDate(LocalDateTime.now())
                 .build();
         return questionR.save(question);
     }
