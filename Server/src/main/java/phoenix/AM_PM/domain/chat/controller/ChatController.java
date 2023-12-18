@@ -21,13 +21,13 @@ public class ChatController {
     }
 
     // 채팅 내역 5개씩
-    @GetMapping("/api/chat/{project-id}")
-    public ResponseEntity readChat(@PathVariable(value = "project-id") Integer projectId,
-                                   @PageableDefault(size = 5) Pageable pageable,
-                                   @RequestParam("cursorId") Integer cursorId,
-                                   @AuthenticationPrincipal MyUserDetails myUserDetails) {
-        return new ResponseEntity(chatService.readChat(projectId, pageable, cursorId, myUserDetails.getUser().getId()), HttpStatus.OK);
-    }
+//    @GetMapping("/api/chat/{project-id}")
+//    public ResponseEntity readChat(@PathVariable(value = "project-id") Integer projectId,
+//                                   @PageableDefault(size = 5) Pageable pageable,
+//                                   @RequestParam("cursorId") Integer cursorId,
+//                                   @AuthenticationPrincipal MyUserDetails myUserDetails) {
+//        return new ResponseEntity(chatService.readChat(projectId, pageable, cursorId, myUserDetails.getUser().getId()), HttpStatus.OK);
+//    }
 
     @GetMapping("/api/read/{chat-id}")
     public ResponseEntity readCheck(@PathVariable("chat-id") Integer chatId,
