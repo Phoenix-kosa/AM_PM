@@ -1,39 +1,36 @@
 package phoenix.AM_PM.domain.answer.controller;
 
 
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import phoenix.AM_PM.domain.answer.dto.AnswerDTO;
 import phoenix.AM_PM.domain.answer.entity.Answer;
-import phoenix.AM_PM.domain.answer.repository.AnswerRepository;
 import phoenix.AM_PM.domain.answer.service.AnswerService;
-import phoenix.AM_PM.domain.question.repository.QuestionRepository;
+import phoenix.AM_PM.domain.project.dto.RequestProject;
+import phoenix.AM_PM.domain.project.dto.ResponseProject;
 import phoenix.AM_PM.domain.question.service.QuestionService;
-import phoenix.AM_PM.domain.user.entity.User;
-import phoenix.AM_PM.domain.user.repository.UserRepository;
-import phoenix.AM_PM.global.config.service.JwtServiceImpl;
+import phoenix.AM_PM.global.config.auth.MyUserDetails;
 
-
-import java.security.Principal;
 import java.util.List;
-import java.util.Optional;
 
 
 @Slf4j
 @RestController
 @RequestMapping("/api/answer")
 public class AnswerController {
+//    @NonNull
+//    UserRepository uR;
 
-    @NonNull
-    UserRepository uR;
-
-    private AnswerService answerService;
+    private final AnswerService answerService;
     private QuestionService questionService;
-    private JwtServiceImpl jwtService;
+
+    public AnswerController(AnswerService answerService) {
+        this.answerService = answerService;
+    }
+//    private JwtServiceImpl jwtService;
 
     //가져오기
 //    @GetMapping("/{id}")
@@ -41,16 +38,17 @@ public class AnswerController {
 //        Answer answer = answerService.findById(id);
 //        return ResponseEntity.ok(answer);
 //    }
-    //가져오기
+    //게시물 조회
     @GetMapping("/{id}")
-    public ResponseEntity<Answer> getBoardById(@PathVariable int id) {
-        Answer answer = answerService.findById(id);
+    public ResponseEntity getBoardById(@AuthenticationPrincipal MyUserDetails myUserDetails) {
+        List<AnswerDTO> answer = answerService.getProjectList(myUserDetails.getUser().getId());
         return ResponseEntity.ok(answer);
     }
     //생성
     @PostMapping("/write")
-    public ResponseEntity<String> create(@RequestBody Answer answer, @RequestHeader(required = false, value = "Authorization") String token){
-        answerService.create(answer, Integer.parseInt(jwtService.getId(token)));
+    public ResponseEntity create(@RequestBody AnswerDTO answerDTO,
+                                        @AuthenticationPrincipal MyUserDetails myUserDetails){
+        ResponseProject project = answerService.create(answerDTO, myUserDetails.getUser());
         return ResponseEntity.status(HttpStatus.CREATED).body("Board created successfully");
     }
 

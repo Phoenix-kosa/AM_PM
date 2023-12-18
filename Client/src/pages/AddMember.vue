@@ -13,7 +13,7 @@
       </ul>
     </div>
     <div class="add">
-      <button @click="addMember" class="btn btn-primary">멤버 추가하기</button>
+      <button @click="memberList" class="btn btn-primary">멤버 추가하기</button>
     </div>
   </div>
 </template>
@@ -27,6 +27,11 @@ const userId = ref(null);
 const roles = ref(null);
 const searchMember = ref('');
 const filteredData = ref([]);
+
+function memberList() {
+  location.href = "/member-list";
+}
+
 
 onMounted(async () => {
   try {

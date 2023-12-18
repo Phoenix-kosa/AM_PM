@@ -102,7 +102,7 @@
             prepend-icon="mdi-account"
             title="멤버 추가"
             style="color: white"
-            to="add-member"
+            to="member-list"
           ></v-list-item>
 
         </v-list>

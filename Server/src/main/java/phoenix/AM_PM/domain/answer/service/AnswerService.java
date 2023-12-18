@@ -28,18 +28,25 @@ public class AnswerService {
     private final AnswerRepository answerR;
     private final QuestionRepository questionR;
     private final UserRepository userRepository;
-    //목록 가져오기
+
+//    // 목록 가져오기
 //    @Transactional
 //    public List<Answer> getAnswerList(int id){
 //        return this.answerR.getAnswer(id);
 //    }
 
     //댓글 작성
-    public Answer create(Answer answer, int id){
-        answer.setUser(userRepository.findById(id).get());
-        answer.setCreatedDate(LocalDateTime.now());
-        System.out.println(answer);
-        return answerR.save(answer);
+    public Answer create(AnswerDTO answerDTO, User user){
+        Answer entity = Answer.from(answerDTO);
+        Answer answer = answerR.save(entity);
+        Answer member = new Members().builder()
+                .user(user)
+                .project(project)
+                .roles(Roles.representative_member)
+                .build();
+        memberRepository.save(member);
+
+        return ResponseProject.of(project);
     }
 
     public Answer findById(int id) {

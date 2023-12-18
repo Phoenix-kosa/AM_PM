@@ -18,7 +18,8 @@ import AddMember from "@/pages/AddMember.vue";
 import QnaDetail from "@/components/QnA/QnaDetail.vue"
 import QnaWrite from "@/components/QnA/QnaWrite.vue"
 import QnaAnswer from "@/components/QnA/QnaAnswer.vue"
-
+import MemberList from "@/pages/MemberList.vue";
+import LeaderChange from "@/pages/LeaderChange.vue";
 const index = createRouter({
   history: createWebHistory(),
   routes: [
@@ -44,6 +45,8 @@ const index = createRouter({
         { path: "add-member", component: AddMember },
         { path: "write", component: QnaWrite},
         { path: "answer", component: QnaAnswer},
+        { path: "member-list", component: MemberList},
+        { path: "leader-change", component: LeaderChange},
       ],
     },
     { path: '/login', component: Login },
