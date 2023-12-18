@@ -14,8 +14,8 @@ public interface AnswerRepository extends JpaRepository<Answer, Integer> {
 
 //    @Query("SELECT a from Answer a where a.question.id=:bulletinId and a.id>0 order by a.id ASC")
 //    public List<Answer> getAnswer(@Param("bulletinId") int bulletinId);
-    List<Answer> findAllByBulletinId(int bulletinId);
-    List<Answer> findAllByUserId(String userId);
+//    List<Answer> findAllByBulletinId(int bulletinId);
+//    List<Answer> findAllByUserId(String userId);
 
 
 }

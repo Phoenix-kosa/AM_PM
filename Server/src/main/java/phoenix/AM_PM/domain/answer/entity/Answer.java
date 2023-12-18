@@ -19,13 +19,26 @@ import java.time.LocalDateTime;
 public class Answer {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Id
+  @Column(name = "id")
   private Integer id; //답변 ID
+
   private Integer bulletinId; //문의 ID
+
+  @Column (name = "title")
   private String title;
+
+  @Column (name = "content")
   private String content;
 
   @Column(name = "created_date")
   private LocalDateTime createdDate;
+
+  @Builder
+  public Answer(String title, String content){
+    this.title = title;
+    this.content = content;
+  }
+
 
   @ManyToOne(fetch = FetchType.LAZY)
   private Question question;    // 댓글이 달린 게시판
@@ -37,10 +50,10 @@ public class Answer {
     this.title = title;
     this.content = content;
   }
-  public void changeUserId(User userId){
-    this.user = userId;
-  }
-  public void changePost(Question question){
-    this.question = question;
-  }
+//  public void changeUserId(User userId){
+//    this.user = userId;
+//  }
+//  public void changePost(Question question){
+//    this.question = question;
+//  }
 }
