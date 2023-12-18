@@ -97,6 +97,7 @@
             prepend-icon="mdi-account"
             title="프로젝트 수정"
             style="color: white"
+            to="/modify-project"
           ></v-list-item>
           <v-list-item
             prepend-icon="mdi-account"
