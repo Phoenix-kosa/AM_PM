@@ -1,6 +1,6 @@
 <template>
   <div class="chatContainer">
-    <div class="msgContainer">
+    <div class="msgContainer" id="msgScroll">
       <div class="buttonContainer">
         <button @click="loadData(pageNum++)" id="loadData">불러오기</button>
       </div>
@@ -32,6 +32,7 @@
 <script setup>
 import axios from 'axios';
 import { ref } from 'vue';
+import Stomp from 'webstomp-client';
 
 const msg = ref(null);
 const projectId = sessionStorage.getItem("projectId");
@@ -82,15 +83,24 @@ function loadData(cursor) {
           }).catch(error => {console.error(error);})
     } 
   });
-  
 }
 
-const websocket = new WebSocket("ws://localhost:8090/chat/" + projectId);
 const decodedPayload = decodeToken(sessionStorage.getItem("access-token"));
 userId.value = decodedPayload.id;
-websocket.onmessage = onMessage;
-websocket.onclose = onClose;
-websocket.onopen = onOpen;
+
+var websocket = new WebSocket('ws://localhost:8090/chat');
+var stomp = Stomp.over(websocket);
+stomp.connect({}, function() {
+  console.log("stomp 연결");
+  loadData(-1);
+  stomp.subscribe("/sub/chat/" + projectId, function(chat) {
+    chatList.value.push(JSON.parse(chat.body));
+    setTimeout(function () {
+      var msgArea = document.getElementById("msgScroll");
+      msgArea.scrollTop = msgArea.scrollHeight;
+    }, 100);
+  });
+});
 
 function send() {
   let data = {
@@ -99,24 +109,8 @@ function send() {
     userId : userId.value
   };
 
-  websocket.send(JSON.stringify(data));
+  stomp.send("/pub/chat/message", JSON.stringify(data), {});
   msg.value = '';
-}
-
-function onClose() {
-  console.log("퇴장");
-}
-
-function onOpen() {
-  loadData(-1);
-  console.log("입장");
-}
-
-function onMessage(message) {
-  let data = JSON.parse(message.data);
-  console.log(data);
-
-  chatList.value.push(data);
 }
 </script>
 

@@ -2,9 +2,9 @@ package phoenix.AM_PM.domain.project.service;
 
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import phoenix.AM_PM.domain.member.entity.Members;
-import phoenix.AM_PM.domain.member.entity.Roles;
-import phoenix.AM_PM.domain.member.repository.MemberRepository;
+import phoenix.AM_PM.domain.members.entity.Members;
+import phoenix.AM_PM.domain.members.entity.Roles;
+import phoenix.AM_PM.domain.members.repository.MembersRepository;
 import phoenix.AM_PM.domain.project.dto.RequestProject;
 import phoenix.AM_PM.domain.project.dto.ResponseProject;
 import phoenix.AM_PM.domain.project.entity.Project;
@@ -21,10 +21,10 @@ import java.util.Optional;
 @Service
 public class ProjectService {
     private final ProjectRepository projectRepository;
-    private final MemberRepository memberRepository;
+    private final MembersRepository memberRepository;
     private final UserRepository userRepository;
 
-    ProjectService(ProjectRepository projectRepository, MemberRepository memberRepository, UserRepository userRepository) {
+    ProjectService(ProjectRepository projectRepository, MembersRepository memberRepository, UserRepository userRepository) {
         this.projectRepository = projectRepository;
         this.memberRepository = memberRepository;
         this.userRepository = userRepository;
