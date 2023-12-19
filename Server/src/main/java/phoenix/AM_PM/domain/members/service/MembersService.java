@@ -49,6 +49,7 @@ public class MembersService {
         }
     }
 
+    @Transactional
     public void removeMembers(Integer projectId, RequestMembers requestMembers) {
         Project project = projectRepository.findById(projectId).orElseThrow(()-> new BusinessLogicException(ExceptionCode.PROJECT_NOT_FOUND));
         for(Integer userId : requestMembers.getMembers()) {

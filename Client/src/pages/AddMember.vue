@@ -1,5 +1,5 @@
 <template>
-  <h2 class="">멤버 추가</h2>
+  <h2 class="" style="text-align: center;">멤버 추가</h2>
   <div class="container">
     <div class="search">
       <form class="d-flex" @submit.prevent="submitForm">
@@ -9,13 +9,13 @@
     </div>
     <div class="list">
         <div class ="search-user" v-for="item in filteredData" :key="item.id">
-            <input type="checkbox" v-model="userform" :value="item.id">
+            <input class="checkbox" type="checkbox" v-model="userform" :value="item.id">
             <label :for="item.id"> {{ item.nickname }}</label>
         </div>
     </div>
-    <div class="add">
-      <button @click="memberList" class="btn btn-primary">멤버 추가하기</button>
-    </div>
+  </div>
+  <div class="add">
+    <button @click="memberList" class="btn btn-primary">멤버 추가하기</button>
   </div>
 </template>
 
@@ -99,35 +99,5 @@ loadData();
 </script>
 
 <style scoped>
-.container {
-  border-color: #166adc;
-  border-radius: 20px;
-  border-width: 1px;
-  border-style: dashed;
-  height: 600px;
-  min-width: 700px;
-  display: inline-block;
-  text-align: center;
-
-}
-
-.search {
-  display: inline-block;
-  text-align: center;
-  margin-top: 10px;
-}
-
-.list {
-  height: 400px;
-  width: 600px;
-  background-color: beige;
-  margin-top: 15px;
-  margin-left: 25%;
-  text-align: center;
-}
-
-.add{
-  text-align: center;
-  margin-top: 15px;
-}
+@import "@/assets/css/memberadd.css";
 </style>

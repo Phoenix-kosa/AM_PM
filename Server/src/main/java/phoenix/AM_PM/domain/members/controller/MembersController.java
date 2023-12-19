@@ -50,9 +50,16 @@ public class MembersController {
     }
     // 프로젝트 멤버 삭제
     @DeleteMapping("/api/members/{project-id}")
-    public ResponseEntity removeMembers(@PathVariable("project-id") Integer projectId,
+    public ResponseEntity removeMembers(@AuthenticationPrincipal MyUserDetails userDetails, @PathVariable("project-id") Integer projectId,
                                      @RequestBody RequestMembers requestMembers) {
-        membersService.removeMembers(projectId, requestMembers);
+        requestMembers.getMembers().forEach(System.out::println);
+        userDetails.getUser().getUserId();
+        try{
+            membersService.removeMembers(projectId, requestMembers);
+        } catch (Exception e) {
+            System.out.println(e);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>(HttpStatus.RESET_CONTENT);
     }
     // 프로젝트 대표 멤버 조회
