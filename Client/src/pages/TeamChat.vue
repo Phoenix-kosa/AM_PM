@@ -13,7 +13,7 @@
     <div class="msgContainer" id="msgScroll">
       <div id="msgArea" v-for="data in chatList">
         <div class="contentContainer">
-          <div class="imgContainer">
+          <div @click="show(data.userId)" class="imgContainer">
             <img v-if="data.user" :src="data.user.profileImg"/>
             <img v-else="data.user" :src="data.profileImg"/>
           </div>
@@ -238,6 +238,7 @@ function send() {
 .imgContainer {
   width: 50px;
   height: 50px;
+  cursor: pointer;
 }
 img {
   width: 100%;
@@ -250,6 +251,7 @@ img {
 .nickname {
   font-weight: bold;
   margin-right: 10px;
+  cursor: pointer;
 }
 .date {
   margin-right: 10px;
