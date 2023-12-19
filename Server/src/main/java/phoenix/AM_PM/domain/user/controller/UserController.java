@@ -12,10 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
-import phoenix.AM_PM.domain.user.dto.EditUserDto;
-import phoenix.AM_PM.domain.user.dto.LoginRequestDto;
-import phoenix.AM_PM.domain.user.dto.MypageUserDto;
-import phoenix.AM_PM.domain.user.dto.SaveUserDto;
+import phoenix.AM_PM.domain.user.dto.*;
 import phoenix.AM_PM.domain.user.entity.User;
 import phoenix.AM_PM.domain.user.repository.UserRepository;
 import phoenix.AM_PM.domain.user.service.UserService;
@@ -148,4 +145,9 @@ public class UserController {
         }
     }
 
+    @GetMapping("/api/user/{user-id}")
+    public ResponseEntity getUserDetail(@PathVariable("user-id") Integer userId) {
+        ResponseUser responseUser = userService.getUserDetail(userId);
+        return ResponseEntity.ok(responseUser);
+    }
 }

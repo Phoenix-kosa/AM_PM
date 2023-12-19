@@ -1,4 +1,14 @@
 <template>
+  <div v-if="modalData != null" class="modal">
+    <span class="xButton" @click="close">X</span>
+    <div class="imgDiv">
+      <img v-if="modalData.profileImg" :src="modalData.profileImg">
+    </div>
+    <div class="textDiv">
+      <span class="nicknameModal">{{ modalData.nickname }}</span>
+      <span class="emailModal">{{ modalData.email }}</span>
+    </div>
+  </div>
   <div class="chatContainer">
     <div class="msgContainer" id="msgScroll">
       <div id="msgArea" v-for="data in chatList">
@@ -9,8 +19,8 @@
           </div>
           <div class="message">
             <div class="details">
-              <span v-if="data.user" class="nickname" v-text="data.user.nickname"></span>
-              <span v-else="data.user" class="nickname" v-text="data.nickName"></span>
+              <span v-if="data.user" @click="show(data.userId)" class="nickname" v-text="data.user.nickname"></span>
+              <span v-else="data.user" @click="show(data.userId)" class="nickname" v-text="data.nickName"></span>
               <span class="date">{{ data.createdDate.substring(0, 10) }} {{data.createdDate.substring(11, 16)}}</span>
               <span v-if="data.unread > 0" class="unread" v-text="data.unread"></span>
             </div>
@@ -27,14 +37,16 @@
 </template>
 
 <script setup>
-import axios from 'axios';
 import { ref } from 'vue';
+import { onBeforeRouteLeave  } from 'vue-router';
 import Stomp from 'webstomp-client';
+import axios from 'axios';
 
 const msg = ref(null);
 const projectId = sessionStorage.getItem("projectId");
 const userId = ref(null);
 const chatList = ref([]);
+const modalData = ref(null);
 
 function decodeToken(token) {
   const base64Url = token.split('.')[1];
@@ -42,62 +54,71 @@ function decodeToken(token) {
   return JSON.parse(atob(base64));
 }
 
+function show(userId) {
+  axios.get('http://localhost:8090/api/user/' + userId, {
+    headers: { 
+        "Authorization" : sessionStorage.getItem("access-token") 
+    }
+  })
+  .then((response) => {
+    modalData.value = response.data;
+  })
+  .catch((err) => {
+    console.log(err)
+    if(err.response.status == 401) {
+      console.log("토큰 만료");
+
+      axios.get("http://localhost:8090/api/rtoken", {
+          headers: { 
+              "RefreshToken" : sessionStorage.getItem("refresh-token"),
+              "Authorization" : sessionStorage.getItem("access-token") }
+          }).then(response => {
+              console.log(response)
+              if(response.status == 200){
+                  console.log("토큰 재발급");
+                  console.log(response.headers.authorization);
+                  sessionStorage.setItem("access-token", response.headers.authorization);
+              } else {
+                  console.log("토큰 재발급 실패");
+              }
+          }).catch(error => {console.error(error);})
+    } 
+  });
+}
+
+function close() {
+  modalData.value = null;
+}
+
 const decodedPayload = decodeToken(sessionStorage.getItem("access-token"));
 userId.value = decodedPayload.id;
 
-var websocket = new WebSocket('ws://localhost:8090/chat');
-var stomp = Stomp.over(websocket);
+let websocket = new WebSocket('ws://localhost:8090/chat');
+let stomp = Stomp.over(websocket);
 stomp.connect({}, function() {
-  stomp.subscribe("/sub/chat/" + projectId + "/user/" + userId.value, function(chat) {
-    var data = JSON.parse(chat.body);
+  stomp.subscribe("/sub/load/" + projectId, function(chat) {
+    let data = JSON.parse(chat.body);
     chatList.value = data;
   });
   loadData();
   setTimeout(function () {
-      var msgArea = document.getElementById("msgScroll");
-      msgArea.scrollTop = msgArea.scrollHeight;
-  }, 200);
+    let msgArea = document.getElementById("msgScroll");
+    msgArea.scrollTop = msgArea.scrollHeight;
+  }, 300);
   
   stomp.subscribe("/sub/chat/" + projectId, function(chat) {
-    var data = JSON.parse(chat.body);
-    axios.get(`http://localhost:8090/api/read/${data.id}`, {
-      headers: { 
-          "Authorization" : sessionStorage.getItem("access-token") 
-      }
-    })
-    .then((response) => {
-      console.log(response.status);
-    })
-    .catch((err) => {
-      console.log(err)
-      if(err.response.status == 401) {
-        console.log("토큰 만료");
-
-        axios.get("http://localhost:8090/api/rtoken", {
-            headers: { 
-                "RefreshToken" : sessionStorage.getItem("refresh-token"),
-                "Authorization" : sessionStorage.getItem("access-token") }
-            }).then(response => {
-                console.log(response)
-                if(response.status == 200){
-                    console.log("토큰 재발급");
-                    console.log(response.headers.authorization);
-                    sessionStorage.setItem("access-token", response.headers.authorization);
-                } else {
-                    console.log("토큰 재발급 실패");
-                }
-            }).catch(error => {console.error(error);})
-      } 
-    });
+    let data = JSON.parse(chat.body);
     chatList.value.push(data);
     setTimeout(function () {
-      var msgArea = document.getElementById("msgScroll");
+      let msgArea = document.getElementById("msgScroll");
       msgArea.scrollTop = msgArea.scrollHeight;
     }, 100);
-  });
-  setInterval(() => {
     loadData();
-  }, 5000);
+  });
+});
+
+onBeforeRouteLeave(() => {
+  stomp.disconnect();
 });
 
 function loadData() {
@@ -122,6 +143,49 @@ function send() {
 </script>
 
 <style scoped>
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-40%, -50%);
+  width: 400px;
+  height: 400px;
+  background-color: rgba(22, 106, 220, 0.7);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.xButton {
+  color: white;
+  font-weight: bold;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+.imgDiv {
+  width: 200px;
+  height: 200px;
+  margin-bottom: 20px;
+}
+.modal img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+.textDiv {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.nicknameModal,
+.emailModal {
+  color: black;
+  margin-bottom: 10px;
+}
 .chatContainer {
   border-color: #166adc;
   border-radius: 20px;
@@ -129,6 +193,7 @@ function send() {
   border-style: dashed;
   padding: 10px;
   height: 600px;
+  min-width: 500px;
 }
 #loadData {
   background-color: #d9d9d9;

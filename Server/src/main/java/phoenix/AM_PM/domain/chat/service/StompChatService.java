@@ -53,18 +53,12 @@ public class StompChatService {
 
     @Transactional
     public void readCheck(Chat chat, Integer userId) {
-        int length = 1;
-        if(!chat.getWhoRead().isEmpty()) {
-            String[] reads = chat.getWhoRead().split(",");
-            length = reads.length;
-            if(!Arrays.asList(reads).contains(String.valueOf(userId))) {
-                chat.updateWhoRead(chat.getWhoRead() + "," + userId);
-                length++;
-            }
+        String[] reads = chat.getWhoRead().split(",");
+        if(!Arrays.asList(reads).contains(String.valueOf(userId))) {
+            chat.updateWhoRead(chat.getWhoRead() + "," + userId);
+            chat.updateUnread(membersRepository.countByProjectId(chat.getProject().getId()) - (reads.length + 1));
         }
-        else {
-            chat.updateWhoRead(String.valueOf(userId));
-        }
-        chat.updateUnread(membersRepository.countByProjectId(chat.getProject().getId()) - length);
+        else
+            chat.updateUnread(membersRepository.countByProjectId(chat.getProject().getId()) - reads.length);
     }
 }

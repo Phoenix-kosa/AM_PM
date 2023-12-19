@@ -26,6 +26,6 @@ public class StompChatController {
     @MessageMapping(value = "/chat/enter")
     public void enter(@RequestBody RequestChat requestChat) {
         List<ResponseChat> responseChatList = stompChatService.readChat(requestChat.getProjectId(), requestChat.getUserId());
-        template.convertAndSend("/sub/chat/" + requestChat.getProjectId() + "/user/" + requestChat.getUserId(), responseChatList);
+        template.convertAndSend("/sub/load/" + requestChat.getProjectId(), responseChatList);
     }
 }
