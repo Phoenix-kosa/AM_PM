@@ -49,6 +49,7 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { getMyInfoReq, editMyInfoReq } from "../api/common";
+import { expireToken } from "../api/config";
 
 const editMyInfo = ref({
   nickname: "",
@@ -76,7 +77,10 @@ const getMyInfo = () => {
         confirmPassword: "",
       };
     })
-    .catch((error) => console.log(error));
+    .catch((error) => {
+      expireToken(error, getMyInfo);
+      console.log(error);
+    });
 };
 
 const submitForm = () => {
@@ -89,6 +93,7 @@ const submitForm = () => {
         // router.push("/login");
       })
       .catch((error) => {
+        expireToken(error, submitForm);
         window.scrollTo(0, 0);
         alert("회원정보 수정 실패!");
         console.log(error);
