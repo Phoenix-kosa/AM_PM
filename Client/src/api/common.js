@@ -1,5 +1,5 @@
 import axios from "axios";
-import { authApi, apiInstance } from "./config";
+import { authApi, apiInstance, expireToken } from "./config";
 
 const api = async (url, method, data) => {
   return (

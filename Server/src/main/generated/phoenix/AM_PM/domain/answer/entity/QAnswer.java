@@ -54,7 +54,7 @@ public class QAnswer extends EntityPathBase<Answer> {
 
     public QAnswer(Class<? extends Answer> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.question = inits.isInitialized("question") ? new phoenix.AM_PM.domain.question.entity.QQuestion(forProperty("question"), inits.get("question")) : null;
+        this.question = inits.isInitialized("question") ? new phoenix.AM_PM.domain.question.entity.QQuestion(forProperty("question")) : null;
         this.user = inits.isInitialized("user") ? new phoenix.AM_PM.domain.user.entity.QUser(forProperty("user")) : null;
     }
 
