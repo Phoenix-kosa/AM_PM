@@ -22,6 +22,9 @@
 <script setup>
 import axios from 'axios';
 import { ref } from 'vue';
+import { refresh } from "@/api/refresh";
+import { useRouter } from 'vue-router';
+const router = useRouter();
 
 const projectId = sessionStorage.getItem("projectId");
 const userId = ref(null);
@@ -42,27 +45,16 @@ const memberList = () => {
       "Authorization" : sessionStorage.getItem("access-token") 
     }
   }).then(response => {
-    console.log(response)
+    console.log(response.status)
+    alert("맴버 추가 완료!")
+    router.push("/member-list")
+
   })
   .catch((err) => {
     console.log(err)
     if(err.response.status == 401) {
       console.log("토큰 만료");
-
-      axios.get("http://localhost:8090/api/rtoken", {
-          headers: { 
-              "RefreshToken" : sessionStorage.getItem("refresh-token"),
-              "Authorization" : sessionStorage.getItem("access-token") }
-          }).then(response => {
-              console.log(response)
-              if(response.status == 200){
-                  console.log("토큰 재발급");
-                  console.log(response.headers.authorization);
-                  sessionStorage.setItem("access-token", response.headers.authorization);
-              } else {
-                  console.log("토큰 재발급 실패");
-              }
-          }).catch(error => {console.error(error);})
+      refresh();
     } 
   });
 }
@@ -71,15 +63,13 @@ const submitForm = () => {
   // console.log(searchMember.value);
   axios.get(`http://localhost:8090/api/user/nickname?nickname=${searchMember.value}`)
   .then(request => {
-    // console.log(request.data)
-    // filteredData.value = request.data
     filteredData.value = [];
     let checkid = [];
     for (let o of memberIdList.value){
       checkid.push(o.userId)
     }
     for(let o of request.data){
-      console.log(memberIdList.value)
+      // console.log(memberIdList.value)
       if(o.roles == "ROLE_USER" && !checkid.includes(o.id)){
         filteredData.value.push({"id":o.id, "nickname":o.nickname})
       }
@@ -100,21 +90,7 @@ function loadData(){
     console.log(err)
     if(err.response.status == 401) {
       console.log("토큰 만료");
-
-      axios.get("http://localhost:8090/api/rtoken", {
-          headers: { 
-              "RefreshToken" : sessionStorage.getItem("refresh-token"),
-              "Authorization" : sessionStorage.getItem("access-token") }
-          }).then(response => {
-              console.log(response)
-              if(response.status == 200){
-                  console.log("토큰 재발급");
-                  console.log(response.headers.authorization);
-                  sessionStorage.setItem("access-token", response.headers.authorization);
-              } else {
-                  console.log("토큰 재발급 실패");
-              }
-          }).catch(error => {console.error(error);})
+      refresh();
     } 
   });
 }

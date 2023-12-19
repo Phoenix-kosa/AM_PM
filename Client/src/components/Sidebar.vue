@@ -100,7 +100,7 @@
           ></v-list-item>
           <v-list-item
             prepend-icon="mdi-account"
-            title="멤버 추가"
+            title="멤버 관리"
             style="color: white"
             to="member-list"
           ></v-list-item>

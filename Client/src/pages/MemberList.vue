@@ -18,16 +18,19 @@
 <script setup>
 import axios from 'axios';
 import { ref } from 'vue';
+import { refresh } from "@/api/refresh";
+import { useRouter } from 'vue-router';
+const router = useRouter();
 
 const memberList = ref([]);
 const projectId = sessionStorage.getItem("projectId");
 
 function addMember() {
-  location.href = "/add-member";
+  router.push("/add-member");
 }
 
 function leaderChange() {
-  location.href = "/leader-change";
+  router.push("/leader-change");
 }
 
 function loadData(){
@@ -43,21 +46,7 @@ function loadData(){
     console.log(err)
     if(err.response.status == 401) {
       console.log("토큰 만료");
-
-      axios.get("http://localhost:8090/api/rtoken", {
-          headers: { 
-              "RefreshToken" : sessionStorage.getItem("refresh-token"),
-              "Authorization" : sessionStorage.getItem("access-token") }
-          }).then(response => {
-              console.log(response)
-              if(response.status == 200){
-                  console.log("토큰 재발급");
-                  console.log(response.headers.authorization);
-                  sessionStorage.setItem("access-token", response.headers.authorization);
-              } else {
-                  console.log("토큰 재발급 실패");
-              }
-          }).catch(error => {console.error(error);})
+      refresh();
     } 
   });
 }
