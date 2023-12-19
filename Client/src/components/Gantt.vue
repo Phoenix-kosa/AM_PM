@@ -17,7 +17,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 
 const row1BarList = ref([
   {
@@ -36,7 +36,7 @@ const row2BarList = ref([
     myEndDate: "2021-07-14 02:00",
     ganttBarConfig: {
       id: "another-unique-id-2",
-      hasHandles: true,
+      hasHandles: false,
       label: "Hey, look at me",
       style: {
         // arbitrary CSS styling for your bar
@@ -47,6 +47,8 @@ const row2BarList = ref([
     },
   },
 ]);
+
+onMounted(() => {});
 </script>
 <style scoped>
 @import "../assets/css/gantt.css";

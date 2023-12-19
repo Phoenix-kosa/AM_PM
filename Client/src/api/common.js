@@ -44,3 +44,9 @@ export const editNoti = async (noticeId, formdata) => {
   const response = await apiInstance.put(`/api/notice/${noticeId}`, formdata);
   return response;
 };
+
+// 간트차트
+export const getTask = async (projectId) => {
+  const response = await apiInstance.get(`/api/task/${projectId}`);
+  return response;
+};
