@@ -35,7 +35,7 @@ public class Oauth2UserCustomService extends DefaultOAuth2UserService {
             .password("default")
             .email(email)
             .nickname(name)
-            .roles("USERS")
+            .roles("ROLE_USER")
             .build());
 
     return userRepository.save(user);

@@ -4,6 +4,7 @@ package phoenix.AM_PM.global.config;
 		import org.springframework.beans.factory.annotation.Autowired;
 		import org.springframework.context.annotation.Bean;
 		import org.springframework.context.annotation.Configuration;
+		import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 		import org.springframework.security.authentication.AuthenticationManager;
 		import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 		import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -72,8 +73,11 @@ public class SpringSecurityConfig {
 				.authorizeRequests(authorizeRequests ->
 						authorizeRequests
 								.requestMatchers("/**").permitAll()
+//								.requestMatchers("/api/auth/local").permitAll()
+//								.requestMatchers("/api/user").permitAll()
+//								.requestMatchers("/api/user/user_id/**").permitAll()
+//								.requestMatchers("/api/user/email/**").permitAll()
 								.anyRequest().authenticated())
-//				.requestMatchers("/api/auth/local", "api/auth").permitAll()
 				.oauth2Login(oauth2Login ->
 						oauth2Login
 								.successHandler(oAuth2SuccessHandler())

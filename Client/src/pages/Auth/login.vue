@@ -21,11 +21,11 @@
                             <input v-model="request.password" type="password" class="form-control" id="password" name="password"
                                 placeholder="비밀번호를 입력해 주세요" required>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-block">로그인</button>
+                        <button type="submit" class="btn btn-primary btn-block" id="login-btn">로그인</button>
                     </form>
-                    <button type="submit" class="btn btn-primary btn-block" @click="simpleLogin">간편 로그인</button>
                     <button id="register_button" class="btn btn-primary btn-block" @click="$router.push('/register')">
                     <span id="register_text">회원가입</span></button>
+                    <img class="" id="google-btn" v-on:click="simpleLogin" :src="googlebtn">
                 </div>
             </div>
         </div>
@@ -39,6 +39,8 @@ import axios from 'axios';
 // axios.defaults.withCredentials = true;
 
 import { useRouter } from 'vue-router';
+
+import googlebtn from "@/assets/images/google_btn.png"
 
 const router = useRouter();
 const request = reactive({
@@ -60,7 +62,7 @@ const login = () => {
 
                 sessionStorage.setItem("access-token", response.headers.authorization);
                 sessionStorage.setItem("refresh-token", response.headers.refreshtoken);
-                router.push("/testtoken")
+                router.push("/project-list")
             } else {
                 console.log(response)
                 // 로그인 실패 시 오류 메시지를 팝업 창으로 표시
@@ -77,8 +79,7 @@ const login = () => {
 }
 
 const simpleLogin = () => {
-    window.location.href = "https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?response_type=code&client_id=291902724502-ut9eq50emujhsg46gui4j5spljbna2d2.apps.googleusercontent.com&scope=profile%20email&state=eWGve_0RK-mIdmwnGEcwpKvB3YRhNsoCED4mM79NUwU%3D&redirect_uri=http%3A%2F%2Flocalhost%3A8090%2Flogin%2Foauth2%2Fcode%2Fgoogle&service=lso&o2v=2&theme=glif&flowName=GeneralOAuthFlow"
-    // window.location.href = "http://localhost:8090/login/oauth2/code/google";
+    window.location.href = "http://localhost:8090/oauth2/authorization/google";
 }
 </script>
 

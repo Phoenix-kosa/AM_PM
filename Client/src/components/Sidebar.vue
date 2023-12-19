@@ -13,37 +13,39 @@
           <v-list-item
             prepend-icon="mdi-account"
             title="Usecase"
-            value="Usecase"
+            to="/usecase"
             style="color: white"
           ></v-list-item>
           <v-list-item
             prepend-icon="mdi-account-group-outline"
             title="ERD"
-            value="ERD"
+            to="/erd"
             style="color: white"
           ></v-list-item>
           <v-list-item
             prepend-icon="mdi-account-group-outline"
             title="페이지 명세서"
-            value="페이지 명세서"
+            to="/ui"
             style="color: white"
           ></v-list-item>
         </v-list>
         <v-divider
           style="border-top-color: white; border-top-width: 2px"
         ></v-divider>
+        
+        
         <p class="p">개발</p>
         <v-list density="compact" nav>
           <v-list-item
             prepend-icon="mdi-home-city"
             title="공지사항/간트차트"
-            value="공지사항/간트차트"
+            to="dev"
             style="color: white"
           ></v-list-item>
           <v-list-item
             prepend-icon="mdi-account"
             title="채팅"
-            value="채팅"
+            to="team-chat"
             style="color: white"
           ></v-list-item>
         </v-list>
@@ -83,9 +85,40 @@
             value="도회"
             style="color: white"
           ></v-list-item>
-        </v-list>
+          <v-divider
+          style="border-top-color: white; border-top-width: 2px"
+        ></v-divider>     
+         </v-list>
+        
+        <p class="p">관리</p>
+        <v-list density="compact" nav>       
+        <v-list-item
+            prepend-icon="mdi-account"
+            title="프로젝트 수정"
+            to="modify-project"
+            style="color: white"
+          ></v-list-item>
+          <v-list-item
+            prepend-icon="mdi-account"
+            title="멤버 추가"
+            style="color: white"
+            to="member-list"
+          ></v-list-item>
 
-        <p class="f">문의하기</p>
+        </v-list>
+        <v-divider
+          style="border-top-color: white; border-top-width: 2px"
+        ></v-divider>
+        <v-list density="compact" nav>
+          <v-list-item
+            prepend-icon="mdi-account"
+            title="문의하기"
+            to="question"
+            style="color: white"
+          ></v-list-item>
+          </v-list>
+
+
         <v-list-item nav>
           <template v-slot:append>
             <v-btn variant="text" icon="mdi-chevron-left"></v-btn>

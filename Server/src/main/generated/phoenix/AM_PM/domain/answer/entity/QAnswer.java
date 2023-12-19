@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -17,9 +18,11 @@ public class QAnswer extends EntityPathBase<Answer> {
 
     private static final long serialVersionUID = -1408051610L;
 
+    private static final PathInits INITS = PathInits.DIRECT2;
+
     public static final QAnswer answer = new QAnswer("answer");
 
-    public final StringPath bulletinId = createString("bulletinId");
+    public final NumberPath<Integer> bulletinId = createNumber("bulletinId", Integer.class);
 
     public final StringPath content = createString("content");
 
@@ -27,18 +30,32 @@ public class QAnswer extends EntityPathBase<Answer> {
 
     public final NumberPath<Integer> id = createNumber("id", Integer.class);
 
+    public final phoenix.AM_PM.domain.question.entity.QQuestion question;
+
     public final StringPath title = createString("title");
 
+    public final phoenix.AM_PM.domain.user.entity.QUser user;
+
     public QAnswer(String variable) {
-        super(Answer.class, forVariable(variable));
+        this(Answer.class, forVariable(variable), INITS);
     }
 
     public QAnswer(Path<? extends Answer> path) {
-        super(path.getType(), path.getMetadata());
+        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
     public QAnswer(PathMetadata metadata) {
-        super(Answer.class, metadata);
+        this(metadata, PathInits.getFor(metadata, INITS));
+    }
+
+    public QAnswer(PathMetadata metadata, PathInits inits) {
+        this(Answer.class, metadata, inits);
+    }
+
+    public QAnswer(Class<? extends Answer> type, PathMetadata metadata, PathInits inits) {
+        super(type, metadata, inits);
+        this.question = inits.isInitialized("question") ? new phoenix.AM_PM.domain.question.entity.QQuestion(forProperty("question")) : null;
+        this.user = inits.isInitialized("user") ? new phoenix.AM_PM.domain.user.entity.QUser(forProperty("user")) : null;
     }
 
 }

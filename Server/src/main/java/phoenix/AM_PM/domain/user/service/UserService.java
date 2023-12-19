@@ -24,7 +24,7 @@ public class UserService {
         .password(encoder.encode(user.getPassword()))
         .nickname(user.getNickname())
         .email(user.getEmail())
-        .roles("USERS")
+        .roles("ROLE_USER")
         .build();
 
     try {

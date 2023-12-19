@@ -15,7 +15,7 @@ export default {
         sessionStorage.setItem("access-token", atoken);
         sessionStorage.setItem("refresh-token", rtoken);
         window.alert('로그인하였습니다');
-        router.push({path:'/testtoken'});
+        router.push({path:'/project-list'});
     } else {
       window.alert('로그인에 실패하였습니다.')
       router.push({path:'/login'})
