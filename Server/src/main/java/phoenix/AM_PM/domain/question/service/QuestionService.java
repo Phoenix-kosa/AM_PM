@@ -21,28 +21,13 @@ public class QuestionService {
     private final QuestionRepository questionR;
 
     //목록 가져오기
-    public List<QuestionDTO> getQuestionList(){
-        List<Question> question = questionR.findAll();
-        List<QuestionDTO> questionDTO = new ArrayList<>();
-
-        for (Question entity : question){
-            QuestionDTO questiondto = QuestionDTO.builder()
-                    .id(entity.getId())
-                    .userId(entity.getUserId())
-                    .title(entity.getTitle())
-                    .content(entity.getContent())
-                    .createdDate(entity.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss")))
-                    .build();
-
-            questionDTO.add(questiondto);
-        }
-        return questionDTO;
+    public List<Question> getQuestionList(String userId){
+        return questionR.findByUserId(userId);
     }
     //게시글 가져오기
     public QuestionDTO getQuestion(int id){
         Question question = questionR.findById(id).orElseThrow(() -> new RuntimeException("게시글 없음"));
         return QuestionDTO.builder()
-                .id(question.getId())
                 .userId(question.getUserId())
                 .title(question.getTitle())
                 .content(question.getContent())
@@ -50,10 +35,9 @@ public class QuestionService {
                 .build();
     }
     //게시글 등록
-    public Question create(QuestionDTO questionDTO){
+    public Question create(QuestionDTO questionDTO, String name){
         Question question = Question.builder()
-                .id(questionDTO.getId())
-                .userId(questionDTO.getUserId())
+                .userId(name)
                 .title(questionDTO.getTitle())
                 .content(questionDTO.getContent())
                 .createdDate(LocalDateTime.now())
