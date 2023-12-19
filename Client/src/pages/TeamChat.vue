@@ -151,6 +151,7 @@ function send() {
   width: 400px;
   height: 400px;
   background-color: rgba(22, 106, 220, 0.7);
+  border: #166adc solid;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -170,6 +171,8 @@ function send() {
   width: 200px;
   height: 200px;
   margin-bottom: 20px;
+  background-color: white;
+  border-radius: 50%;
 }
 .modal img {
   width: 100%;
