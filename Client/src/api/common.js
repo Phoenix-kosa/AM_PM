@@ -39,3 +39,8 @@ export const deleteNoti = async (noticeId) => {
   const response = await apiInstance.delete(`/api/notice/${noticeId}`);
   return response;
 };
+
+export const editNoti = async (noticeId, formdata) => {
+  const response = await apiInstance.put(`/api/notice/${noticeId}`, formdata);
+  return response;
+};

@@ -42,7 +42,7 @@ public class NoticeController {
     }
 
     @DeleteMapping("/{noticeId}")
-    public ResponseEntity<String> deleteNotice(@PathVariable (name = "noticeId") String noticeId) {
+    public ResponseEntity<String> deleteNotice(@PathVariable(name = "noticeId") String noticeId) {
         try {
             System.out.println(noticeId);
             noticeRepository.deleteById(noticeId);
@@ -55,11 +55,21 @@ public class NoticeController {
     }
 
     @PutMapping("/{noticeId}")
-    public ResponseEntity<String> editNotice(@PathVariable int noticeId, @RequestBody NoticeDTO dto) {
-        Notice targetNotice = noticeRepository.findById(noticeId);
-        targetNotice.setTitle(dto.getTitle());
-        targetNotice.setContent(dto.getContent());
-        return ResponseEntity.ok("successful");
+    public ResponseEntity<String> editNotice(@PathVariable(name = "noticeId") int noticeId, @RequestBody NoticeDTO dto) {
+        try {
+            Notice targetNotice = noticeRepository.findById(noticeId);
+
+            if (targetNotice == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Notice not found for id: " + noticeId);
+            }
+
+            targetNotice.setTitle(dto.getTitle());
+            targetNotice.setContent(dto.getContent());
+            noticeRepository.save(targetNotice);
+            return ResponseEntity.ok("successful");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
+        }
     }
 
     @GetMapping("/{projectId}") // 변수명을 {projectId}로 매핑

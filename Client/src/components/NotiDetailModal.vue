@@ -8,7 +8,9 @@
           <p class="modifiers_text">Modifiers : {{ DetailModalDTO.userId }}</p>
         </div>
         <div>
-          <button class="close_btn bg_yellow">수정</button>
+          <button @click="editNotiHandler" class="close_btn bg_yellow">
+            수정
+          </button>
           <button @click="deleteNotiHandler" class="close_btn bg_red">
             삭제
           </button>
@@ -16,13 +18,18 @@
       </div>
       <div class="input_container">
         <label for="title">Title</label>
-        <p class="mb20" name="title" id="title">
-          {{ DetailModalDTO.title }}
-        </p>
+        <input
+          v-model="DetailModalDTO.title"
+          class="mb20"
+          name="title"
+          id="title"
+        />
         <label for="content">Content</label>
-        <p name="content" id="content">
-          {{ DetailModalDTO.content }}
-        </p>
+        <textarea
+          v-model="DetailModalDTO.content"
+          name="content"
+          id="content"
+        />
       </div>
       <button @click="closeModalFunction" class="close_btn">닫기</button>
     </div>
@@ -30,7 +37,7 @@
 </template>
 <script setup>
 import { defineProps, ref } from "vue";
-import { addNoti, deleteNoti } from "../api/common";
+import { addNoti, deleteNoti, editNoti } from "../api/common";
 
 const props = defineProps([
   "closeDetailModal",
@@ -54,34 +61,37 @@ const closeModalFunction = () => {
 
 const deleteNotiHandler = () => {
   console.log(props.DetailModalDTO.id);
-  deleteNoti(props.DetailModalDTO.id).then((res) => {
-    alert("해당 Notice가 삭제 되었습니다.");
-    closeModalFunction();
-  });
+  deleteNoti(props.DetailModalDTO.id)
+    .then((res) => {
+      alert("해당 Notice가 삭제 되었습니다.");
+      closeModalFunction();
+    })
+    .catch((err) => {
+      alert(err);
+    });
 };
 
-const addNotiFunction = () => {
+const editNotiHandler = () => {
   const data = {
-    projectId: formData.value.projectId,
-    content: formData.value.content,
-    title: formData.value.title,
+    title: props.DetailModalDTO.title,
+    content: props.DetailModalDTO.content,
   };
-
-  if (validation(data)) {
-    addNoti(data).then((res) => {
-      alert(res.data);
-      props.getNotiList(data.projectId);
-      props.closeModal();
-    });
-  } else alert("Notice 생성 실패");
+  if (!validation(data)) {
+    alert("내용을 입력해 주세요.");
+  } else {
+    editNoti(props.DetailModalDTO.id, data)
+      .then((res) => {
+        alert("해당 Notice가 수정 되었습니다.");
+        closeModalFunction();
+      })
+      .catch((err) => {
+        alert(err);
+      });
+  }
 };
 
 const validation = (data) => {
-  if (
-    data.content.trim() === "" ||
-    data.projectId.trim() === "" ||
-    data.title.trim() === ""
-  ) {
+  if (data.content.trim() === "" || data.title.trim() === "") {
     return false;
   } else return true;
 };
