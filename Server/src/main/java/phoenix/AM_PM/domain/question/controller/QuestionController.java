@@ -50,8 +50,10 @@ public class QuestionController {
         return result;
     }
 
-    @PatchMapping("")
+    @PutMapping("")
     public Question update(@RequestBody QuestionDTO questionDTO){
+        System.out.println(questionDTO);
+
         return questionService.update(questionDTO);
     }
 

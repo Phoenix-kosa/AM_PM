@@ -37,7 +37,7 @@
         </div>
       </table>
       <hr><br>
-      <table class="table">
+      <!-- <table class="table">
         <h2>답변</h2>
         <tr>
           <th width=20% class="text-center warning">번호</th>
@@ -65,7 +65,7 @@
           <button type="button" class="btn btn-outline-primary" v-on:click="fnDelete">삭제</button>
           <button type="button" class="btn btn-outline-primary" v-on:click="fnList">목록</button>
         </div>
-      </table>    
+      </table>     -->
     </div>   
   </div>
 </template>
@@ -91,8 +91,8 @@ export default{
     }
   },
   mounted(){
-    this.fnGetView1(),
-    this.fnGetView2()
+    this.fnGetView1()
+    // this.fnGetView2()
   },
   methods: {
     fnGetView1(){
@@ -105,16 +105,16 @@ export default{
         this.createdDate = res.data.createdDate
       })
     },
-    fnGetView2(){
-      axios.get("http://localhost:8090/api/answer/"+this.id,{
-        params: this.requestBody
-      }).then((res) => {
-        this.title = res.data.title
-        this.bullentinId = res.data.bullentinId
-        this.content = res.data.content
-        this.createdDate = res.data.createdDate
-      })
-    },
+    // fnGetView2(){
+    //   axios.get("http://localhost:8090/api/answer/"+this.id,{
+    //     params: this.requestBody
+    //   }).then((res) => {
+    //     this.title = res.data.title
+    //     this.bullentinId = res.data.bullentinId
+    //     this.content = res.data.content
+    //     this.createdDate = res.data.createdDate
+    //   })
+    // },
     fnList() {
       delete this.requestBody.id
       this.$router.push({

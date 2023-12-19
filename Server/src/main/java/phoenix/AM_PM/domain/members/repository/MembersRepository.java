@@ -1,6 +1,7 @@
 package phoenix.AM_PM.domain.members.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import phoenix.AM_PM.domain.members.entity.Members;
 import phoenix.AM_PM.domain.members.entity.Roles;
 
@@ -13,4 +14,7 @@ public interface MembersRepository extends JpaRepository<Members, Integer> {
     List<Members> findAllByProjectId(Integer projectId);
     Optional<Members> findAllByProjectIdAndRoles(Integer projectId, Roles roles);
     Long countByProjectId(Integer projectId);
+
+    @Query("SELECT m.user.id FROM Members m")
+    List<Integer> findUserIds();
 }

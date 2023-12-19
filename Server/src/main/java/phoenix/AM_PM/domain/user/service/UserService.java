@@ -1,5 +1,6 @@
 package phoenix.AM_PM.domain.user.service;
 
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -35,6 +36,7 @@ public class UserService {
     return result;
   }
 
+  public List<User> findbynickname(String nickname) { return repository.findByNicknameContaining(nickname);}
   // userId 중복 체크
   public Optional<User> findbyUserId(String userId) {
     return repository.findByUserId(userId);
