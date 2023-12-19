@@ -46,7 +46,27 @@ export const editNoti = async (noticeId, formdata) => {
 };
 
 // 간트차트
-export const getTask = async (projectId) => {
+export const getProject = async (projectId) => {
+  const response = await apiInstance.get(`/api/project/${projectId}`);
+  return response;
+};
+
+export const getTasks = async (projectId) => {
   const response = await apiInstance.get(`/api/task/${projectId}`);
+  return response;
+};
+
+export const addTasks = async (formData) => {
+  const response = await authApi.post(`/api/task`, formData);
+  return response;
+};
+
+export const deleteTask = async (taskId) => {
+  const response = await apiInstance.delete(`/api/task/${taskId}`);
+  return response;
+};
+
+export const editTask = async (taskId, updateData) => {
+  const response = await apiInstance.put(`/api/task/${taskId}`, updateData);
   return response;
 };

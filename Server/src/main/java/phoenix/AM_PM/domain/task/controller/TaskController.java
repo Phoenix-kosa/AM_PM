@@ -12,6 +12,8 @@ import phoenix.AM_PM.domain.task.dto.AddTaskDTO;
 import phoenix.AM_PM.domain.task.dto.EditTaskDTO;
 import phoenix.AM_PM.domain.task.entity.Task;
 import phoenix.AM_PM.domain.task.repository.TaskRepository;
+import phoenix.AM_PM.domain.user.entity.User;
+import phoenix.AM_PM.domain.user.repository.UserRepository;
 import phoenix.AM_PM.global.config.auth.MyUserDetails;
 
 import java.util.List;
@@ -24,6 +26,7 @@ import java.util.Random;
 public class TaskController {
     private final TaskRepository taskRepository;
     private final ProjectRepository projectRepository;
+    private final UserRepository userRepository;
 
     @GetMapping("/task/{projectId}")
     public ResponseEntity<List<Task>> getTasks(@PathVariable(name = "projectId") int projectId) {
@@ -43,21 +46,27 @@ public class TaskController {
             String[] bgList = {"#02343F", "#331B3F", "#0A174E", "#07553B", "#50586C"};
             String[] fontColorList = {"#F0EDCC", "#ACC7B4", "#F5D042", "#CED46A", "#DCE2F0"};
             Optional<Project> projectOptional = projectRepository.findById(dto.getProjectId());
-            if (projectOptional.isPresent()) {
-                Project projectInfo = projectOptional.get();
-                Task taskEntity = Task.builder()
-                        .projectId(dto.getProjectId())
-                        .userId(userId)
-                        .content(dto.getContent())
-                        .beginDate(projectInfo.getStartDate().atStartOfDay())
-                        .endDate(projectInfo.getEndDate().atStartOfDay())
-                        .backgroundColor(bgList[randomNumber])
-                        .frontColor(fontColorList[randomNumber])
-                        .build();
-                taskRepository.save(taskEntity);
-                return ResponseEntity.ok("successful");
+            Optional<User> UserOptional = userRepository.findByUserId(userId);
+            if (UserOptional.isPresent()) {
+                User user = UserOptional.get();
+                if (projectOptional.isPresent()) {
+                    Project projectInfo = projectOptional.get();
+                    Task taskEntity = Task.builder()
+                            .projectId(dto.getProjectId())
+                            .Nickname(user.getNickname())
+                            .content(dto.getContent())
+                            .beginDate(projectInfo.getStartDate().atStartOfDay())
+                            .endDate(projectInfo.getEndDate().atStartOfDay())
+                            .backgroundColor(bgList[randomNumber])
+                            .frontColor(fontColorList[randomNumber])
+                            .build();
+                    taskRepository.save(taskEntity);
+                    return ResponseEntity.ok("successful");
+                } else {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("project not found");
+                }
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("project not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("user not found");
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to add notice: " + e.getMessage());

@@ -14,6 +14,7 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 
 onMounted(() => {
+  window.scrollTo(0, 0);
   const projectId = sessionStorage.getItem("projectId");
   if (projectId === null) {
     alert("프로젝트를 선택하세요.");

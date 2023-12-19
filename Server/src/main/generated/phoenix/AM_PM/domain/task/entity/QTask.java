@@ -31,9 +31,9 @@ public class QTask extends EntityPathBase<Task> {
 
     public final NumberPath<Integer> id = createNumber("id", Integer.class);
 
-    public final NumberPath<Integer> projectId = createNumber("projectId", Integer.class);
+    public final StringPath Nickname = createString("Nickname");
 
-    public final StringPath userId = createString("userId");
+    public final NumberPath<Integer> projectId = createNumber("projectId", Integer.class);
 
     public QTask(String variable) {
         super(Task.class, forVariable(variable));

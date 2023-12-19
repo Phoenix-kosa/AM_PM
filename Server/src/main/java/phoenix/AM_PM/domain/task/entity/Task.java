@@ -18,7 +18,7 @@ public class Task {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
   private int projectId;
-  private String userId;
+  private String Nickname;
   private LocalDateTime beginDate;
   private LocalDateTime endDate;
   private String content;
