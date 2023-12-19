@@ -154,10 +154,6 @@ onMounted(() => {
 
     then = now - (delta % interval);
   }
-  window.addEventListener("popstate", (event) => {
-    init();
-    animate();
-  });
 
   window.addEventListener("load", () => {
     init();

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { authApi } from "./config";
+import { authApi, apiInstance } from "./config";
 
 const api = async (url, method, data) => {
   return (
@@ -22,5 +22,20 @@ export const getMyInfoReq = async () => {
 
 export const editMyInfoReq = async (updateData) => {
   const response = await authApi.put("/api/user", updateData);
+  return response;
+};
+
+export const getNoti = async (projectId) => {
+  const response = await apiInstance.get(`/api/notice/${projectId}`);
+  return response;
+};
+
+export const addNoti = async (formdata) => {
+  const response = await authApi.post("/api/notice", formdata);
+  return response;
+};
+
+export const deleteNoti = async (noticeId) => {
+  const response = await apiInstance.delete(`/api/notice/${noticeId}`);
   return response;
 };
