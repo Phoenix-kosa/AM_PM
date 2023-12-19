@@ -22,7 +22,7 @@ import { useRouter } from 'vue-router';
 import { refresh } from "@/api/refresh";
 const router = useRouter();
 
-const logout = async () => {
+const logout = () => {
   axios.delete("http://localhost:8090/api/auth", {
       headers: { 
             "Authorization" : sessionStorage.getItem("access-token") }
@@ -39,8 +39,7 @@ const logout = async () => {
     .catch(error => {
         if(error.response.status == 401) {
           console.log("토큰 만료");
-          refresh();
-          logout();
+          refresh().then(logout());
         } else {
           alert("로그아웃 실패");
           console.error(error);
