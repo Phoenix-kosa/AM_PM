@@ -90,29 +90,33 @@
         ></v-divider>     
          </v-list>
         
-        
-        <v-list density="compact" nav>
         <p class="p">관리</p>
+        <v-list density="compact" nav>       
         <v-list-item
             prepend-icon="mdi-account"
             title="프로젝트 수정"
+            to="modify-project"
             style="color: white"
-            to="/modify-project"
           ></v-list-item>
           <v-list-item
             prepend-icon="mdi-account"
             title="멤버 추가"
             style="color: white"
+            to="member-list"
           ></v-list-item>
+
         </v-list>
         <v-divider
           style="border-top-color: white; border-top-width: 2px"
         ></v-divider>
-        <p class="q">문의하기</p>
         <v-list density="compact" nav>
-          
+          <v-list-item
+            prepend-icon="mdi-account"
+            title="문의하기"
+            to="question"
+            style="color: white"
+          ></v-list-item>
           </v-list>
-
 
 
         <v-list-item nav>

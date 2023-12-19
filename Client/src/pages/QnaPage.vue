@@ -1,8 +1,9 @@
 <template>
   <div class="">
-    <div class="">
-      <button type="button" class="btn btn-primary" v-on:click="">문의등록</button>
-    </div>
+    <h1>1:1 문의</h1><br>
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+      <button type="button" class="btn btn-outline-primary text-white bg-blue" v-on:click="fnWrite">문의등록</button>
+    </div><br>
     <table class="table">
       <thead class="table-primary">
         <tr>
@@ -18,7 +19,7 @@
           <td>{{ row.id }}</td>
           <td><a v-on:click="fnView(`${row.id}`)">{{ row.title}}</a></td>
           <td>{{ row.userId }}</td>
-          <td>{{ row.status }}</td>
+          <td v-if="row.status == false" class="text-primary">답변대기</td>
           <td>{{ row.createdDate }}</td>
         </tr>
       </tbody>
@@ -34,6 +35,7 @@ export default {
       requestBody: {},
       list: {},
       no: '',
+      createdDate: ''
     }
   },
   mounted() {
@@ -48,13 +50,31 @@ export default {
 
       axios.get("http://localhost:8090/api/question", {
         params: this.requestBody,
-        headers: {}
+        headers: {"Authorization" : sessionStorage.getItem("access-token")}
       }).then((res) => {
         
         this.list = res.data
 
       }).catch((error) => {
         console.log(error.message);
+        if(error.response.status == 401) {
+                console.log("토큰 만료");
+
+                axios.get("http://localhost:8090/api/rtoken", {
+                    headers: { 
+                        "RefreshToken" : sessionStorage.getItem("refresh-token"),
+                        "Authorization" : sessionStorage.getItem("access-token") }
+                    }).then(response => {
+                        console.log(response)
+                        if(response.status == 200){
+                            console.log("토큰 재발급");
+                            console.log(response.headers.authorization);
+                            sessionStorage.setItem("access-token", response.headers.authorization);
+                        } else {
+                            console.log("토큰 재발급 실패");
+                        }
+                    }).catch(error => {console.error(error);})
+            } 
       })        
       
     },
@@ -69,6 +89,7 @@ export default {
       this.$router.push({
         path: './write'
       })
+
     }
   }
   

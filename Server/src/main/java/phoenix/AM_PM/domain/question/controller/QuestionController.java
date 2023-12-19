@@ -1,27 +1,33 @@
 package phoenix.AM_PM.domain.question.controller;
 
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import phoenix.AM_PM.domain.answer.service.AnswerService;
+import phoenix.AM_PM.domain.question.dto.QuestionCreateDTO;
 import phoenix.AM_PM.domain.question.dto.QuestionDTO;
 import phoenix.AM_PM.domain.question.entity.Question;
 import phoenix.AM_PM.domain.question.service.QuestionService;
+import phoenix.AM_PM.global.config.service.JwtService;
 
 import java.util.List;
 
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/question")
 public class QuestionController {
     @Autowired
     private QuestionService questionService;
-
+    private final JwtService jwtService;
     @GetMapping("")
-    public List<QuestionDTO> questionlist(){
-        return questionService.getQuestionList();
+    public List<Question> questionlist(@RequestHeader(value = "Authorization", required = false) String token){
+        String name = jwtService.getId(token);
+
+        return questionService.getQuestionList(name);
     }
 
     @GetMapping("/{question-id}")
@@ -30,8 +36,18 @@ public class QuestionController {
     }
 
     @PostMapping("")
-    public Question create(@RequestBody QuestionDTO questionDTO){
-        return questionService.create(questionDTO);
+    public boolean create(@RequestHeader(name = "Authorization", required = false) String token, @RequestBody QuestionDTO questionDTO){
+        String name = jwtService.getId(token);
+        System.out.println(questionDTO);
+        boolean result = false;
+
+        try{
+            questionService.create(questionDTO, name);
+            result = true;
+        } catch (Exception e) {
+            System.out.println("오류");
+        }
+        return result;
     }
 
     @PatchMapping("")
