@@ -8,6 +8,9 @@
       <span class="nicknameModal">{{ modalData.nickname }}</span>
       <span class="emailModal">{{ modalData.email }}</span>
     </div>
+    <div class="routerDiv">
+      <RouterLink class="router" :to="{name: 'Chat', query: {user: modalData.userId}}">정보 확인</RouterLink>
+    </div>
   </div>
   <div class="chatContainer">
     <div class="msgContainer" id="msgScroll">
@@ -37,6 +40,7 @@
 </template>
 
 <script setup>
+import { RouterLink } from 'vue-router';
 import { ref } from 'vue';
 import { onBeforeRouteLeave  } from 'vue-router';
 import Stomp from 'webstomp-client';
@@ -184,7 +188,11 @@ function send() {
   flex-direction: column;
   align-items: center;
 }
-.nicknameModal,
+.nicknameModal {
+  color: black;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
 .emailModal {
   color: black;
   margin-bottom: 10px;
@@ -258,5 +266,12 @@ img {
 }
 .unread {
   color: #166adc;
+}
+.routerDiv {
+  background-color: white;
+}
+.router {
+  text-decoration: none;
+  color: black;
 }
 </style>
