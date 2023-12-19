@@ -72,7 +72,7 @@ public class NoticeController {
         }
     }
 
-    @GetMapping("/{projectId}") // 변수명을 {projectId}로 매핑
+    @GetMapping("/{projectId}")
     public ResponseEntity<List<Notice>> getNotice(@PathVariable(name = "projectId") int projectId) {
         List<Notice> notices = noticeRepository.findByProjectId(projectId);
         return ResponseEntity.ok(notices);
