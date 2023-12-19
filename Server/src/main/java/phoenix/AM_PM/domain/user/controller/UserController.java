@@ -2,6 +2,7 @@ package phoenix.AM_PM.domain.user.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
@@ -109,6 +110,12 @@ public class UserController {
             body = true;
         }
         return new ResponseEntity<>(body, HttpStatus.OK);
+    }
+
+    @GetMapping("/api/user/nickname")
+    public ResponseEntity<List<User>> findUserId(@RequestParam("nickname") String nickname) {
+
+        return new ResponseEntity<>(userService.findbynickname(nickname), HttpStatus.OK);
     }
 
     @GetMapping("/api/user/email/{email}")

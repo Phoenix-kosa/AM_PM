@@ -86,22 +86,64 @@ export default {
       this.form = {
         "id": this.id,
         "title": this.title,
-        "content": this.content,
-        "userId": this.userId,
-        
+        "content": this.content
       } 
 
       if (this.id === undefined){
-        axios.post(apiUrl, this.form)
+        console.log(this.form)
+        axios.post(apiUrl, this.form, {headers: { 
+          "Authorization" : sessionStorage.getItem("access-token") }
+        })
         .then((res) => {
-          alert("저장되었습니다.")
-          this.fnView(res.data.id)
+          if (res.status == 200){
+            alert("저장되었습니다.")
+            this.fnList(res.data.id)
+          }
+          
+        }).catch(error => {
+          if(error.response.status == 401) {
+                console.log("토큰 만료");
+
+                axios.get("http://localhost:8090/api/rtoken", {
+                    headers: { 
+                        "RefreshToken" : sessionStorage.getItem("refresh-token"),
+                        "Authorization" : sessionStorage.getItem("access-token") }
+                    }).then(response => {
+                        console.log(response)
+                        if(response.status == 200){
+                            console.log("토큰 재발급");
+                            console.log(response.headers.authorization);
+                            sessionStorage.setItem("access-token", response.headers.authorization);
+                        } else {
+                            console.log("토큰 재발급 실패");
+                        }
+                    }).catch(error => {console.error(error);})
+            } 
         })
       } else {
-        axios.patch(apiUrl, this.form)
+        axios.put(apiUrl, this.form)
         .then((res) => {
           alert("수정되었습니다.")
           this.fnView(res.data.id)
+        }).catch(error => {
+          if(error.response.status == 401) {
+                console.log("토큰 만료");
+
+                axios.get("http://localhost:8090/api/rtoken", {
+                    headers: { 
+                        "RefreshToken" : sessionStorage.getItem("refresh-token"),
+                        "Authorization" : sessionStorage.getItem("access-token") }
+                    }).then(response => {
+                        console.log(response)
+                        if(response.status == 200){
+                            console.log("토큰 재발급");
+                            console.log(response.headers.authorization);
+                            sessionStorage.setItem("access-token", response.headers.authorization);
+                        } else {
+                            console.log("토큰 재발급 실패");
+                        }
+                    }).catch(error => {console.error(error);})
+            } 
         })
       }
     }

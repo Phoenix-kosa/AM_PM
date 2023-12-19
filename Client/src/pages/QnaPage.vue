@@ -49,13 +49,31 @@ export default {
 
       axios.get("http://localhost:8090/api/question", {
         params: this.requestBody,
-        headers: {}
+        headers: {"Authorization" : sessionStorage.getItem("access-token")}
       }).then((res) => {
         
         this.list = res.data
 
       }).catch((error) => {
         console.log(error.message);
+        if(error.response.status == 401) {
+                console.log("토큰 만료");
+
+                axios.get("http://localhost:8090/api/rtoken", {
+                    headers: { 
+                        "RefreshToken" : sessionStorage.getItem("refresh-token"),
+                        "Authorization" : sessionStorage.getItem("access-token") }
+                    }).then(response => {
+                        console.log(response)
+                        if(response.status == 200){
+                            console.log("토큰 재발급");
+                            console.log(response.headers.authorization);
+                            sessionStorage.setItem("access-token", response.headers.authorization);
+                        } else {
+                            console.log("토큰 재발급 실패");
+                        }
+                    }).catch(error => {console.error(error);})
+            } 
       })        
       
     },
@@ -70,6 +88,7 @@ export default {
       this.$router.push({
         path: './write'
       })
+
     }
   }
   

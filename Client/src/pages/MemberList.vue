@@ -3,7 +3,7 @@
   <div class="container">
     <div class="list">
       <ul>
-        <li v-for="item in filteredData" :key="item.id">{{ item.title }}</li>
+        <li v-for="item in memberList" :key="item.id">{{ item.nickName }}</li>
       </ul>
     </div>
     <div class="clickbutton">
@@ -16,6 +16,11 @@
 </template>
 
 <script setup>
+import axios from 'axios';
+import { ref } from 'vue';
+
+const memberList = ref([]);
+const projectId = sessionStorage.getItem("projectId");
 
 function addMember() {
   location.href = "/add-member";
@@ -25,6 +30,38 @@ function leaderChange() {
   location.href = "/leader-change";
 }
 
+function loadData(){
+  axios.get(`http://localhost:8090/api/members/` + projectId, {
+    headers: { 
+        "Authorization" : sessionStorage.getItem("access-token") 
+    }
+  })
+  .then((response) => {
+    memberList.value = response.data;
+  })
+  .catch((err) => {
+    console.log(err)
+    if(err.response.status == 401) {
+      console.log("토큰 만료");
+
+      axios.get("http://localhost:8090/api/rtoken", {
+          headers: { 
+              "RefreshToken" : sessionStorage.getItem("refresh-token"),
+              "Authorization" : sessionStorage.getItem("access-token") }
+          }).then(response => {
+              console.log(response)
+              if(response.status == 200){
+                  console.log("토큰 재발급");
+                  console.log(response.headers.authorization);
+                  sessionStorage.setItem("access-token", response.headers.authorization);
+              } else {
+                  console.log("토큰 재발급 실패");
+              }
+          }).catch(error => {console.error(error);})
+    } 
+  });
+}
+loadData();
 </script>
 <style scoped>
 
