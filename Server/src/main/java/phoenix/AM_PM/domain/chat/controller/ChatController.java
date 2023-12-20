@@ -29,10 +29,10 @@ public class ChatController {
 //        return new ResponseEntity(chatService.readChat(projectId, pageable, cursorId, myUserDetails.getUser().getId()), HttpStatus.OK);
 //    }
 
-    @GetMapping("/api/read/{chat-id}")
-    public ResponseEntity readCheck(@PathVariable("chat-id") Integer chatId,
-                                    @AuthenticationPrincipal MyUserDetails myUserDetails) {
-        chatService.readCheck(chatId, myUserDetails.getUser().getId());
-        return new ResponseEntity(HttpStatus.RESET_CONTENT);
-    }
+//    @GetMapping("/api/read/{chat-id}")
+//    public ResponseEntity readCheck(@PathVariable("chat-id") Integer chatId,
+//                                    @AuthenticationPrincipal MyUserDetails myUserDetails) {
+//        chatService.readCheck(chatId, myUserDetails.getUser().getId());
+//        return new ResponseEntity(HttpStatus.RESET_CONTENT);
+//    }
 }
