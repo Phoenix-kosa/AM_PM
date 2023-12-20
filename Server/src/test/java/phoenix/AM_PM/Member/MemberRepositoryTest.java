@@ -4,10 +4,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import phoenix.AM_PM.domain.member.entity.Member;
-import phoenix.AM_PM.domain.member.entity.Roles;
-import phoenix.AM_PM.domain.member.repository.MemberRepository;
-import phoenix.AM_PM.domain.project.entity.Project;
+
+import phoenix.AM_PM.domain.members.entity.Members;
+import phoenix.AM_PM.domain.members.entity.Roles;
+import phoenix.AM_PM.domain.members.repository.MembersRepository;
 import phoenix.AM_PM.domain.project.repository.ProjectRepository;
 import phoenix.AM_PM.domain.user.repository.UserRepository;
 
@@ -15,7 +15,7 @@ import phoenix.AM_PM.domain.user.repository.UserRepository;
 @DataJpaTest
 public class MemberRepositoryTest {
     @Autowired
-    MemberRepository memberRepository;
+    MembersRepository membersRepository;
     @Autowired
     UserRepository userRepository;
     @Autowired
@@ -23,13 +23,13 @@ public class MemberRepositoryTest {
 
     @Test
     public void save() {
-        Member entity = new Member().builder()
+        Members entity = new Members().builder()
                 .user(userRepository.findById(1).get())
                 .project(projectRepository.findById(1).get())
                 .roles(Roles.member)
                 .build();
-        memberRepository.save(entity);
+        membersRepository.save(entity);
 
-        memberRepository.findAll().stream().forEach(System.out::println);
+        membersRepository.findAll().stream().forEach(System.out::println);
     }
 }

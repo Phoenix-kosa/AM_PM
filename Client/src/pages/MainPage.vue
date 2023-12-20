@@ -154,10 +154,6 @@ onMounted(() => {
 
     then = now - (delta % interval);
   }
-  window.addEventListener("popstate", (event) => {
-    init();
-    animate();
-  });
 
   window.addEventListener("load", () => {
     init();
@@ -167,6 +163,10 @@ onMounted(() => {
   window.addEventListener("resize", () => {
     init();
     animate();
+  });
+
+  window.addEventListener("popstate", () => {
+    window.location.reload();
   });
 });
 </script>

@@ -1,4 +1,17 @@
 <template>
+    <div v-if="modalData != null" class="modal">
+    <span class="xButton" @click="close">X</span>
+    <div class="imgDiv">
+      <img v-if="modalData.profileImg" :src="modalData.profileImg">
+    </div>
+    <div class="textDiv">
+      <span class="nicknameModal">{{ modalData.nickname }}</span>
+      <span class="emailModal">{{ modalData.email }}</span>
+    </div>
+    <div class="routerDiv">
+      <RouterLink class="router" :to="{name: 'Chat', query: {user: modalData.userId}}">정보 확인</RouterLink>
+    </div>
+  </div>
   <v-card>
     <v-layout>
       <v-navigation-drawer id="sidebar_container" permanent>
@@ -78,64 +91,52 @@
         ></v-divider>
 
         <p class="p">멤버</p>
-        <v-list density="compact" nav>
+        <v-list density="compact" nav >
           <v-list-item
+            prepend-icon="mdi-account"
+            :title= item.nickName
+            :value= item.nickName
+            style="color: white"
+            v-for="item in member_list" :key="item.id" @click="show(item.userId)"></v-list-item>
+          <!-- <v-list-item
             prepend-icon="mdi-account"
             title="민재"
             value="민재"
             style="color: white"
           ></v-list-item>
-          <v-list-item
-            prepend-icon="mdi-account"
-            title="승완"
-            value="승완"
-            style="color: white"
-          ></v-list-item>
-          <v-list-item
-            prepend-icon="mdi-account"
-            title="희지"
-            value="희지"
-            style="color: white"
-          ></v-list-item>
-          <v-list-item
-            prepend-icon="mdi-account"
-            title="인수"
-            value="인수"
-            style="color: white"
-          ></v-list-item>
-          <v-list-item
-            prepend-icon="mdi-account"
-            title="도회"
-            value="도회"
-            style="color: white"
-          ></v-list-item>
+          -->
           <v-divider
           style="border-top-color: white; border-top-width: 2px"
         ></v-divider>     
          </v-list>
         
-        
-        <v-list density="compact" nav>
         <p class="p">관리</p>
+        <v-list density="compact" nav>       
         <v-list-item
             prepend-icon="mdi-account"
             title="프로젝트 수정"
+            to="modify-project"
             style="color: white"
           ></v-list-item>
           <v-list-item
             prepend-icon="mdi-account"
-            title="멤버 추가"
+            title="멤버 관리"
             style="color: white"
+            to="member-list"
           ></v-list-item>
+
         </v-list>
         <v-divider
           style="border-top-color: white; border-top-width: 2px"
         ></v-divider>
-        <p class="q">문의하기</p>
         <v-list density="compact" nav>
-          
+          <v-list-item
+            prepend-icon="mdi-account"
+            title="문의하기"
+            to="question"
+            style="color: white"
+          ></v-list-item>
           </v-list>
-
 
 
         <v-list-item nav>
@@ -254,7 +255,51 @@ mounted(){
 
 <script setup>
 import { ref } from "vue";
-
+import { expireToken } from "../api/config";
+import axios from "axios";
 const drawer = ref(true);
 const rail = ref(true);
+const projectId = sessionStorage.getItem("projectId");
+const modalData = ref(null);
+
+let member_list = ref([])
+function loadData(){
+  axios.get(`http://localhost:8090/api/members/` + projectId, {
+    headers: { 
+        "Authorization" : sessionStorage.getItem("access-token") 
+    }
+  })
+  .then((response) => {
+    member_list.value = response.data;
+  })
+  .catch((err) => {
+    console.log(err)
+    expireToken(err, loadData)
+  });
+}
+window.onload = loadData();
+
+function show(userId) {
+  axios.get('http://localhost:8090/api/user/' + userId, {
+    headers: { 
+        "Authorization" : sessionStorage.getItem("access-token") 
+    }
+  })
+  .then((response) => {
+    modalData.value = response.data;
+    console.log(modalData.value)
+  })
+  .catch((err) => {
+    console.log(err)
+    expireToken(err, show(userId))
+  });
+}
+
+function close() {
+  modalData.value = null;
+}
 </script>
+
+<style scoped>
+@import "@/assets/css/sideModal.css"
+</style>

@@ -9,15 +9,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+
+import lombok.*;
 import jakarta.persistence.Id;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Getter
+@Setter
 @Entity
 @Builder
 @AllArgsConstructor
@@ -54,8 +52,8 @@ public class User {
     return new ArrayList<>();
   }
 
-//  public static User createUser(String userId, String pw, PasswordEncoder passwordEncoder, String nickname, String profileImg, String email,String role) {
-//    return new User(userId, passwordEncoder.encode(pw), nickname, profileImg, email, role);
-//  }
-
+  public User update(String nickname){
+    this.nickname = nickname;
+    return this;
+  }
 }

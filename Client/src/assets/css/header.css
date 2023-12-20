@@ -1,6 +1,6 @@
 .child {
   background-color: #eeeeee;
-  box-shadow: 0 3px 10px rgb(0, 0, 0, 0.2);
+  box-shadow: 0 3px 10px #00000033;
   height: 105px;
   display: flex;
   align-items: center;
@@ -16,7 +16,7 @@
 }
 
 .main_logo_img {
-  height: 90%;
+  height: 100px;
 }
 
 .login_container {

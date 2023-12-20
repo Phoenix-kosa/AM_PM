@@ -3,7 +3,7 @@ package phoenix.AM_PM.global.config.jwt;
 public interface JwtProperties {
 	String SECRET = "PhoenixkOsAsTuDyPrOjEcT2uNiMeEtInGjWtByAeLiMkOsAsTuDyPrOjEcT2uNiMeEtInGjWtByAeLiMkOsAsTuDyPrOjEcT2uNiMeEtInGjWtByAeLiMkOsAsTuDyPrOjEcT2uNiMeEtInGjWtByAeLiMkOsAsTuDyPrOjEcT2uNiMeEtInGjWtByAeLiM"; // 우리 서버만 알고 있는 비밀값
 
-	int EXPIRATION_TIME = 30 * 60 * 1000; // 30분
+	int EXPIRATION_TIME = 30 * 1000; // 30분
 	String TOKEN_PREFIX = "Bearer ";
 	String HEADER_STRING = "Authorization";
 
