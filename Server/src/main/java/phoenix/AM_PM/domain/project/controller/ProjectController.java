@@ -14,6 +14,7 @@ import phoenix.AM_PM.global.config.auth.MyUserDetails;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping("/api/project")
 public class ProjectController {
@@ -43,8 +44,10 @@ public class ProjectController {
     public ResponseEntity createProject(@RequestBody RequestProject requestProject,
                                         @AuthenticationPrincipal MyUserDetails myUserDetails) {
         ResponseProject project = projectService.createProject(requestProject, myUserDetails.getUser());
+        projectPlanService.createDefaultProjectPlans(project.getId());
         return new ResponseEntity(project, HttpStatus.CREATED);
     }
+
 
     // 수정
     @PutMapping("/{project-id}")

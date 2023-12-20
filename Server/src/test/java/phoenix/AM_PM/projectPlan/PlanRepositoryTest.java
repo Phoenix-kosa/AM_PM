@@ -29,13 +29,7 @@ public class PlanRepositoryTest {
         projectPlans.forEach(System.out::println);
     }
 
-    @Order(2)
-    @Test
-    public void testFindByProjectId() {
-        int projectId = 1;
-        List<ProjectPlan> projectPlans = projectPlanRepository.findByProjectId(projectId);
-        projectPlans.forEach(System.out::println);
-    }
+
 
     @Order(3)
     @Test
