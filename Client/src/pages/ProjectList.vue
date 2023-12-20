@@ -21,7 +21,7 @@ const projectList = ref([]);
 
 function go(projectId) {
   sessionStorage.setItem("projectId", projectId);
-  location.href = "/erd";
+  location.href = `/srs/${projectId}`;
 }
 
 function moveToCreate() {

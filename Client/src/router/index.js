@@ -36,9 +36,17 @@ const index = createRouter({
         { path: 'excel', component: Excel },
 
         { path: 'testtoken', component: TestToken },
-        { path: '/erd', component: ProjectPlan, props: { pageType: 'ERD', pageId: 1 } },
-        { path: '/usecase', component: ProjectPlan, props: { pageType: 'USECASE', pageId: 2 } },
-        { path: '/ui', component: ProjectPlan, props: { pageType: 'UI', pageId: 3 } },
+       
+        {
+          path: '/:pageType/:projectId',
+          name: 'ProjectPlanPage',
+          component: ProjectPlan,
+          props: true // 모든 params를 props로 전달합니다.
+        },
+        
+
+
+
         { path: "question", component: QnaPage},
         { path: "detail", component: QnaDetail},
         { path: "team-chat", component: TeamChat},
