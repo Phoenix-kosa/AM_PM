@@ -1,4 +1,17 @@
 <template>
+    <div v-if="modalData != null" class="modal">
+    <span class="xButton" @click="close">X</span>
+    <div class="imgDiv">
+      <img v-if="modalData.profileImg" :src="modalData.profileImg">
+    </div>
+    <div class="textDiv">
+      <span class="nicknameModal">{{ modalData.nickname }}</span>
+      <span class="emailModal">{{ modalData.email }}</span>
+    </div>
+    <div class="routerDiv">
+      <RouterLink class="router" :to="{name: 'Chat', query: {user: modalData.userId}}">정보 확인</RouterLink>
+    </div>
+  </div>
   <v-card>
     <v-layout>
       <v-navigation-drawer id="sidebar_container" permanent>
@@ -83,7 +96,7 @@
             :title= item.nickName
             :value= item.nickName
             style="color: white"
-            v-for="item in member_list" :key="item.id" ></v-list-item>
+            v-for="item in member_list" :key="item.id" @click="show(item.userId)"></v-list-item>
           <!-- <v-list-item
             prepend-icon="mdi-account"
             title="민재"
@@ -246,6 +259,8 @@ import axios from "axios";
 const drawer = ref(true);
 const rail = ref(true);
 const projectId = sessionStorage.getItem("projectId");
+const modalData = ref(null);
+
 let member_list = ref([])
 function loadData(){
   axios.get(`http://localhost:8090/api/members/` + projectId, {
@@ -262,4 +277,28 @@ function loadData(){
   });
 }
 window.onload = loadData();
+
+function show(userId) {
+  axios.get('http://localhost:8090/api/user/' + userId, {
+    headers: { 
+        "Authorization" : sessionStorage.getItem("access-token") 
+    }
+  })
+  .then((response) => {
+    modalData.value = response.data;
+    console.log(modalData.value)
+  })
+  .catch((err) => {
+    console.log(err)
+    expireToken(err, show(userId))
+  });
+}
+
+function close() {
+  modalData.value = null;
+}
 </script>
+
+<style scoped>
+@import "@/assets/css/sideModal.css"
+</style>

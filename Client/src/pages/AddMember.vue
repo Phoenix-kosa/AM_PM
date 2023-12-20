@@ -11,7 +11,7 @@
     <div class="list">
         <div class ="search-user" v-for="item in filteredData" :key="item.id">
             <input class="checkbox" type="checkbox" v-model="userform" :value="item.id">
-            <label :for="item.id"> {{ item.nickname }}</label>
+            <label :for="item.id"> {{ item.email }}</label>
         </div>
     </div>
   </div>
@@ -71,7 +71,7 @@ const submitForm = () => {
     for(let o of request.data){
       // console.log(memberIdList.value)
       if(o.roles == "ROLE_USER" && !checkid.includes(o.id)){
-        filteredData.value.push({"id":o.id, "nickname":o.nickname})
+        filteredData.value.push({"id":o.id, "nickname":o.nickname, "email":o.email})
       }
     }
   })
