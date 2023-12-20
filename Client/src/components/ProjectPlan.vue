@@ -3,12 +3,12 @@
 
     <h1>{{ pageTitle }}</h1>
     <div>
-      <p>참고 사이트: <a :href="sampleUrl" target="_blank">{{ sampleUrl }}</a></p>
+      <p>참고 사이트: <a :href="sampleUrl" target="_blank" >{{ sampleUrl }}</a></p>
       <input type="text" placeholder="원하는 Url로 수정하세요!" v-model="editableSampleUrl" />
-      <button @click="saveUrl">&nbsp저장</button>
+      <button class="b" @click="saveUrl">저장</button>
       <br><br>
       <input type="file" @change="handleFileUpload" />
-      <button @click="uploadFile">파일 업로드</button><br><br>
+      <button class="a" @click="uploadFile">파일 업로드</button><br><br>
       <br>
       <img :src="imagePreview" alt="Preview" v-if="imagePreview" height="800px" width="1200px"/>
 

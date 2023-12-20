@@ -42,6 +42,7 @@
           :title="page.title"
           :to="`/${page.title}/${currentProjectId}`"
           style="color: white"
+        
     ></v-list-item>
 
         </v-list>
