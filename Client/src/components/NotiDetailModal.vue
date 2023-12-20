@@ -36,33 +36,24 @@
   </div>
 </template>
 <script setup>
-import { defineProps, ref } from "vue";
+import { defineProps } from "vue";
 import { deleteNoti, editNoti } from "../api/common";
 
 const props = defineProps([
   "closeDetailModal",
-  "projectId",
   "getNotiList",
   "DetailModalDTO",
 ]);
 
-const formData = ref({
-  projectId: "1",
-  content: "",
-  title: "",
-});
-
 const closeModalFunction = () => {
-  // 프로젝트 아이디 수정 필요
-  const a = formData.value.projectId;
-  props.getNotiList(a);
+  props.getNotiList();
   props.closeDetailModal();
 };
 
 const deleteNotiHandler = () => {
   console.log(props.DetailModalDTO.id);
   deleteNoti(props.DetailModalDTO.id)
-    .then((res) => {
+    .then(() => {
       alert("해당 Notice가 삭제 되었습니다.");
       closeModalFunction();
     })
@@ -80,7 +71,7 @@ const editNotiHandler = () => {
     alert("내용을 입력해 주세요.");
   } else {
     editNoti(props.DetailModalDTO.id, data)
-      .then((res) => {
+      .then(() => {
         alert("해당 Notice가 수정 되었습니다.");
         closeModalFunction();
       })

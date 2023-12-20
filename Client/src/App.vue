@@ -2,6 +2,8 @@
     <router-view :key="$route.fullPath"></router-view>
 </template>
 
-<script setup>
+<script>
+
+
 </script>
 <style scoped></style>

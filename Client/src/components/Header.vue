@@ -1,11 +1,13 @@
 <template>
   <div class="parent">
     <header class="child">
-      <img
-        class="main_logo_img"
-        src="../assets/images/main_logo.png"
-        alt="main_logo"
-      />
+      <router-link to="/project-list">
+        <img
+          class="main_logo_img"
+          src="../assets/images/main_logo.png"
+          alt="main_logo"
+        />
+      </router-link>
       <div class="login_container">
         <p>{{ name }}</p>
         <router-link to="/mypage">
@@ -18,10 +20,9 @@
 </template>
 
 <script setup>
-
-import axios from 'axios';
+import axios from "axios";
 import { authApi } from "@/api/config";
-import { useRouter } from 'vue-router';
+import { useRouter } from "vue-router";
 import { refresh } from "@/api/refresh";
 import { getMyInfoReq } from "../api/common";
 import { expireToken } from "../api/config";
@@ -39,14 +40,24 @@ const logout = () => {
             // 로그아웃 성공시 login 페이지로
             sessionStorage.removeItem("access-token");
             sessionStorage.removeItem("refresh-token");
+            sessionStorage.removeItem("projectId");
             alert("로그아웃 되었습니다.");
             router.push("/login")
         } 
     })
-    .catch(error => {
-      expireToken(error, logout)
+    .then((response) => {
+      if (response.status == 200) {
+        // 로그아웃 성공시 login 페이지로
+        sessionStorage.removeItem("access-token");
+        sessionStorage.removeItem("refresh-token");
+        alert("로그아웃 되었습니다.");
+        router.push("/login");
+      }
+    })
+    .catch((error) => {
+      expireToken(error, logout);
     });
-}
+};
 
 const name = ref("");
 onMounted(() => {
@@ -60,13 +71,11 @@ const getName = () => {
     })
     .then((data) => {
       name.value = data.nickname;
-      console.log(data);
     })
     .catch((err) => {
       expireToken(err, getName);
     });
 };
-
 </script>
 <style scoped>
 @import "../assets/css/header.css";

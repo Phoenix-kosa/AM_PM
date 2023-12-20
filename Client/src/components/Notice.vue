@@ -3,7 +3,6 @@
     v-if="showModal"
     :closeModal="closeModal"
     :getNotiList="getNotiList"
-    :projectId="projectId"
   />
   <NotiDetailModal
     v-if="showDetailModal"
@@ -32,14 +31,13 @@ import NotiDetailModal from "./NotiDetailModal.vue";
 import NotiModle from "./NotiModle.vue";
 import { getNoti } from "../api/common";
 
-const projectId = 1;
 const noticeList = ref([]);
 
 const showModal = ref(false);
 const showDetailModal = ref(false);
 const DetailModalDTO = ref({
   id: "",
-  projectId: "",
+  projectId: sessionStorage.getItem("projectId"),
   userId: "",
   title: "",
   content: "",
@@ -65,16 +63,16 @@ const closeModal = () => {
 };
 
 onMounted(() => {
-  getNotiList(projectId);
+  getNotiList();
 });
 
-const getNotiList = (projectId) => {
+const getNotiList = () => {
+  const projectId = sessionStorage.getItem("projectId");
   getNoti(projectId)
     .then((res) => {
       return res.data;
     })
     .then((data) => {
-      console.log(data);
       noticeList.value = data.sort((a, b) => {
         return b.id - a.id;
       });

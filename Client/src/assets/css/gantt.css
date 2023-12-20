@@ -84,3 +84,8 @@
   border-radius: 10px;
   background-color: #166adc;
 }
+
+.gantt_error_text {
+  margin-top: 30px;
+  font-size: 24px;
+}
