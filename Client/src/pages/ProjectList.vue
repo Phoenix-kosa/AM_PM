@@ -9,23 +9,21 @@
       </div>
     </div>
     <div class="buttonBox">
-      <button @click="moveToCreate">+새 프로젝트</button>
+      <RouterLink class="button" to="/create-project">+새 프로젝트</RouterLink>
     </div>
   </div>
 </template>
 <script setup>
 import axios from 'axios';
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 const projectList = ref([]);
+const router = useRouter();
 
 function go(projectId) {
   sessionStorage.setItem("projectId", projectId);
-  location.href = `/srs/${projectId}`;
-}
-
-function moveToCreate() {
-  location.href = "/create-project";
+  router.push({path: "/erd"});
 }
 
 function loadData() {
@@ -109,11 +107,16 @@ loadData();
   width: 100%;
   clear: both;
 }
-.buttonBox > button {
+.button {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 150px;
   height: 50px;
   background-color: #166adc;
   border-radius: 10px;
   color: white;
+  margin: auto;
 }
 </style>

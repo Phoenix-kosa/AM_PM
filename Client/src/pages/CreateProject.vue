@@ -10,13 +10,16 @@
     </div>
     <div class="buttonBox">
       <button @click="createProject">프로젝트 생성</button>
+      <button @click="$router.go(-1)">뒤로 가기</button>
     </div>
   </div>
 </template>
 <script setup>
 import axios from 'axios';
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const title = ref(null);
 const content = ref(null);
 const startDate = ref(null);
@@ -41,7 +44,8 @@ function createProject() {
     })
     .then((response) => {
       if(response.status == 201) {
-        location.href = "/project-list";
+      alert("생성이 완료되었습니다.");
+      router.push({path: "/project-list"});
       }
     })
     .catch((err) => {
@@ -113,5 +117,6 @@ textarea {
   border-radius: 10px;
   color: white;
   margin-top: 50px;
+  margin-left: 10px;
 }
 </style>
