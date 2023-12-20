@@ -1,10 +1,13 @@
 <template>
   <div class="container">
     <div v-if="projectData != null">
-      <div class="title">
+      <div v-if="isMember" class="title">
         <span>프로젝트 </span>
         <span class="projectTitle">"{{ projectData.title }}"</span>
         <span>의 멤버</span>
+      </div>
+      <div v-else="isMember" class="title">
+        <span>탈퇴한 멤버</span>
       </div>
     </div>
     <div v-if="targetData != null">
@@ -16,8 +19,8 @@
         <span class="email">{{ targetData.email }}</span>
       </div>
     </div>
-    <div class="buttonContainer">
-      <button>1:1 채팅</button>
+    <div v-if="isMember" class="buttonContainer">
+      <button id="chatButton">1:1 채팅</button>
     </div>
   </div>
 </template>
@@ -30,6 +33,7 @@ const target = route.query.user;
 const targetData = ref(null);
 const projectId = sessionStorage.getItem("projectId");
 const projectData = ref(null);
+const isMember = ref(false);
 
 loadData();
 
@@ -78,19 +82,54 @@ function loadData() {
       console.log("토큰 만료");
 
       axios.get("http://localhost:8090/api/rtoken", {
-          headers: { 
-              "RefreshToken" : sessionStorage.getItem("refresh-token"),
-              "Authorization" : sessionStorage.getItem("access-token") }
-          }).then(response => {
-              console.log(response)
-              if(response.status == 200){
-                  console.log("토큰 재발급");
-                  console.log(response.headers.authorization);
-                  sessionStorage.setItem("access-token", response.headers.authorization);
-              } else {
-                  console.log("토큰 재발급 실패");
-              }
-          }).catch(error => {console.error(error);})
+        headers: { 
+          "RefreshToken" : sessionStorage.getItem("refresh-token"),
+          "Authorization" : sessionStorage.getItem("access-token") }
+        }).then(response => {
+          console.log(response)
+          if(response.status == 200){
+            console.log("토큰 재발급");
+            console.log(response.headers.authorization);
+            sessionStorage.setItem("access-token", response.headers.authorization);
+          } else {
+            console.log("토큰 재발급 실패");
+          }
+      }).catch(error => {console.error(error);})
+    } 
+  });
+
+  axios.get('http://localhost:8090/api/members/' + projectId, {
+    headers: { 
+        "Authorization" : sessionStorage.getItem("access-token") 
+    }
+  })
+  .then((response) => {
+    for(let member of response.data) {
+      if(member.userId == target) {
+        isMember.value = true;
+        break;
+      }
+    }
+  })
+  .catch((err) => {
+    console.log(err)
+    if(err.response.status == 401) {
+      console.log("토큰 만료");
+
+      axios.get("http://localhost:8090/api/rtoken", {
+        headers: { 
+          "RefreshToken" : sessionStorage.getItem("refresh-token"),
+          "Authorization" : sessionStorage.getItem("access-token") }
+        }).then(response => {
+          console.log(response)
+          if(response.status == 200){
+            console.log("토큰 재발급");
+            console.log(response.headers.authorization);
+            sessionStorage.setItem("access-token", response.headers.authorization);
+          } else {
+            console.log("토큰 재발급 실패");
+          }
+      }).catch(error => {console.error(error);})
     } 
   });
 }
