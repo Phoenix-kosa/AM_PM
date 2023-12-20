@@ -39,6 +39,7 @@ const logout = () => {
             // 로그아웃 성공시 login 페이지로
             sessionStorage.removeItem("access-token");
             sessionStorage.removeItem("refresh-token");
+            sessionStorage.removeItem("projectId");
             alert("로그아웃 되었습니다.");
             router.push("/login")
         } 
