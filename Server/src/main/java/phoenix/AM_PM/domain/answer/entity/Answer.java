@@ -1,5 +1,6 @@
 package phoenix.AM_PM.domain.answer.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -30,7 +31,7 @@ public class Answer {
   @Column (name = "content")
   private String content;
 
-  @Column(name = "created_date")
+  @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd HH:mm:ss")
   private LocalDateTime createdDate;
 
   @Builder

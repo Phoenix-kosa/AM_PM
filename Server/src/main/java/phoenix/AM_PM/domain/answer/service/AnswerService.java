@@ -44,6 +44,7 @@ public class AnswerService {
     }
 
     //삭제
+    @Transactional
     public void delete(int id){
         answerR.deleteById(id);
     }
@@ -52,9 +53,7 @@ public class AnswerService {
     @Transactional
     public Answer update(int id, UpdateAnswerRequest req){
         Answer answer = answerR.findById(id).orElseThrow(() -> new IllegalArgumentException("not found: " + id));
-
         answer.update(req.getTitle(), req.getContent());
-
         return answer;
     }
 }
