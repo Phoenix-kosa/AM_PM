@@ -4,6 +4,7 @@ import Excel from "@/components/Excel/main.vue";
 import DevPage from "@/pages/DevPage.vue";
 import MainPage from "@/pages/MainPage.vue";
 import TeamChat from "@/pages/TeamChat.vue";
+import Chat from "@/pages/Chat.vue";
 import MyPage from "@/pages/MyPage.vue";
 import MainLayout from "../layouts/MainLayout.vue";
 import Login from '@/pages/Auth/login.vue'
@@ -41,6 +42,9 @@ const index = createRouter({
         { path: "question", component: QnaPage},
         { path: "detail", component: QnaDetail},
         { path: "team-chat", component: TeamChat},
+        { path: "/chat",
+          component: Chat,
+          name: "Chat"},
         { path: "project-list", component: ProjectList },
         { path: "create-project", component: CreateProject },
         { path: "modify-project", component: ModifyProject },

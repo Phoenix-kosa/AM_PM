@@ -5,9 +5,12 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import phoenix.AM_PM.domain.user.dto.ResponseUser;
 import phoenix.AM_PM.domain.user.dto.SaveUserDto;
 import phoenix.AM_PM.domain.user.entity.User;
 import phoenix.AM_PM.domain.user.repository.UserRepository;
+import phoenix.AM_PM.global.exception.BusinessLogicException;
+import phoenix.AM_PM.global.exception.ExceptionCode;
 
 @RequiredArgsConstructor
 @Service
@@ -47,5 +50,10 @@ public class UserService {
   public User findbyEmail(String email) {
 
     return repository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("Unexpected user"));
+  }
+
+  public ResponseUser getUserDetail(Integer userId) {
+    User user = repository.findById(userId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
+    return ResponseUser.from(user);
   }
 }
