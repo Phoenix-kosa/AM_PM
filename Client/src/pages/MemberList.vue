@@ -1,11 +1,17 @@
 <template>
   <h2 class="" style="text-align: center;">멤버 목록</h2>
+  <div class="center">
   <div class="container">
     <div class="list">
       <ul>
         <div class ="member-list" v-for="item in memberList" :key="item.id">
+          <div v-if="item.roles=='representative_member'" class="representative">
+            <label :for="item.id"> {{ item.nickName }}</label>
+          </div>
+          <div v-else>
             <input class="checkbox" type="checkbox" v-model="userform" :value="item.userId">
             <label :for="item.id"> {{ item.nickName }}</label>
+          </div>
         </div>
       </ul>
     </div>
@@ -15,13 +21,13 @@
     <button @click="removeMember" class="btn btn-primary">멤버 제거</button>
     <button @click="leaderChange" class="btn btn-primary">프로젝트 대표 변경</button>
   </div>
-  
+  </div>
 </template>
 
 <script setup>
 import axios from 'axios';
 import { ref } from 'vue';
-import { refresh } from "@/api/refresh";
+import { expireToken } from "../api/config";
 import { useRouter } from 'vue-router';
 const router = useRouter();
 
@@ -57,10 +63,7 @@ const removeMember = () => {
     })
     .catch((err) => {
       console.log(err)
-      if(err.response.status == 401) {
-        console.log("토큰 만료");
-        refresh();
-      } 
+      expireToken(err, removeMember, formdata)
     });
   } else {
     alert("체크한 유저가 없습니다!");
@@ -77,11 +80,8 @@ function loadData(){
     memberList.value = response.data;
   })
   .catch((err) => {
-    console.log(err)
-    if(err.response.status == 401) {
-      console.log("토큰 만료");
-      refresh();
-    } 
+    console.log(err);
+    expireToken(err, loadData)
   });
 }
 loadData();

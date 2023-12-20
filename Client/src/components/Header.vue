@@ -7,7 +7,7 @@
         alt="main_logo"
       />
       <div class="login_container">
-        <p>노인수 님</p>
+        <p>{{ name }}</p>
         <router-link to="/mypage">
           <p>MyPage</p>
         </router-link>
@@ -18,10 +18,15 @@
 </template>
 
 <script setup>
+
 import axios from 'axios';
 import { authApi } from "@/api/config";
 import { useRouter } from 'vue-router';
 import { refresh } from "@/api/refresh";
+import { getMyInfoReq } from "../api/common";
+import { expireToken } from "../api/config";
+import { ref, onMounted } from "vue";
+
 const router = useRouter();
 
 const logout = () => {
@@ -39,16 +44,29 @@ const logout = () => {
         } 
     })
     .catch(error => {
-        if(error.response.status == 401) {
-          console.log("토큰 만료");
-          refresh().then(logout());
-        } else {
-          alert("로그아웃 실패");
-          console.error(error);
-          console.log(error.response.status)
-        }
+      expireToken(error, logout)
     });
 }
+
+const name = ref("");
+onMounted(() => {
+  getName();
+});
+
+const getName = () => {
+  getMyInfoReq()
+    .then((res) => {
+      return res.data;
+    })
+    .then((data) => {
+      name.value = data.nickname;
+      console.log(data);
+    })
+    .catch((err) => {
+      expireToken(err, getName);
+    });
+};
+
 </script>
 <style scoped>
 @import "../assets/css/header.css";

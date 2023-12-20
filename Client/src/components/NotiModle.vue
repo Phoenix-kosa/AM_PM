@@ -20,8 +20,9 @@
   </div>
 </template>
 <script setup>
-import { onMounted, defineProps, ref } from "vue";
+import { defineProps, ref } from "vue";
 import { addNoti } from "../api/common";
+import { expireToken } from "../api/config";
 
 const props = defineProps(["closeModal", "projectId", "getNotiList"]);
 
@@ -46,11 +47,15 @@ const addNotiFunction = () => {
   };
 
   if (validation(data)) {
-    addNoti(data).then((res) => {
-      alert(res.data);
-      props.getNotiList(data.projectId);
-      props.closeModal();
-    });
+    addNoti(data)
+      .then((res) => {
+        alert(res.data);
+        props.getNotiList(data.projectId);
+        props.closeModal();
+      })
+      .catch((err) => {
+        expireToken(err, addNotiFunction);
+      });
   } else alert("Notice 생성 실패");
 };
 

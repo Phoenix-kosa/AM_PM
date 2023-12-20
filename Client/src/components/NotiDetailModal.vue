@@ -37,7 +37,7 @@
 </template>
 <script setup>
 import { defineProps, ref } from "vue";
-import { addNoti, deleteNoti, editNoti } from "../api/common";
+import { deleteNoti, editNoti } from "../api/common";
 
 const props = defineProps([
   "closeDetailModal",

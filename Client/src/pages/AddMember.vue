@@ -1,5 +1,6 @@
 <template>
   <h2 class="" style="text-align: center;">멤버 추가</h2>
+  <div class = "center">
   <div class="container">
     <div class="search">
       <form class="d-flex" @submit.prevent="submitForm">
@@ -17,6 +18,7 @@
   <div class="add">
     <button @click="memberList" class="btn btn-primary">멤버 추가하기</button>
   </div>
+  </div>
 </template>
 
 <script setup>
@@ -24,6 +26,7 @@ import axios from 'axios';
 import { ref } from 'vue';
 import { refresh } from "@/api/refresh";
 import { useRouter } from 'vue-router';
+import { expireToken } from "../api/config";
 const router = useRouter();
 
 const projectId = sessionStorage.getItem("projectId");
@@ -52,10 +55,7 @@ const memberList = () => {
   })
   .catch((err) => {
     console.log(err)
-    if(err.response.status == 401) {
-      console.log("토큰 만료");
-      refresh();
-    } 
+    expireToken(err, memberList)
   });
 }
 
@@ -88,10 +88,7 @@ function loadData(){
   })
   .catch((err) => {
     console.log(err)
-    if(err.response.status == 401) {
-      console.log("토큰 만료");
-      refresh();
-    } 
+    expireToken(err, loadData)
   });
 }
 loadData();

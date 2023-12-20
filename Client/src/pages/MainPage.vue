@@ -164,6 +164,10 @@ onMounted(() => {
     init();
     animate();
   });
+
+  window.addEventListener("popstate", () => {
+    window.location.reload();
+  });
 });
 </script>
 

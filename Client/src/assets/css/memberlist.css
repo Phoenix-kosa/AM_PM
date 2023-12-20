@@ -1,10 +1,15 @@
+.center{
+  text-align: center;
+}
+
 .container {
     border-color: #166adc;
     border-radius: 20px;
     border-width: 1px;
     border-style: dashed;
-    height: 280px;
-    min-width: 700px;
+    height: 380px;
+    /* min-width: 700px; */
+    width: 700px;
     display: inline-block;
     text-align: center;
     overflow-y: auto;   
@@ -14,7 +19,7 @@
     width: 450px;
     /* background-color: beige; */
     margin-top: 15px;
-    margin-left: 15%;
+    margin-left: 25%;
     text-align: center;
   }
   
@@ -30,6 +35,9 @@
     background-color: #80808021;
     border-radius: 10px;
   }
+  .representative {
+    padding-left: 40%;
+  }
 
   .checkbox {
     margin-left: 30%;
@@ -41,6 +49,7 @@
   }
   .clickbutton {
     margin-left: 10px;
+    text-align: center;
   }
 
   .btn {
