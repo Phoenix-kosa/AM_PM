@@ -1,5 +1,9 @@
 <template>
-  <div class="gantt_container">
+  <div v-if="!isProjectDateVailed" class="gantt_container">
+    <h1>Gantt Chart</h1>
+    <p class="gantt_error_text">프로젝트 기간을 선택해주세요.</p>
+  </div>
+  <div v-if="isProjectDateVailed" class="gantt_container">
     <h1>Gantt Chart</h1>
     <div class="gantt_item_container">
       <g-gantt-chart
@@ -49,6 +53,7 @@ import {
 const projectStartDate = ref("2021-07-11 12:00");
 const projectEndDate = ref("2021-07-24 12:00");
 const projectId = sessionStorage.getItem("projectId");
+const isProjectDateVailed = ref(true);
 
 const barsList = ref([]);
 const addData = ref("");
@@ -136,6 +141,12 @@ const getProjectDate = () => {
       const { startDate, endDate } = data;
       projectStartDate.value = startDate + " 00:00";
       projectEndDate.value = endDate + " 00:00";
+      if (
+        projectStartDate.value === "null 00:00" ||
+        projectEndDate.value === "null 00:00"
+      ) {
+        isProjectDateVailed.value = false;
+      }
     })
     .then(() => {
       getTasksHandler(projectId);
