@@ -1,4 +1,17 @@
 <template>
+    <div v-if="modalData != null" class="modal">
+    <span class="xButton" @click="close">X</span>
+    <div class="imgDiv">
+      <img v-if="modalData.profileImg" :src="modalData.profileImg">
+    </div>
+    <div class="textDiv">
+      <span class="nicknameModal">{{ modalData.nickname }}</span>
+      <span class="emailModal">{{ modalData.email }}</span>
+    </div>
+    <div class="routerDiv">
+      <RouterLink class="router" :to="{name: 'Chat', query: {user: modalData.userId}}">정보 확인</RouterLink>
+    </div>
+  </div>
   <v-card>
     <v-layout>
       <v-navigation-drawer id="sidebar_container" permanent>
@@ -83,7 +96,7 @@
             :title= item.nickName
             :value= item.nickName
             style="color: white"
-            v-for="item in member_list" :key="item.id" ></v-list-item>
+            v-for="item in member_list" :key="item.id" @click="show(item.userId)"></v-list-item>
           <!-- <v-list-item
             prepend-icon="mdi-account"
             title="민재"
@@ -246,6 +259,8 @@ import axios from "axios";
 const drawer = ref(true);
 const rail = ref(true);
 const projectId = sessionStorage.getItem("projectId");
+const modalData = ref(null);
+
 let member_list = ref([])
 function loadData(){
   axios.get(`http://localhost:8090/api/members/` + projectId, {
@@ -262,4 +277,94 @@ function loadData(){
   });
 }
 window.onload = loadData();
+
+function show(userId) {
+  axios.get('http://localhost:8090/api/user/' + userId, {
+    headers: { 
+        "Authorization" : sessionStorage.getItem("access-token") 
+    }
+  })
+  .then((response) => {
+    modalData.value = response.data;
+    console.log(modalData.value)
+  })
+  .catch((err) => {
+    console.log(err)
+    expireToken(err, show(userId))
+  });
+}
+
+function close() {
+  modalData.value = null;
+}
 </script>
+
+<style scoped>
+.imgDiv {
+  width: 200px;
+  height: 200px;
+  margin-bottom: 20px;
+  background-color: white;
+  border-radius: 50%;
+}
+.modal img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+.textDiv {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.xButton {
+  color: white;
+  font-weight: bold;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-95%, -3%);
+  width: 400px;
+  height: 400px;
+  background-color: rgb(16 22 30 / 70%);
+  border: #166adc solid;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.routerDiv {
+  background-color: white;
+  width: 150px;
+  height: 50px;
+  border-radius: 10px;
+  position: relative;
+}
+.router {
+  text-decoration: none;
+  color: #166adc;
+  font-weight: bold;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+.nicknameModal {
+  color: #ffffff;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+.emailModal {
+  color: #ffffff;
+  margin-bottom: 10px;
+}
+</style>
