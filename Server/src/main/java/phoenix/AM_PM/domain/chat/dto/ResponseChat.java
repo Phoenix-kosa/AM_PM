@@ -10,16 +10,16 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ResponseChat {
     private Integer id;
-    private String userId;
+    private Integer userId;
     private String nickName;
     private String profileImg;
     private String message;
     private LocalDateTime createdDate;
-    private Integer unread;
+    private Long unread;
     private String whoRead;
 
     public static ResponseChat from(Chat chat) {
-        return new ResponseChat(chat.getId(), chat.getUser().getUserId(), chat.getUser().getNickname(),
+        return new ResponseChat(chat.getId(), chat.getUser().getId(), chat.getUser().getNickname(),
                 chat.getUser().getProfileImg(), chat.getMessage(), chat.getCreatedDate(), chat.getUnread(), chat.getWhoRead());
     }
 }

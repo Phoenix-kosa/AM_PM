@@ -32,14 +32,14 @@ public class UserRepositoryTest {
           .password(passwordEncoder.encode("1234"))
           .email("mmm@nae.com")
           .nickname("AM_PM")
-          .roles("ADMIN")
+          .roles("ROLE_USER")
           .build());
       userR.save(User.builder()
           .userId("admin")
           .password(passwordEncoder.encode("1234"))
           .email("admin@nae.com")
           .nickname("불사조")
-          .roles("ADMIN")
+          .roles("ROLE_USER")
           .build());
     } catch (Exception e){
       System.out.println(e);
