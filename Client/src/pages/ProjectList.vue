@@ -23,7 +23,7 @@ const router = useRouter();
 
 function go(projectId) {
   sessionStorage.setItem("projectId", projectId);
-  router.push({path: "/erd"});
+  router.push({path: "/srs/" + projectId});
 }
 
 function loadData() {
