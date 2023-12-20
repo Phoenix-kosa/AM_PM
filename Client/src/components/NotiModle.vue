@@ -24,24 +24,22 @@ import { defineProps, ref } from "vue";
 import { addNoti } from "../api/common";
 import { expireToken } from "../api/config";
 
-const props = defineProps(["closeModal", "projectId", "getNotiList"]);
+const props = defineProps(["closeModal", "getNotiList"]);
 
 const formData = ref({
-  projectId: "1",
+  projectId: "",
   content: "",
   title: "",
 });
 
 const closeModalFunction = () => {
-  // 프로젝트 아이디 수정 필요
-  const a = formData.value.projectId;
-  props.getNotiList(a);
+  props.getNotiList();
   props.closeModal();
 };
 
 const addNotiFunction = () => {
   const data = {
-    projectId: formData.value.projectId,
+    projectId: sessionStorage.getItem("projectId"),
     content: formData.value.content,
     title: formData.value.title,
   };
@@ -50,7 +48,7 @@ const addNotiFunction = () => {
     addNoti(data)
       .then((res) => {
         alert(res.data);
-        props.getNotiList(data.projectId);
+        props.getNotiList();
         props.closeModal();
       })
       .catch((err) => {
@@ -61,7 +59,7 @@ const addNotiFunction = () => {
 
 const validation = (data) => {
   if (
-    data.content.trim() === "" || // 수정: data.contnet → data.content
+    data.content.trim() === "" ||
     data.projectId.trim() === "" ||
     data.title.trim() === ""
   ) {
