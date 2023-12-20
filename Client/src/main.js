@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import * as components from "vuetify/components";
 import * as directives from "vuetify/directives";
 
+import store from './store';
 import { fa } from "vuetify/iconsets/fa";
 import { aliases, mdi } from "vuetify/lib/iconsets/mdi";
 import { createApp } from "vue";
@@ -37,4 +38,6 @@ createApp(App)
   .use(vuetify)
   .use(router)
   .use(createPinia())
+  .use(store)
   .mount("#app");
+ 

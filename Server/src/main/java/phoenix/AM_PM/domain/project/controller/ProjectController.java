@@ -14,6 +14,7 @@ import phoenix.AM_PM.global.config.auth.MyUserDetails;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping("/api/project")
 public class ProjectController {
@@ -40,18 +41,13 @@ public class ProjectController {
     }
     // 생성
     @PostMapping
-    public ResponseEntity createProject(@RequestBody RequestProject requestProject) { // 로그인 사용자 가져다쓰기
-        try {
-            ResponseProject project = projectService.createProject(requestProject);
-            projectPlanService.createDefaultProjectPlans(project.getId()); // 새 프로젝트에 대한 기본 ProjectPlan 생성
-            return new ResponseEntity(project, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("프로젝트 생성 중 오류 발생: " + e.getMessage());
-        }
-    public ResponseEntity createProject(@RequestBody RequestProject requestProject, @AuthenticationPrincipal MyUserDetails myUserDetails) {
+    public ResponseEntity createProject(@RequestBody RequestProject requestProject,
+                                        @AuthenticationPrincipal MyUserDetails myUserDetails) {
         ResponseProject project = projectService.createProject(requestProject, myUserDetails.getUser());
+        projectPlanService.createDefaultProjectPlans(project.getId());
         return new ResponseEntity(project, HttpStatus.CREATED);
     }
+
 
     // 수정
     @PutMapping("/{project-id}")
