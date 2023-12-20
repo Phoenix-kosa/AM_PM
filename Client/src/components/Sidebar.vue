@@ -54,37 +54,20 @@
         ></v-divider>
 
         <p class="p">멤버</p>
-        <v-list density="compact" nav>
+        <v-list density="compact" nav >
           <v-list-item
+            prepend-icon="mdi-account"
+            :title= item.nickName
+            :value= item.nickName
+            style="color: white"
+            v-for="item in member_list" :key="item.id" ></v-list-item>
+          <!-- <v-list-item
             prepend-icon="mdi-account"
             title="민재"
             value="민재"
             style="color: white"
           ></v-list-item>
-          <v-list-item
-            prepend-icon="mdi-account"
-            title="승완"
-            value="승완"
-            style="color: white"
-          ></v-list-item>
-          <v-list-item
-            prepend-icon="mdi-account"
-            title="희지"
-            value="희지"
-            style="color: white"
-          ></v-list-item>
-          <v-list-item
-            prepend-icon="mdi-account"
-            title="인수"
-            value="인수"
-            style="color: white"
-          ></v-list-item>
-          <v-list-item
-            prepend-icon="mdi-account"
-            title="도회"
-            value="도회"
-            style="color: white"
-          ></v-list-item>
+          -->
           <v-divider
           style="border-top-color: white; border-top-width: 2px"
         ></v-divider>     
@@ -144,7 +127,25 @@ export default {
 
 <script setup>
 import { ref } from "vue";
-
+import { expireToken } from "../api/config";
+import axios from "axios";
 const drawer = ref(true);
 const rail = ref(true);
+const projectId = sessionStorage.getItem("projectId");
+let member_list = ref([])
+function loadData(){
+  axios.get(`http://localhost:8090/api/members/` + projectId, {
+    headers: { 
+        "Authorization" : sessionStorage.getItem("access-token") 
+    }
+  })
+  .then((response) => {
+    member_list.value = response.data;
+  })
+  .catch((err) => {
+    console.log(err)
+    expireToken(err, loadData)
+  });
+}
+window.onload = loadData();
 </script>

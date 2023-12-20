@@ -87,7 +87,7 @@
     </body>
 </template>
 <script setup>
-import { ref, reactive } from 'vue'; 
+import { ref, reactive, watch } from 'vue'; 
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 
@@ -106,6 +106,12 @@ let availabilityMessage = ref('')
 let emailAvailabilityMessage = ref('')
 let idavailable = false
 let emailavaliable = false
+
+watch(formData, (newValue, oldValue) => {
+  if (newValue.email !== oldValue.email) {
+    checkEmail(newValue.email);
+  }
+});
 
 const checkUserId = () => {
     const user_id = formData.userId;
@@ -134,6 +140,12 @@ let checkEmail = () => {
         emailAvailabilityMessage.value = "이메일을 입력해주세요.";
         return;
     }
+    
+    if (!validateEmail(email)) {
+        emailAvailabilityMessage.value = "올바른 이메일 주소 형식이 아닙니다.";
+        return;
+    }
+    
     axios.get(`http://localhost:8090/api/user/email/${email}`)
         .then(response => {
             if (response.data) {
@@ -173,6 +185,10 @@ const redirectToLogin = () => {
     router.push("/login");
 }
 
+const validateEmail = (email) => {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return re.test(String(email).toLowerCase());
+}
 </script>
 
 <style scoped>

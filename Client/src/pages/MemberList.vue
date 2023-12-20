@@ -59,7 +59,7 @@ const removeMember = () => {
     }).then(response => {
       console.log(response.status)
       alert("맴버를 제거했습니다");
-      loadData();
+      window.location.reload();
     })
     .catch((err) => {
       console.log(err)
