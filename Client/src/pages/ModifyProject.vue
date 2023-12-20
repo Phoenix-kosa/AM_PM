@@ -16,7 +16,9 @@
 <script setup>
 import axios from 'axios';
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const projectId = sessionStorage.getItem("projectId");
 const projectTitle = ref(null);
 const projectContent = ref(null);
@@ -41,7 +43,8 @@ function modifyProject() {
   })
   .then((response) => {
     if(response.status == 205) {
-      location.href = "/project-list";
+      alert("수정이 완료되었습니다.");
+      router.go();
     }
     else {
       window.alert("권한이 없습니다.");
