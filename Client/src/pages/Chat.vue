@@ -16,6 +16,9 @@
         <span class="email">{{ targetData.email }}</span>
       </div>
     </div>
+    <div class="buttonContainer">
+      <button>1:1 채팅</button>
+    </div>
   </div>
 </template>
 <script setup>
@@ -133,5 +136,16 @@ img {
 .email {
   color: black;
   margin-bottom: 10px;
+}
+.buttonContainer {
+  text-align: center;
+}
+button {
+  width: 150px;
+  height: 50px;
+  background-color: #166adc;
+  border-radius: 10px;
+  color: white;
+  margin-top: 50px;
 }
 </style>

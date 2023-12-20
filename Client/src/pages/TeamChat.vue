@@ -269,9 +269,18 @@ img {
 }
 .routerDiv {
   background-color: white;
+  width: 150px;
+  height: 50px;
+  border-radius: 10px;
+  position: relative;
 }
 .router {
   text-decoration: none;
-  color: black;
+  color: #166adc;
+  font-weight: bold;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 </style>
