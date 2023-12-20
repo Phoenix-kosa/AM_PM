@@ -1,114 +1,100 @@
 <template>
-  <h2 class="">멤버 추가</h2>
+  <h2 class="" style="text-align: center;">멤버 추가</h2>
+  <div class = "center">
   <div class="container">
     <div class="search">
-      <form class="d-flex">
+      <form class="d-flex" @submit.prevent="submitForm">
         <input class="form-control me-2 bg-light" v-model="searchMember" placeholder="Search" >
-        <button class="btn btn-outline-primary" @click="submit">Search</button>
+        <button class="btn btn-outline-primary" type="submit">Search</button>
       </form>
     </div>
     <div class="list">
-      <ul>
-        <li v-for="item in filteredData" :key="item.id">{{ item.title }}</li>
-      </ul>
+        <div class ="search-user" v-for="item in filteredData" :key="item.id">
+            <input class="checkbox" type="checkbox" v-model="userform" :value="item.id">
+            <label :for="item.id"> {{ item.nickname }}</label>
+        </div>
     </div>
-    <div class="add">
-      <button @click="memberList" class="btn btn-primary">멤버 추가하기</button>
-    </div>
+  </div>
+  <div class="add">
+    <button @click="memberList" class="btn btn-primary">멤버 추가하기</button>
+  </div>
   </div>
 </template>
 
 <script setup>
 import axios from 'axios';
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
+import { refresh } from "@/api/refresh";
+import { useRouter } from 'vue-router';
+import { expireToken } from "../api/config";
+const router = useRouter();
 
 const projectId = sessionStorage.getItem("projectId");
 const userId = ref(null);
 const roles = ref(null);
 const searchMember = ref('');
 const filteredData = ref([]);
+let userform = ref([]);
+let memberIdList = ref([]);
 
-function memberList() {
-  location.href = "/member-list";
+const memberList = () => {
+  let formdata = []
+  for(let o of userform.value){
+    formdata.push(o);
+  }
+  console.log("FormData " + formdata);
+  axios.put("http://localhost:8090/api/members/" + projectId, {"members":formdata}, {
+    headers: {
+      "Authorization" : sessionStorage.getItem("access-token") 
+    }
+  }).then(response => {
+    console.log(response.status)
+    alert("맴버 추가 완료!")
+    router.push("/member-list")
+
+  })
+  .catch((err) => {
+    console.log(err)
+    expireToken(err, memberList)
+  });
 }
 
+const submitForm = () => {
+  // console.log(searchMember.value);
+  axios.get(`http://localhost:8090/api/user/nickname?nickname=${searchMember.value}`)
+  .then(request => {
+    filteredData.value = [];
+    let checkid = [];
+    for (let o of memberIdList.value){
+      checkid.push(o.userId)
+    }
+    for(let o of request.data){
+      // console.log(memberIdList.value)
+      if(o.roles == "ROLE_USER" && !checkid.includes(o.id)){
+        filteredData.value.push({"id":o.id, "nickname":o.nickname})
+      }
+    }
+  })
+}
 
-onMounted(async () => {
-  try {
-    const response = await axios.get("http://localhost:8090/api/members/" + projectId);
-    data.value = response.data;
-  } catch (error) {
-    console.error('Error fetching data:', error);
-  }
-});
-
-// function addMember(){
-//   var requestProject = {
-//     projectId:projectId.value,
-//     userId:userId.value
-//   }
-//   axios.put(`http://localhost:8090/api/members/` + projectId,
-//   requestProject,
-//   {
-//     headers: { 
-//         "Authorization" : sessionStorage.getItem("access-token") 
-//   },
-//   })
-//   .catch((err) => {
-//     console.log(err)
-//     if(err.response.status == 401) {
-//       console.log("토큰 만료");
-
-//       axios.get("http://localhost:8090/api/rtoken", {
-//           headers: { 
-//               "RefreshToken" : sessionStorage.getItem("refresh-token"),
-//               "Authorization" : sessionStorage.getItem("access-token") }
-//           }).then(response => {
-//               console.log(response)
-//               if(response.status == 200){
-//                   console.log("토큰 재발급");
-//                   console.log(response.headers.authorization);
-//                   sessionStorage.setItem("access-token", response.headers.authorization);
-//               } else {
-//                   console.log("토큰 재발급 실패");
-//               }
-//           }).catch(error => {console.error(error);})
-//     } 
-//   });
-// }
+function loadData(){
+  axios.get(`http://localhost:8090/api/members/` + projectId, {
+    headers: { 
+        "Authorization" : sessionStorage.getItem("access-token") 
+    }
+  })
+  .then((response) => {
+    memberIdList.value = response.data;
+  })
+  .catch((err) => {
+    console.log(err)
+    expireToken(err, loadData)
+  });
+}
+loadData();
 
 </script>
 
 <style scoped>
-.container {
-  border-color: #166adc;
-  border-radius: 20px;
-  border-width: 1px;
-  border-style: dashed;
-  height: 600px;
-  min-width: 700px;
-  display: inline-block;
-  text-align: center;
-
-}
-
-.search {
-  display: inline-block;
-  text-align: center;
-  margin-top: 10px;
-}
-
-.list {
-  height: 400px;
-  width: 600px;
-  background-color: beige;
-  margin-top: 15px;
-  margin-left: 25%;
-  text-align: center;
-}
-
-.add{
-  text-align: center;
-  margin-top: 15px;
-}
+@import "@/assets/css/memberadd.css";
 </style>

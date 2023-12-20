@@ -84,6 +84,7 @@ export default {
     fnSave(){
       let apiUrl = "http://localhost:8090/api/question"
       this.form = {
+        "id": this.id,
         "title": this.title,
         "content": this.content
       } 
@@ -96,8 +97,9 @@ export default {
         .then((res) => {
           if (res.status == 200){
             alert("저장되었습니다.")
+            this.fnList(res.data.id)
           }
-          // this.fnList()
+          
         }).catch(error => {
           if(error.response.status == 401) {
                 console.log("토큰 만료");
@@ -119,10 +121,29 @@ export default {
             } 
         })
       } else {
-        axios.patch(apiUrl, this.form)
+        axios.put(apiUrl, this.form)
         .then((res) => {
           alert("수정되었습니다.")
           this.fnView(res.data.id)
+        }).catch(error => {
+          if(error.response.status == 401) {
+                console.log("토큰 만료");
+
+                axios.get("http://localhost:8090/api/rtoken", {
+                    headers: { 
+                        "RefreshToken" : sessionStorage.getItem("refresh-token"),
+                        "Authorization" : sessionStorage.getItem("access-token") }
+                    }).then(response => {
+                        console.log(response)
+                        if(response.status == 200){
+                            console.log("토큰 재발급");
+                            console.log(response.headers.authorization);
+                            sessionStorage.setItem("access-token", response.headers.authorization);
+                        } else {
+                            console.log("토큰 재발급 실패");
+                        }
+                    }).catch(error => {console.error(error);})
+            } 
         })
       }
     }

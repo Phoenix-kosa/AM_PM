@@ -38,6 +38,7 @@ public class MembersService {
     @Transactional
     public void addMembers(Integer projectId, RequestMembers requestMembers) {
         Project project = projectRepository.findById(projectId).orElseThrow(()-> new BusinessLogicException(ExceptionCode.PROJECT_NOT_FOUND));
+
         for(Integer userId : requestMembers.getMembers()) {
             Members entity = new Members().builder()
                     .user(userRepository.findById(userId).orElseThrow(()-> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND)))
@@ -48,6 +49,7 @@ public class MembersService {
         }
     }
 
+    @Transactional
     public void removeMembers(Integer projectId, RequestMembers requestMembers) {
         Project project = projectRepository.findById(projectId).orElseThrow(()-> new BusinessLogicException(ExceptionCode.PROJECT_NOT_FOUND));
         for(Integer userId : requestMembers.getMembers()) {

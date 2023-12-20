@@ -21,11 +21,11 @@
                             <input v-model="request.password" type="password" class="form-control" id="password" name="password"
                                 placeholder="비밀번호를 입력해 주세요" required>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-block">로그인</button>
+                        <button type="submit" class="btn btn-primary btn-block" id="login-btn">로그인</button>
                     </form>
-                    <button type="submit" class="btn btn-primary btn-block">간편 로그인</button>
                     <button id="register_button" class="btn btn-primary btn-block" @click="$router.push('/register')">
                     <span id="register_text">회원가입</span></button>
+                    <img class="" id="google-btn" v-on:click="simpleLogin" :src="googlebtn">
                 </div>
             </div>
         </div>
@@ -39,6 +39,8 @@ import axios from 'axios';
 // axios.defaults.withCredentials = true;
 
 import { useRouter } from 'vue-router';
+
+import googlebtn from "@/assets/images/google_btn.png"
 
 const router = useRouter();
 const request = reactive({
@@ -74,6 +76,10 @@ const login = () => {
             console.error(error);
             console.log(error.response.status)
         });
+}
+
+const simpleLogin = () => {
+    window.location.href = "http://localhost:8090/oauth2/authorization/google";
 }
 </script>
 

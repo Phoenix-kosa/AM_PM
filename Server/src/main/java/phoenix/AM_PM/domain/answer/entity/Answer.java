@@ -50,6 +50,8 @@ public class Answer {
     this.title = title;
     this.content = content;
   }
+
+
 //  public void changeUserId(User userId){
 //    this.user = userId;
 //  }

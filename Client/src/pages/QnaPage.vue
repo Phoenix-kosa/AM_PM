@@ -35,7 +35,6 @@ export default {
       requestBody: {},
       list: {},
       no: '',
-      createdDate: ''
     }
   },
   mounted() {

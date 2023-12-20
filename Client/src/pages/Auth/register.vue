@@ -11,6 +11,7 @@
                 <div class="modal-body">
                     <p v-if="registrationResult == 'success'">회원 가입이 성공적으로 완료되었습니다.</p>
                     <p v-else-if="registrationResult == 'failure'">회원 가입에 실패했습니다. 다시 시도해주세요.</p>
+                    <p v-else-if="registrationResult == 'duplication'">중복 확인 후 회원 가입 가능합니다.</p>
                     <p v-else>입력을 확인해주세요.</p>
                 </div>
                 <div class="modal-footer" v-if="registrationResult === 'success'">
@@ -103,6 +104,8 @@ let formData = reactive({
 })
 let availabilityMessage = ref('')
 let emailAvailabilityMessage = ref('')
+let idavailable = false
+let emailavaliable = false
 
 const checkUserId = () => {
     const user_id = formData.userId;
@@ -114,6 +117,7 @@ const checkUserId = () => {
         .then(response => {
             if (response.data) {
                 availabilityMessage.value = "사용 가능한 아이디입니다.";
+                idavailable = true
             } else {
                 availabilityMessage.value = "중복된 아이디입니다. 다른 아이디를 입력해주세요.";
             }
@@ -134,6 +138,7 @@ let checkEmail = () => {
         .then(response => {
             if (response.data) {
                 emailAvailabilityMessage.value = "사용 가능한 이메일입니다.";
+                emailavaliable = true
             } else {
                 emailAvailabilityMessage.value = "중복된 이메일입니다. 다른 이메일를 입력해주세요.";
             }
@@ -144,7 +149,8 @@ let checkEmail = () => {
 }
 
 const submitForm = () => {
-    axios.post('http://localhost:8090/api/user', formData)
+    if(emailavaliable & idavailable){
+        axios.post('http://localhost:8090/api/user', formData)
         .then(response => {
             console.log('Server Response:', response);
             console.log(response.status==201 )
@@ -158,6 +164,9 @@ const submitForm = () => {
         }).catch(error => {
             console.error('서버와의 통신 중 오류가 발생했습니다.', error);
         })
+    } else {
+        registrationResult.value = "duplication";
+    }
 }
 
 const redirectToLogin = () => {
