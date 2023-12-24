@@ -26,7 +26,7 @@
 </template>
 <script setup>
 import axios from 'axios';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 const route = useRoute();
 const target = route.query.user;
@@ -57,7 +57,6 @@ function loadData() {
   })
   .catch((err) => {
     expireToken(err, loadData);
-    } 
   });
 
   axios.get('http://localhost:8090/api/project/' + projectId, {
@@ -70,7 +69,6 @@ function loadData() {
   })
   .catch((err) => {
     expireToken(err, loadData);
-    } 
   });
 
   axios.get('http://localhost:8090/api/members/' + projectId, {
@@ -88,7 +86,6 @@ function loadData() {
   })
   .catch((err) => {
     expireToken(err, loadData);
-    } 
   });
 }
 </script>

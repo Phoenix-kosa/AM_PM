@@ -38,7 +38,6 @@ function loadData() {
   .catch((err) => {
     console.log(err)
     expireToken(err, loadData);
-    } 
   });
 }
 loadData();

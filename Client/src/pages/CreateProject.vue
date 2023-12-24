@@ -54,7 +54,6 @@ function createProject() {
     .catch((err) => {
       console.log(err)
       expireToken(err, createProject);
-      } 
     });
   }
 }

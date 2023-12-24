@@ -30,7 +30,7 @@
             <span v-text="data.message"></span>
           </div>
         </div>
-        <div v-unless="userId == data.userId" class="contentContainer">
+        <div v-else="userId == data.userId" class="contentContainer">
           <div @click="show(data.userId)" class="imgContainer">
             <img v-if="data.user" :src="data.user.profileImg"/>
             <img v-else="data.user" :src="data.profileImg"/>
@@ -56,7 +56,7 @@
 
 <script setup>
 import { RouterLink } from 'vue-router';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { onBeforeRouteLeave  } from 'vue-router';
 import Stomp from 'webstomp-client';
 import axios from 'axios';
@@ -94,7 +94,6 @@ function show(userId) {
   .catch((err) => {
     console.log(err)
     expireToken(err, show(userId));
-    } 
   });
 }
 

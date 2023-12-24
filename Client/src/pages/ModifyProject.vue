@@ -15,7 +15,7 @@
 </template>
 <script setup>
 import axios from 'axios';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -63,7 +63,6 @@ function modifyProject() {
   .catch((err) => {
     console.log(err)
     expireToken(err, modifyProject);
-    } 
   });
 }
 function loadData() {
@@ -82,7 +81,6 @@ function loadData() {
     .catch((err) => {
       console.log(err)
       expireToken(err, loadData);
-      } 
     });
 }
 loadData();
