@@ -29,15 +29,16 @@ public class MembersController {
     // 프로젝트 멤버 조회
     @GetMapping("/api/members/{project-id}")
     public ResponseEntity getMembers(@RequestHeader(value = "Authorization", required = false) String token,@PathVariable("project-id") Integer projectId) {
-//        String name = jwtService.getId(token).get().getnickname();
         List<ResponseMembers> responseMembersList = membersService.getMembers(projectId);
         return ResponseEntity.ok().body(responseMembersList);
     }
     // 프로젝트 멤버 추가
     @PutMapping("/api/members/{project-id}")
-    public ResponseEntity addMembers(@AuthenticationPrincipal MyUserDetails userDetails, @PathVariable("project-id") Integer projectId,
+    public ResponseEntity addMembers(@AuthenticationPrincipal MyUserDetails userDetails,
+                                     @PathVariable("project-id") Integer projectId,
                                      @RequestBody RequestMembers requestMembers) {
-        String userId = userDetails.getUser().getUserId();
+        if(!membersService.checkAuthorization(userDetails.getUser().getId(), projectId))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         try{
             membersService.addMembers(projectId, requestMembers);
@@ -45,15 +46,15 @@ public class MembersController {
         } catch (Exception e){
             System.out.println(e);
         }
-//        requestMembers.getMembers().forEach(System.out::println);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
     // 프로젝트 멤버 삭제
     @DeleteMapping("/api/members/{project-id}")
     public ResponseEntity removeMembers(@AuthenticationPrincipal MyUserDetails userDetails, @PathVariable("project-id") Integer projectId,
                                      @RequestBody RequestMembers requestMembers) {
-        requestMembers.getMembers().forEach(System.out::println);
-        userDetails.getUser().getUserId();
+        if(!membersService.checkAuthorization(userDetails.getUser().getId(), projectId))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
         try{
             membersService.removeMembers(projectId, requestMembers);
         } catch (Exception e) {
@@ -71,7 +72,11 @@ public class MembersController {
     // 프로젝트 대표 멤버 변경
     @PutMapping("/api/representative_member/{project-id}")
     public ResponseEntity modifyRepresentativeMember(@PathVariable("project-id") Integer projectId,
-                                                     @RequestBody RequestMembers requestMembers) {
+                                                     @RequestBody RequestMembers requestMembers,
+                                                     @AuthenticationPrincipal MyUserDetails userDetails) {
+        if(!membersService.checkAuthorization(userDetails.getUser().getId(), projectId))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
         membersService.modifyRepresentativeMember(projectId, requestMembers);
         return new ResponseEntity(HttpStatus.RESET_CONTENT);
     }
