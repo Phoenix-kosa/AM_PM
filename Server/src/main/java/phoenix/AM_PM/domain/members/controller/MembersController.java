@@ -38,7 +38,7 @@ public class MembersController {
                                      @PathVariable("project-id") Integer projectId,
                                      @RequestBody RequestMembers requestMembers) {
         if(!membersService.checkAuthorization(userDetails.getUser().getId(), projectId))
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
         try{
             membersService.addMembers(projectId, requestMembers);
@@ -53,7 +53,7 @@ public class MembersController {
     public ResponseEntity removeMembers(@AuthenticationPrincipal MyUserDetails userDetails, @PathVariable("project-id") Integer projectId,
                                      @RequestBody RequestMembers requestMembers) {
         if(!membersService.checkAuthorization(userDetails.getUser().getId(), projectId))
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
         try{
             membersService.removeMembers(projectId, requestMembers);
@@ -75,7 +75,7 @@ public class MembersController {
                                                      @RequestBody RequestMembers requestMembers,
                                                      @AuthenticationPrincipal MyUserDetails userDetails) {
         if(!membersService.checkAuthorization(userDetails.getUser().getId(), projectId))
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
         membersService.modifyRepresentativeMember(projectId, requestMembers);
         return new ResponseEntity(HttpStatus.RESET_CONTENT);
