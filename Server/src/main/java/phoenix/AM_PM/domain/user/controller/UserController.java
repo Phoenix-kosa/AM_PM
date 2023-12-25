@@ -2,6 +2,7 @@ package phoenix.AM_PM.domain.user.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,6 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import phoenix.AM_PM.domain.refrash.service.RefreshTokenService;
 import org.springframework.web.bind.annotation.*;
@@ -22,59 +24,62 @@ import phoenix.AM_PM.domain.user.service.UserService;
 import phoenix.AM_PM.global.config.auth.MyUserDetails;
 import phoenix.AM_PM.global.config.jwt.JwtProperties;
 import phoenix.AM_PM.global.config.service.JwtServiceImpl;
+import phoenix.AM_PM.global.upload.S3UploadService;
 
 @RestController
 @RequiredArgsConstructor
 public class UserController {
 
-  private final UserRepository userRepository;
-  private final UserService userService;
-  private final BCryptPasswordEncoder bCryptPasswordEncoder;
-  private final JwtServiceImpl jwtService;
-  private final RefreshTokenService refreshTokenService;
+    private final UserRepository userRepository;
+    private final UserService userService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final JwtServiceImpl jwtService;
+    private final RefreshTokenService refreshTokenService;
 
-  private JwtProperties jwtProperties;
+    private final S3UploadService s3UploadService;
 
-  // 로그인
-  @PostMapping("/api/auth/local")
-  public ResponseEntity<String> login(@RequestBody LoginRequestDto loginDto,
-      HttpServletResponse res) {
-    return new ResponseEntity<>("로그인 성공", HttpStatus.OK);
-  }
+    private JwtProperties jwtProperties;
 
-  @GetMapping("/api/auth/google")
-  public ResponseEntity<String> googlelogin(HttpServletResponse res) {
-    System.out.println("google login");
-    return new ResponseEntity<>("로그인 성공", HttpStatus.OK);
-  }
+    // 로그인
+    @PostMapping("/api/auth/local")
+    public ResponseEntity<String> login(@RequestBody LoginRequestDto loginDto,
+                                        HttpServletResponse res) {
+        return new ResponseEntity<>("로그인 성공", HttpStatus.OK);
+    }
 
-  @GetMapping("/login/oauth2/code/google")
-  public ResponseEntity<String> googlelogin2(HttpServletResponse res) {
-    System.out.println("google login");
-    return new ResponseEntity<>("로그인 성공", HttpStatus.OK);
-  }
+    @GetMapping("/api/auth/google")
+    public ResponseEntity<String> googlelogin(HttpServletResponse res) {
+        System.out.println("google login");
+        return new ResponseEntity<>("로그인 성공", HttpStatus.OK);
+    }
 
-  // 회원 가입
-  @PostMapping("/api/user")
-  public ResponseEntity<String> join(@RequestBody SaveUserDto dto, HttpServletResponse res) {
-      if (userService.save(dto)) {
-          return new ResponseEntity<>("성공적으로 회원 가입이 진행되었습니다.", HttpStatus.CREATED);
-      }
-      return new ResponseEntity<>("회원가입 오류", HttpStatus.BAD_REQUEST);
+    @GetMapping("/login/oauth2/code/google")
+    public ResponseEntity<String> googlelogin2(HttpServletResponse res) {
+        System.out.println("google login");
+        return new ResponseEntity<>("로그인 성공", HttpStatus.OK);
+    }
 
-  }
+    // 회원 가입
+    @PostMapping("/api/user")
+    public ResponseEntity<String> join(@RequestBody SaveUserDto dto, HttpServletResponse res) {
+        if (userService.save(dto)) {
+            return new ResponseEntity<>("성공적으로 회원 가입이 진행되었습니다.", HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>("회원가입 오류", HttpStatus.BAD_REQUEST);
+
+    }
 
 
-  // 로그아웃
-  @DeleteMapping("/api/auth")
-  public ResponseEntity<String> logout(@RequestHeader(value = "Authorization", required = false) String token, HttpServletResponse res) {
-    System.out.println("로그아웃!!!!");
-    MultiValueMap<String, String> header = new LinkedMultiValueMap<>();
-    refreshTokenService.delete(jwtService.getId(token));
-    header.add("Authorization", "delete");
+    // 로그아웃
+    @DeleteMapping("/api/auth")
+    public ResponseEntity<String> logout(@RequestHeader(value = "Authorization", required = false) String token, HttpServletResponse res) {
+        System.out.println("로그아웃!!!!");
+        MultiValueMap<String, String> header = new LinkedMultiValueMap<>();
+        refreshTokenService.delete(jwtService.getId(token));
+        header.add("Authorization", "delete");
 
-    return new ResponseEntity<>("로그아웃 성공", header, HttpStatus.OK);
-  }
+        return new ResponseEntity<>("로그아웃 성공", header, HttpStatus.OK);
+    }
 
     @GetMapping("/api/atoken")
     public ResponseEntity<String> test1(@RequestHeader(value = "Authorization", required = false) String token, HttpServletResponse res) {
@@ -173,5 +178,19 @@ public class UserController {
     public ResponseEntity getUserDetail(@PathVariable("user-id") Integer userId) {
         ResponseUser responseUser = userService.getUserDetail(userId);
         return ResponseEntity.ok(responseUser);
+    }
+
+    @PutMapping("/api/profile_img")
+    public ResponseEntity<String> editUserProfile(@AuthenticationPrincipal MyUserDetails userDetails, @RequestParam("file") MultipartFile file) throws IOException {
+        String userId = userDetails.getUser().getUserId();
+        Optional<User> userInfoOptional = userService.findbyUserId(userId);
+        if (userInfoOptional.isPresent()) {
+            User userInfo = userInfoOptional.get();
+            userInfo.setProfileImg(s3UploadService.saveFile(file));
+            userRepository.save(userInfo);
+            return ResponseEntity.ok("successful");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
     }
 }
