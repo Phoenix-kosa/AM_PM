@@ -16,14 +16,9 @@
     <div class="msgContainer" id="msgScroll">
       <div id="msgArea" v-for="data in chatList">
         <div v-if="userId == data.userId" class="contentContainerMy">
-          <div @click="show(data.userId)" class="imgContainer">
-            <img v-if="data.user" :src="data.user.profileImg"/>
-            <img v-else="data.user" :src="data.profileImg"/>
-          </div>
           <div class="message">
             <div class="details">
-              <span v-if="data.user" @click="show(data.userId)" class="nickname" v-text="data.user.nickname"></span>
-              <span v-else="data.user" @click="show(data.userId)" class="nickname" v-text="data.nickName"></span>
+              <span class="nickname">나</span>
               <span class="date">{{ data.createdDate.substring(0, 10) }} {{data.createdDate.substring(11, 16)}}</span>
               <span v-if="data.unread > 0" class="unread" v-text="data.unread"></span>
             </div>
@@ -60,6 +55,7 @@ import { ref, onMounted } from 'vue';
 import { onBeforeRouteLeave  } from 'vue-router';
 import Stomp from 'webstomp-client';
 import axios from 'axios';
+import { expireToken } from "../api/config";
 
 const msg = ref(null);
 const projectId = sessionStorage.getItem("projectId");
@@ -89,7 +85,12 @@ function show(userId) {
     }
   })
   .then((response) => {
-    modalData.value = response.data;
+    if(response.status == 200) {
+      modalData.value = response.data;
+    }
+    else {
+        alert("다시 시도해주세요.");
+    }
   })
   .catch((err) => {
     console.log(err)

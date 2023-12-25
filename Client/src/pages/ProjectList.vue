@@ -17,6 +17,7 @@
 import axios from 'axios';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { expireToken } from "../api/config";
 
 const projectList = ref([]);
 const router = useRouter();
@@ -33,7 +34,12 @@ function loadData() {
     }
   })
   .then((response) => {
-    projectList.value = response.data;
+    if(response.status == 200) {
+      projectList.value = response.data;
+    }
+    else {
+        alert("다시 시도해주세요.");
+    }
   })
   .catch((err) => {
     console.log(err)

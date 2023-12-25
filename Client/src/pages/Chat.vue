@@ -28,6 +28,8 @@
 import axios from 'axios';
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
+import { expireToken } from "../api/config";
+
 const route = useRoute();
 const target = route.query.user;
 const targetData = ref(null);
@@ -65,7 +67,12 @@ function loadData() {
     }
   })
   .then((response) => {
-    projectData.value = response.data;
+    if(response.status == 200) {
+      projectData.value = response.data;
+    }
+    else {
+        alert("다시 시도해주세요.");
+    }
   })
   .catch((err) => {
     expireToken(err, loadData);
@@ -77,6 +84,9 @@ function loadData() {
     }
   })
   .then((response) => {
+    if(response.status != 200) {
+      alert("다시 시도해주세요.");
+    }
     for(let member of response.data) {
       if(member.userId == target) {
         isMember.value = true;
@@ -90,5 +100,5 @@ function loadData() {
 }
 </script>
 <style scoped>
-@import '@/assets/css/modifyProject.css';
+@import '@/assets/css/chat.css';
 </style>

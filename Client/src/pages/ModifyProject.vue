@@ -17,6 +17,7 @@
 import axios from 'axios';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { expireToken } from "../api/config";
 
 const router = useRouter();
 const projectId = sessionStorage.getItem("projectId");
@@ -57,7 +58,7 @@ function modifyProject() {
       router.go();
     }
     else {
-      window.alert("권한이 없습니다.");
+        alert("권한이 없거나 오류가 발생했습니다.");
     }
   })
   .catch((err) => {

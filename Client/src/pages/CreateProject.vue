@@ -18,6 +18,7 @@
 import axios from 'axios';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { expireToken } from "../api/config";
 
 const router = useRouter();
 const title = ref(null);
@@ -49,6 +50,9 @@ function createProject() {
       if(response.status == 201) {
       alert("생성이 완료되었습니다.");
       router.push({path: "/project-list"});
+      }
+      else {
+        alert("다시 시도해주세요.");
       }
     })
     .catch((err) => {
