@@ -23,6 +23,19 @@
 import { defineProps, ref } from "vue";
 import { addNoti } from "../api/common";
 import { expireToken } from "../api/config";
+import Swal from "sweetalert2";
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 2000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener("mouseenter", Swal.stopTimer);
+    toast.addEventListener("mouseleave", Swal.resumeTimer);
+  },
+});
 
 const props = defineProps(["closeModal", "getNotiList"]);
 
@@ -47,14 +60,22 @@ const addNotiFunction = () => {
   if (validation(data)) {
     addNoti(data)
       .then((res) => {
-        alert(res.data);
+        Toast.fire({
+          icon: "success",
+          title: "Notice 생성 완료",
+        });
         props.getNotiList();
         props.closeModal();
       })
       .catch((err) => {
         expireToken(err, addNotiFunction);
       });
-  } else alert("Notice 생성 실패");
+  } else {
+    Toast.fire({
+      icon: "error",
+      title: "Notice 생성 실패",
+    });
+  }
 };
 
 const validation = (data) => {
