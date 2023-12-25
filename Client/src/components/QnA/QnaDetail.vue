@@ -23,11 +23,11 @@
         </tr>
         <tr>
           <th class="text-center">제목</th>
-          <td class="text-center">{{ title }}</td>
+          <td class="text-center">{{ Qtitle }}</td>
         </tr>
         <tr>
           <td  colspan="4" class="text-left" valign="top" height="200">
-            <pre style="white-space: pre-wrap;border:none;background-color: white;">{{ content }}</pre>
+            <pre style="white-space: pre-wrap;border:none;background-color: white;">{{ Qcontent }}</pre>
           </td>
         </tr>
         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -37,50 +37,35 @@
         </div>
       </table>
       <hr><br>
-      <table v-show="isAdmin">
-      <div class="mb-3">
-        <textarea name="" id="" cols="90" rows="10" v-model="comments" class="form-control form-control-sm" style="resize: none;" required></textarea>
+      
+      <div class="row row1">
+          <tr class="table-primary">
+            <th scope="row" class="text-center">제목: </th>
+            <td class="text-center">{{ Atitle }}</td>
+            <th scope="row" class="text-center warning">내용: </th>
+            <td class="text-center">{{ Acontent }}</td>
+          </tr>
       </div>
+
+      <table v-show="isAdmin">      
+        <div class="mb-3">
+          <label for="title" class="form-label">제목: </label>
+          <input type="text" v-model="Atitle" class="form-control" placeholder="제목을 입력하세요.">
+          <label for="content" class="form-label">내용: </label>
+          <textarea name="" id="" cols="90" rows="10" v-model="comments" class="form-control form-control-sm" style="resize: none;" required></textarea>
+        </div>
         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
           <button type="button" class="btn btn-outline-primary" v-on:click="fnASave">저장</button>
           <button type="button" class="btn btn-outline-primary" v-on:click="fnAdelete">삭제</button>
         </div>
       </table>
-      <!-- <table class="table">
-        <h2>답변</h2>
-        <tr>
-          <th width=20% class="text-center warning">번호</th>
-          <td width=30% class="text-center">{{ id }}</td>
-          <th width=20% class="text-center warning">작성일</th>
-          <td width=30% class="text-center">{{ createdDate }}</td>
-        </tr>
-        <tr>
-          <th width=20% class="text-center warning">이름</th>
-          <td width=30% class="text-center">{{ bullentinId }}</td>
-          <th width=20% class="text-center warning"></th>
-          <td width=30% class="text-center"></td>
-        </tr>
-        <tr>
-          <th width=20% class="text-center warning">제목</th>
-          <td colspan="3">{{ title }}</td>
-        </tr>
-        <tr>
-          <td colspan="4" class="text-left" valign="top" height="200">
-            <pre style="white-space: pre-wrap;border:none;background-color: white;">{{ content }}</pre>
-          </td>
-        </tr>
-        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-          <button type="button" class="btn btn-outline-primary" v-on:click="fnUpdate">수정</button>
-          <button type="button" class="btn btn-outline-primary" v-on:click="fnDelete">삭제</button>
-          <button type="button" class="btn btn-outline-primary" v-on:click="fnList">목록</button>
-        </div>
-      </table>     -->
     </div>   
   </div>
 </template>
 
 <script>
 import axios from 'axios';
+import { toHandlers } from 'vue';
 
 export default{
   data(){
@@ -88,20 +73,20 @@ export default{
       isAdmin: false, 
       requestBody: this.$route.query,
       id: this.$route.query.id,
-
-      title: '',
+      questionId: '',
       userId: '',
-      content: '',
+      Qtitle: '',      
+      Qcontent: '',
+      Atitle: '',
+      Acontent: '',
       createdDate: '',
-      comments:[],
-      commentform:{
-        "content":'',
-      },  
+      comments: '',     
       bullentinId: '',
     }
   },
   mounted(){
     this.fnGetQuestion()
+    this.fnGetAnswer()
     // this.fnGetView2()
   },
   methods: {
@@ -109,18 +94,20 @@ export default{
       axios.get("http://localhost:8090/api/question/"+this.id,{
         params: this.requestBody
       }).then((res) => {
-        this.title = res.data.title
-        this.userId = res.data.userId
-        this.content = res.data.content
-        this.createdDate = res.data.createdDate
+        console.log(res)
+        // this.Qtitle = res.data.title
+        // this.userId = res.data.userId
+        // this.Qcontent = res.data.content
+        // this.createdDate = res.data.createdDate
+        // this.roles = res.data.roles
       })
     },
     fnGetAnswer(){
       axios.get("http://localhost:8090/api/answer/"+this.id,{
-        params: this.requestBody
       }).then((res) => {
-        this.title = res.data.title
-        this.content = res.data.content
+        console.log(res)
+        this.Atitle = res.data.title
+        this.Acontent = res.data.content
         this.createdDate = res.data.createdDate
       })
     },
@@ -157,16 +144,22 @@ export default{
     fnASave(){
       let apiUrl = "http://localhost:8090/api/answer"
       this.form = {
-        "content": this.content
+        "title": this.Atitle,
+        "content": this.Acontent
       }
     },
     fnAdelete(){
       if (!confirm("글을 삭제하시겠습니까?")) return
 
-        axios.delete("http://localhost:8090/api/answer/"+this.id,{})
+        axios.delete("http://localhost:8090/api/answer/"+this.id)
         .then(() => {
           alert('삭제되었습니다.')
         this.fnGetQuestion();
+      })
+
+      this.$router.push({
+        path: './question',
+        query: this.requestBody
       })
     },
 

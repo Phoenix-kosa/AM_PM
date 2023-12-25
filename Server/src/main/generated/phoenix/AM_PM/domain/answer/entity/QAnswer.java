@@ -30,7 +30,7 @@ public class QAnswer extends EntityPathBase<Answer> {
 
     public final NumberPath<Integer> id = createNumber("id", Integer.class);
 
-    public final phoenix.AM_PM.domain.question.entity.QQuestion question;
+    public final NumberPath<Integer> questionId = createNumber("questionId", Integer.class);
 
     public final StringPath title = createString("title");
 
@@ -54,7 +54,6 @@ public class QAnswer extends EntityPathBase<Answer> {
 
     public QAnswer(Class<? extends Answer> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.question = inits.isInitialized("question") ? new phoenix.AM_PM.domain.question.entity.QQuestion(forProperty("question")) : null;
         this.user = inits.isInitialized("user") ? new phoenix.AM_PM.domain.user.entity.QUser(forProperty("user")) : null;
     }
 

@@ -8,11 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.web.bind.annotation.RequestHeader;
 import phoenix.AM_PM.domain.answer.entity.Answer;
 import phoenix.AM_PM.domain.question.dto.QuestionDTO;
 import phoenix.AM_PM.domain.question.entity.Question;
 import phoenix.AM_PM.domain.question.repository.QuestionRepository;
 import phoenix.AM_PM.domain.question.service.QuestionService;
+import phoenix.AM_PM.domain.user.service.UserService;
+import phoenix.AM_PM.global.config.service.JwtService;
 
 import java.util.List;
 
@@ -22,19 +25,27 @@ public class QuestionRepositoryTest {
 
     @Autowired
     private QuestionService questionService;
+    private JwtService jwtService;
+    private UserService userService;
 
     @BeforeEach
     public void setup() {
         System.out.println("=".repeat(80));
     }
 
-//    @Order(1)
-//    @Test
-//    public void testFindAll() {
-//        List<Question> answer = questionR.findAll();
-//        answer.forEach(System.out::println);
-//    }
+    @Order(1)
+    @Test
+    public List<Question> questionlist(@RequestHeader(value = "Authorization", required = false) String token){
+        String name = jwtService.getId(token);
 
+        if (userService.findbyUserId(jwtService.getId(token)).get().getRoles().equals("ROLE_ADMIN")){
+            return questionService.findAll();
+        }
+        else {
+            return questionService.getQuestionList(name);
+        }
+    }
+    @Order(2)
     @Test
     public void findname() {
         List<Question> questions = questionService.getQuestionList("abc");

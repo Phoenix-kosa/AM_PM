@@ -26,7 +26,7 @@ public class AnswerController {
 
     private  final AnswerService answerService;
     private QuestionService questionService;
-
+    
 //    private JwtServiceImpl jwtService;
     //생성
     @PostMapping("/write")
@@ -48,8 +48,8 @@ public class AnswerController {
 
     //조회
     @GetMapping("/{id}")
-    public ResponseEntity<AnswerResponse> findAnswer(@PathVariable(name = "id") int id) throws IllegalAccessException {
-        Answer answer = answerService.findById(id);
+    public ResponseEntity<AnswerResponse> findAnswer(@PathVariable(name = "id") int questionId) throws IllegalAccessException {
+        Answer answer = answerService.findByQuestionId(questionId);
         return ResponseEntity.ok().body(new AnswerResponse(answer));
     }
 

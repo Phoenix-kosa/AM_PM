@@ -19,9 +19,12 @@ public class AddAnswerRequest {
     private String createdDate;
     private String title;
     private String content;
+    private Integer questionId;
 
     public Answer toEntity() {
         return Answer.builder()
+//                .userId("관리자")
+                .questionId(questionId)
                 .createdDate(LocalDateTime.now())
                 .title(title)
                 .content(content)

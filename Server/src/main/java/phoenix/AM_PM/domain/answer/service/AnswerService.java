@@ -37,6 +37,10 @@ public class AnswerService {
         return answerR.findAll();
     }
 
+    public Answer findByQuestionId(int questionId) throws IllegalAccessException {
+        return answerR.findByQuestionId(questionId).orElseThrow(() -> new IllegalAccessException("not found: " + questionId));
+    }
+
     //조회
     public Answer findById(int id) throws IllegalAccessException {
         return answerR.findById(id).orElseThrow(() -> new IllegalAccessException("not found: " + id));
@@ -45,7 +49,7 @@ public class AnswerService {
     //삭제
     @Transactional
     public void delete(int id){
-        answerR.deleteById(id);
+        answerR.deleteByQuestionId(id);
     }
 
     //수정

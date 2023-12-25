@@ -1,15 +1,19 @@
 package phoenix.AM_PM.domain.question.controller;
 
 
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import phoenix.AM_PM.domain.answer.service.AnswerService;
 import phoenix.AM_PM.domain.question.dto.QuestionCreateDTO;
 import phoenix.AM_PM.domain.question.dto.QuestionDTO;
 import phoenix.AM_PM.domain.question.entity.Question;
 import phoenix.AM_PM.domain.question.service.QuestionService;
+import phoenix.AM_PM.domain.user.entity.User;
+import phoenix.AM_PM.domain.user.service.UserService;
 import phoenix.AM_PM.global.config.service.JwtService;
 
 import java.util.List;
@@ -22,12 +26,19 @@ import java.util.List;
 public class QuestionController {
     @Autowired
     private QuestionService questionService;
+    private final UserService userService;
     private final JwtService jwtService;
     @GetMapping("")
     public List<Question> questionlist(@RequestHeader(value = "Authorization", required = false) String token){
         String name = jwtService.getId(token);
 
-        return questionService.getQuestionList(name);
+        if (userService.findbyUserId(jwtService.getId(token)).get().getRoles().equals("ROLE_ADMIN")){
+            return questionService.findAll();
+        }
+        else {
+            return questionService.getQuestionList(name);
+        }
+
     }
 
     @GetMapping("/{question-id}")

@@ -20,6 +20,10 @@ public class QuestionService {
 
     private final QuestionRepository questionR;
 
+
+    public List<Question> findAll(){
+        return questionR.findAll();
+    }
     //목록 가져오기
     public List<Question> getQuestionList(String userId){
         return questionR.findByUserId(userId);
@@ -56,4 +60,6 @@ public class QuestionService {
         Question question = questionR.findById(id).orElseThrow(() -> new RuntimeException("게시글 x"));
         questionR.delete(question);
     }
+
+
 }
