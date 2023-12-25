@@ -32,13 +32,19 @@ public class ProjectPlanService {
     private final Path uiLocation = Paths.get("C:\\kosastudy\\AM_PM\\Server\\src\\main\\resources\\static\\img\\plan");
 
     public void createDefaultProjectPlans(int projectId) {
-        createDefaultPlan( projectId, "srs", "/img/plan/default-srs-image.png", "https://www.google.com/intl/ko_kr/sheets/about/");
-        createDefaultPlan( projectId, "erd", "/img/plan/default-erd-image.png", "https://www.erdcloud.com/");
-        createDefaultPlan( projectId, "usecase", "/img/plan/default-usecase-image.png", "https://example.com/usecase");
-        createDefaultPlan( projectId, "ui", "/img/plan/default-ui-image.png", "https://www.figma.com/");
+        createDefaultPlan(projectId, "srs", "/img/plan/default-srs-image.png", "https://www.google.com/intl/ko_kr/sheets/about/");
+        createDefaultPlan(projectId, "erd", "/img/plan/default-erd-image.png", "https://www.erdcloud.com/");
+        createDefaultPlan(projectId, "usecase", "/img/plan/default-usecase-image.png", "https://example.com/usecase");
+        createDefaultPlan(projectId, "ui", "/img/plan/default-ui-image.png", "https://www.figma.com/");
     }
 
     public ProjectPlanDTO createNewPage(String title, int projectId) {
+        if (title == null || title.trim().isEmpty()) {
+            throw new IllegalArgumentException("제목은 비어있을 수 없습니다.");
+        }
+        if (!title.matches("^[a-zA-Z]+$")) {
+            throw new IllegalArgumentException("제목은 영어로만 구성되어야 합니다.");
+        }
         // 중복 제목 검사
         if (projectPlanRepository.existsByProjectIdAndTitle(projectId, title)) {
             throw new RuntimeException("이미 존재하는 페이지 제목입니다.");
@@ -52,10 +58,8 @@ public class ProjectPlanService {
                 .sampleImg("") // 필요에 따라 설정
                 .build();
 
-        // DB에 저장
         ProjectPlan savedPage = projectPlanRepository.save(newPage);
 
-        // DTO 변환 후 반환
         return convertToDTO(savedPage);
     }
 
@@ -90,6 +94,7 @@ public class ProjectPlanService {
                 .orElseThrow(() -> new IllegalArgumentException("잘못된 아이디: " + projectId));
         return convertToDTO(projectPlan);
     }
+
     public ProjectPlanDTO getErdExampleByProjectId(int projectId) {
         ProjectPlan projectPlan = projectPlanRepository.findByProjectIdAndTitle(projectId, "ERD")
                 .orElseThrow(() -> new IllegalArgumentException("잘못된 아이디: " + projectId));
@@ -135,7 +140,6 @@ public class ProjectPlanService {
     }
 
 
-
     private void storeFileByIdAndProjectId(int id, int projectId, MultipartFile file, Path location, BiConsumer<ProjectPlan, String> filePathSetter) {
         try {
             if (!Files.exists(location)) {
@@ -162,11 +166,6 @@ public class ProjectPlanService {
     }
 
 
-
-
-
-
-
     public void updateErd(int projectId, String title, MultipartFile file) {
         BiConsumer<ProjectPlan, String> setErdPath = ProjectPlan::setFilePath;
         storeFileByProjectIdAndTitle(projectId, title, file, erdLocation, setErdPath);
@@ -177,7 +176,6 @@ public class ProjectPlanService {
         BiConsumer<ProjectPlan, String> setErdPath = ProjectPlan::setFilePath;
         storeFileByProjectIdAndTitle(projectId, title, file, usecaseLocation, setErdPath);
     }
-
 
 
     public void updateUi(int projectId, String title, MultipartFile file) {
@@ -213,8 +211,6 @@ public class ProjectPlanService {
     }
 
 
-
-
     public ProjectPlanDTO createNewEtcPage(int projectId, MultipartFile file, String sampleUrl, String sampleImg, String title) throws IOException {
         String filePath = null;
         if (file != null && !file.isEmpty()) {
@@ -241,9 +237,9 @@ public class ProjectPlanService {
 
 
     public List<ProjectPlanDTO> getAllEtcPages(int projectId) {
-            List<ProjectPlan> etcPages = projectPlanRepository.findByProjectIdAndTitleStartingWith(projectId, "ETC");
-            return etcPages.stream().map(this::convertToDTO).collect(Collectors.toList());
-        }
+        List<ProjectPlan> etcPages = projectPlanRepository.findByProjectIdAndTitleStartingWith(projectId, "ETC");
+        return etcPages.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
 
 
     public ProjectPlanDTO updateEtcPage(int id, String newSampleUrl, String newSampleImg) {
@@ -281,7 +277,6 @@ public class ProjectPlanService {
     }
 
 
-
     public ProjectPlanDTO updateSampleUrl(int projectId, String title, String newSampleUrl) {
         ProjectPlan projectPlan = projectPlanRepository.findByProjectIdAndTitle(projectId, title)
                 .orElseThrow(() -> new IllegalArgumentException("No project plan found with ID: " + projectId + " and title: " + title));
@@ -291,7 +286,7 @@ public class ProjectPlanService {
     }
 
 
-    private void createDefaultPlan( int projectId, String title, String sampleImg, String sampleUrl) {
+    private void createDefaultPlan(int projectId, String title, String sampleImg, String sampleUrl) {
         boolean exists = projectPlanRepository.existsByProjectIdAndTitle(projectId, title);
         if (!exists) {
             ProjectPlan projectPlan = new ProjectPlan();
@@ -328,11 +323,11 @@ public class ProjectPlanService {
 
         storeFileByProjectIdAndTitle(projectId, title, file, location, filePathSetter);
     }
+
     private Path determineLocationByType(String type) {
         // 모든 파일을 'Server/src/main/resources/static/img/plan' 폴더에 저장
         return Paths.get("Server/src/main/resources/static/img/plan");
     }
-
 
 
     private ProjectPlanDTO convertToDTO(ProjectPlan projectPlan) {
