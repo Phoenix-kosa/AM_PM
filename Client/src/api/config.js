@@ -25,6 +25,11 @@ authApi.interceptors.request.use((config) => {
   return config;
 });
 
+authFileApi.interceptors.request.use((config) => {
+  config.headers.Authorization = getLocalStorageToken();
+  return config;
+});
+
 const getLocalStorageToken = () => {
   const token = sessionStorage.getItem("access-token");
   return token;
