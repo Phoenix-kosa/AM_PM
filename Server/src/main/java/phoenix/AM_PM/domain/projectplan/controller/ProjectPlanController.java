@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import phoenix.AM_PM.domain.projectplan.dto.ProjectPlanDTO;
 import phoenix.AM_PM.domain.projectplan.service.ProjectPlanService;
+import phoenix.AM_PM.global.upload.S3UploadService;
 
 
 import java.io.IOException;
@@ -21,6 +22,9 @@ public class ProjectPlanController {
 
     @Autowired
     private ProjectPlanService projectPlanService;
+
+    @Autowired
+    private S3UploadService s3UploadService;
 
     @GetMapping("/project-plan/{projectId}")
     public ResponseEntity<ProjectPlanDTO> getProjectPlanByProjectId(@PathVariable("projectId") int projectId) {
@@ -150,12 +154,14 @@ public class ProjectPlanController {
             @RequestParam("file") MultipartFile file) {
 
         try {
-            projectPlanService.storeImage(id, projectId, file);
-            return ResponseEntity.ok("이미지가 성공적으로 업로드 되었습니다.");
+            String fileUrl = s3UploadService.saveFile(file); // S3UploadService 인스턴스 사용
+            // projectPlanService.storeImage(id, projectId, fileUrl); // 필요한 경우 주석 해제
+            return ResponseEntity.ok("이미지가 성공적으로 업로드 되었습니다. URL: " + fileUrl);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("이미지 업로드 중 오류 발생: " + e.getMessage());
         }
     }
+
 
 
 
