@@ -32,7 +32,7 @@ public class UserRepositoryTest {
           .password(passwordEncoder.encode("1234"))
           .email("mmm@nae.com")
           .nickname("AM_PM")
-          .roles("ROLE_USER")
+          .roles("ROLE_ADMIN")
           .build());
       userR.save(User.builder()
           .userId("admin")
