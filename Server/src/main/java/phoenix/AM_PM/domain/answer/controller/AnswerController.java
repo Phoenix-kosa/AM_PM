@@ -48,14 +48,14 @@ public class AnswerController {
 
     //조회
     @GetMapping("/{id}")
-    public ResponseEntity<AnswerResponse> findAnswer(@PathVariable int id) throws IllegalAccessException {
+    public ResponseEntity<AnswerResponse> findAnswer(@PathVariable(name = "id") int id) throws IllegalAccessException {
         Answer answer = answerService.findById(id);
         return ResponseEntity.ok().body(new AnswerResponse(answer));
     }
 
     //삭제
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id) {
+    public ResponseEntity<Void> delete(@PathVariable(name = "id") int id) {
         answerService.delete(id);
 
         return ResponseEntity.ok().build();
@@ -63,7 +63,9 @@ public class AnswerController {
 
     //수정
     @PutMapping("/{id}")
-    public ResponseEntity<Answer> update(@PathVariable int id, @RequestBody UpdateAnswerRequest req){
+    public ResponseEntity<Answer> update(@PathVariable(name = "id") int id, @RequestBody UpdateAnswerRequest req){
+        System.out.println(id);
+        System.out.println(req);
         Answer updateAnswer = answerService.update(id, req);
         return ResponseEntity.ok().body(updateAnswer);
     }
