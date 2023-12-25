@@ -50,7 +50,6 @@ import {
   deleteTask,
   editTask,
 } from "../api/common";
-import { expireToken} from "../api/config"
 
 const projectStartDate = ref("2021-07-11 12:00");
 const projectEndDate = ref("2021-07-24 12:00");
