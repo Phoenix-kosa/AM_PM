@@ -65,10 +65,7 @@ const index = createRouter({
         { path: "/chat",
           component: Chat,
           name: "Chat"},
-        { path: "project-list", component: ProjectList },
-        { path: "create-project", component: CreateProject },
-          props: true, // 모든 params를 props로 전달합니다.
-        },
+       
         { path: "question", component: QnaPage },
         { path: "detail", component: QnaDetail },
         { path: "team-chat", component: TeamChat },
