@@ -39,6 +39,12 @@ public class ProjectPlanService {
     }
 
     public ProjectPlanDTO createNewPage(String title, int projectId) {
+        if (title == null || title.trim().isEmpty()) {
+            throw new IllegalArgumentException("제목은 비어있을 수 없습니다.");
+        }
+        if (!title.matches("^[a-zA-Z]+$")) {
+            throw new IllegalArgumentException("제목은 영어로만 구성되어야 합니다.");
+        }
         // 중복 제목 검사
         if (projectPlanRepository.existsByProjectIdAndTitle(projectId, title)) {
             throw new RuntimeException("이미 존재하는 페이지 제목입니다.");
@@ -52,10 +58,8 @@ public class ProjectPlanService {
                 .sampleImg("") // 필요에 따라 설정
                 .build();
 
-        // DB에 저장
         ProjectPlan savedPage = projectPlanRepository.save(newPage);
 
-        // DTO 변환 후 반환
         return convertToDTO(savedPage);
     }
 
