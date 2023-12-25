@@ -8,6 +8,7 @@ import org.springframework.web.server.ResponseStatusException;
 import phoenix.AM_PM.domain.projectplan.dto.ProjectPlanDTO;
 import phoenix.AM_PM.domain.projectplan.entity.ProjectPlan;
 import phoenix.AM_PM.domain.projectplan.repository.ProjectPlanRepository;
+import phoenix.AM_PM.global.upload.S3UploadService;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,6 +26,8 @@ public class ProjectPlanService {
 
     @Autowired
     private ProjectPlanRepository projectPlanRepository;
+
+
     private final Path srsLocation = Paths.get("C:\\kosastudy\\AM_PM\\Server\\src\\main\\resources\\static\\img\\plan");
     private final Path erdLocation = Paths.get("C:\\kosastudy\\AM_PM\\Server\\src\\main\\resources\\static\\img\\plan");
 
@@ -114,8 +117,8 @@ public class ProjectPlanService {
 
 
     public void storeSrs(int projectId, String title, MultipartFile file) {
-        BiConsumer<ProjectPlan, String> setErdPath = ProjectPlan::setFilePath;
-        storeFileByProjectIdAndTitle(projectId, title, file, srsLocation, setErdPath);
+            BiConsumer<ProjectPlan, String> setErdPath = ProjectPlan::setFilePath;
+            storeFileByProjectIdAndTitle(projectId, title, file, srsLocation, setErdPath);
     }
 
     public void storeErd(int projectId, String title, MultipartFile file) {
@@ -164,12 +167,6 @@ public class ProjectPlanService {
             throw new RuntimeException("Could not store file", e);
         }
     }
-
-
-
-
-
-
 
     public void updateErd(int projectId, String title, MultipartFile file) {
         BiConsumer<ProjectPlan, String> setErdPath = ProjectPlan::setFilePath;
@@ -323,11 +320,9 @@ public class ProjectPlanService {
     }
 
     public void storeCustomType(int projectId, String title, MultipartFile file, String type) {
-        Path location = determineLocationByType(type); // 각 타입에 따른 파일 저장 경로를 결정하는 메소드
-
+        Path location = determineLocationByType(type);
         BiConsumer<ProjectPlan, String> filePathSetter = (projectPlan, path) -> {
             projectPlan.setFilePath(path);
-            // 필요한 경우 type에 따라 추가적인 설정을 할 수 있습니다.
         };
 
         storeFileByProjectIdAndTitle(projectId, title, file, location, filePathSetter);
