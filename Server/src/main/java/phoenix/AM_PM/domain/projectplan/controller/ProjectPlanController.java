@@ -129,16 +129,17 @@ public class ProjectPlanController {
 
 
     @PostMapping("/create-page")
-    public ResponseEntity<ProjectPlanDTO> createNewPage(@RequestBody ProjectPlanDTO projectPlanDTO) {
+    public ResponseEntity<?> createNewPage(@RequestBody ProjectPlanDTO projectPlanDTO) {
         try {
             ProjectPlanDTO newPage = projectPlanService.createNewPage(projectPlanDTO.getTitle(), projectPlanDTO.getProjectId());
             return ResponseEntity.ok(newPage);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (RuntimeException e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(new ProjectPlanDTO()); // 오류 응답 처리
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("서버에서 오류가 발생했습니다.");
         }
     }
+
 
 
 

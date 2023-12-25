@@ -24,7 +24,7 @@ const router = useRouter();
 
 function go(projectId) {
   sessionStorage.setItem("projectId", projectId);
-  router.push({path: "/srs/" + projectId});
+  router.push({ name: "ProjectPlanPage", params: { pageType: 'srs' } });
 }
 
 function loadData() {
