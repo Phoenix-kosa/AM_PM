@@ -1,5 +1,5 @@
 import axios from "axios";
-import { authApi, apiInstance, expireToken } from "./config";
+import { authApi, apiInstance, authFileApi } from "./config";
 
 const api = async (url, method, data) => {
   return (
@@ -68,5 +68,11 @@ export const deleteTask = async (taskId) => {
 
 export const editTask = async (taskId, updateData) => {
   const response = await apiInstance.put(`/api/task/${taskId}`, updateData);
+  return response;
+};
+
+// 파일 전송
+export const editProfile = async (formData) => {
+  const response = await authFileApi.put(`/api/profile_img`, formData);
   return response;
 };

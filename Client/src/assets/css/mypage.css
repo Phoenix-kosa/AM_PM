@@ -17,10 +17,6 @@
   justify-content: start;
 }
 
-.mypage_wrapper img {
-  width: 10%;
-}
-
 .input_container {
   display: flex;
   justify-content: space-between;
@@ -66,4 +62,19 @@
   border-radius: 8px;
   font-size: 18px;
   font-weight: 700;
+}
+
+.custom-file-input-label {
+  color: white;
+  background-color: #166adc;
+  padding: 10px 16px;
+  margin: 20px 0 0px 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.profile_img_tag {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
 }

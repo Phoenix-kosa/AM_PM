@@ -30,9 +30,9 @@ public class UserRepositoryTest {
       userR.save(User.builder()
           .userId("ampm1")
           .password(passwordEncoder.encode("1234"))
-          .email("mmm123@nae.com")
-          .nickname("AM_PM123")
-          .roles("ROLE_USER")
+          .email("mmm@nae.com")
+          .nickname("AM_PM")
+          .roles("ROLE_ADMIN")
           .build());
       userR.save(User.builder()
           .userId("admin1")
