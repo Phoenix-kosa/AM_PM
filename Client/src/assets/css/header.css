@@ -33,3 +33,7 @@
 .login_container a {
   color: black;
 }
+
+.logout:hover {
+  cursor: pointer;
+}

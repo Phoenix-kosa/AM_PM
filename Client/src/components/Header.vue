@@ -13,7 +13,7 @@
         <router-link to="/mypage">
           <p>MyPage</p>
         </router-link>
-        <a v-on:click="logout">Log out</a>
+        <a class="logout" v-on:click="logout">Log out</a>
       </div>
     </header>
   </div>
