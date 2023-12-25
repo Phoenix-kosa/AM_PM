@@ -64,6 +64,19 @@
 import { onMounted, ref } from "vue";
 import { getMyInfoReq, editMyInfoReq, editProfile } from "../api/common";
 import { expireToken } from "../api/config";
+import Swal from "sweetalert2";
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 2000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener("mouseenter", Swal.stopTimer);
+    toast.addEventListener("mouseleave", Swal.resumeTimer);
+  },
+});
 
 const editMyInfo = ref({
   nickname: "",
@@ -83,9 +96,12 @@ const editProfileImgHandler = (event) => {
   const formData = new FormData();
   formData.append("file", selectedFile);
   editProfile(formData)
-    .then((res) => {
-      console.log(res);
-      getMyInfo();
+    .then(() => {
+      Toast.fire({
+        icon: "success",
+        title: "프로필 이미지 수정 완료",
+      });
+      window.location.reload();
     })
     .catch((error) => {
       expireToken(error, editProfileImgHandler, event);
@@ -115,18 +131,24 @@ const submitForm = () => {
   if (validateForm()) {
     editMyInfoReq(editMyInfo.value)
       .then((res) => {
-        console.log("성공");
-        console.log(res.data);
-        alert("회원정보 수정 완료");
+        Toast.fire({
+          icon: "success",
+          title: "회원정보 수정 완료",
+        });
       })
       .catch((error) => {
         expireToken(error, submitForm);
         window.scrollTo(0, 0);
-        alert("회원정보 수정 실패!");
-        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "회원정보 수정 실패",
+        });
       });
   } else {
-    alert("회원정보 수정 실패!");
+    Toast.fire({
+      icon: "error",
+      title: "회원정보 수정 실패",
+    });
   }
 };
 
