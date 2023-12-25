@@ -9,14 +9,14 @@
             <label :for="item.id"> {{ item.nickName }}</label>
           </div>
           <div v-else>
-            <input class="checkbox" type="checkbox" v-model="userform" :value="item.userId">
+            <input class="checkbox" type="checkbox" v-model="userform" :value="item.userId" :disabled="!leadercheck">
             <label :for="item.id"> {{ item.nickName }}</label>
           </div>
         </div>
       </ul>
     </div>
   </div>
-  <div class="clickbutton">
+  <div class="clickbutton" v-if="leadercheck">
     <button @click="addMember" class="btn btn-primary">멤버 추가</button>
     <button @click="removeMember" class="btn btn-primary">멤버 제거</button>
     <button @click="leaderChange" class="btn btn-primary">프로젝트 대표 변경</button>
@@ -33,7 +33,7 @@ const router = useRouter();
 
 const memberList = ref([]);
 let userform = ref([]);
-
+let leadercheck = ref(false);
 const projectId = sessionStorage.getItem("projectId");
 
 function addMember() {
@@ -77,16 +77,41 @@ function loadData(){
     }
   })
   .then((response) => {
-    memberList.value = response.data;
+    memberList.value = response.data.sort((a, b) => {
+        // roles 값을 기준으로 정렬 (알파벳순으로 정렬)
+        if (a.roles < b.roles) {
+          return 1;
+        }
+        if (a.roles > b.roles) {
+          return -1;
+        }
+        return 0;
+      });
   })
   .catch((err) => {
     console.log(err);
     expireToken(err, loadData)
   });
 }
+
+const getrepResentativeMember = () => {
+  axios.get(`http://localhost:8090/api/representative_member/` + projectId, {
+    headers: { 
+        "Authorization" : sessionStorage.getItem("access-token") 
+    }
+  })
+  .then(response => {
+    leadercheck.value = response.data
+    console.log(leadercheck.value)
+  }).catch(err => {
+    console.log(err)
+    expireToken(err, getrepResentativeMember)
+  })
+}
 loadData();
+getrepResentativeMember();
 </script>
 
 <style scoped>
-@import "@/assets/css/memberlist.css"
+@import "@/assets/css/memberlist.css";
 </style>
