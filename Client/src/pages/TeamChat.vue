@@ -18,7 +18,7 @@
         <div v-if="userId == data.userId" class="contentContainerMy">
           <div class="message">
             <div class="details">
-              <span class="nickname">나</span>
+              <span class="myname">나</span>
               <span class="date">{{ data.createdDate.substring(0, 10) }} {{data.createdDate.substring(11, 16)}}</span>
               <span v-if="data.unread > 0" class="unread" v-text="data.unread"></span>
             </div>

@@ -116,6 +116,10 @@ img {
   margin-right: 10px;
   cursor: pointer;
 }
+.myname {
+  font-weight: bold;
+  margin-right: 10px;
+}
 .date {
   margin-right: 10px;
 }
