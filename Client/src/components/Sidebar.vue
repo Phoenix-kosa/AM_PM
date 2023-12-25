@@ -17,37 +17,50 @@
       <v-navigation-drawer id="sidebar_container" permanent>
         <p class="p">기획</p>
         <v-list density="compact" nav>
+          
+          <!-- 
           <v-list-item
             prepend-icon="mdi-home-city"
             title="요구사항 명세서"
-            :to="`/srs/${currentProjectId}`"
+            :to="'/srs'"
 
             style="color: white"
           ></v-list-item>
-
           
+      <v-list-item
+            prepend-icon="mdi-account-group-outline"
+            title="USECASE"
+            :to="'/usecase'"
+            style="color: white"
+      ></v-list-item>
 
-          <v-list-item
-          prepend-icon="mdi-account"
-          title="Usecase"
-          :to="`/usecase/${currentProjectId}`"
-          style="color: white"
-          ></v-list-item>
 
-          <v-list-item
+        <v-list-item
             prepend-icon="mdi-account-group-outline"
             title="ERD"
-            :to="`/erd/${currentProjectId}`"
+            :to="'/erd'"
             style="color: white"
       ></v-list-item>
 
           <v-list-item
             prepend-icon="mdi-account-group-outline"
             title="UI"
-            :to="`/ui/${currentProjectId}`"
+            :to="'/ui'"
             style="color: white"
           ></v-list-item>
+-->
+          
+          <v-list-item
+            prepend-icon="mdi-account-group-outline"
+            v-for="page in etcPages"
+            :key="page.id"
+            :title="page.title"
+            :to="`/${page.title}`"
+            style="color: white">
+            <!-- 페이지 제목 또는 기타 정보 표시 -->
+          </v-list-item>
 
+<!--
         <v-list-item
           v-for="page in etcPages"
           :key="page.id"
@@ -55,7 +68,8 @@
           :title="page.title"
           :to="`/${page.title}/${currentProjectId}`"
           style="color: white"
-    ></v-list-item>
+        ></v-list-item>
+-->
 
         </v-list>
         <v-container>
@@ -67,7 +81,8 @@
       </v-container>
         <v-divider
           style="border-top-color: white; border-top-width: 2px"
-        ></v-divider>
+        >
+      </v-divider>
         
         
         <p class="p">개발</p>
@@ -114,14 +129,14 @@
         <v-list-item
             prepend-icon="mdi-account"
             title="프로젝트 수정"
-            to="modify-project"
+            to="/modify-project" 
             style="color: white"
           ></v-list-item>
           <v-list-item
             prepend-icon="mdi-account"
             title="멤버 관리"
             style="color: white"
-            to="member-list"
+            to="/member-list" 
           ></v-list-item>
 
         </v-list>
@@ -151,11 +166,20 @@
     <v-card>
       <v-card-title>새 페이지 생성</v-card-title>
       <v-card-text>
-        <v-text-field v-model="newPageTitle" label="페이지 제목" :rules="titleRules"></v-text-field>
+        <v-text-field 
+        v-model="newPageTitle"
+        label="페이지 제목"
+        :rules="titleRules"
+        ref="pageForm">
+      </v-text-field>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" text @click="createPage">생성</v-btn>
+        <v-btn color="blue darken-1" text @click="handleCreatePage">생성</v-btn>
+        <v-btn color="grey" text @click="showModal = false">취소</v-btn>
+
+
+
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -182,7 +206,6 @@ export default {
       drawer: true,
       rail: true,
       etcPages: [],
-      currentProjectId: sessionStorage.getItem("projectId") || 0,
       showModal: false,
       newPageTitle: '',
       titleRules: [
@@ -193,20 +216,44 @@ export default {
     };
   },
   methods: {
+     
+    getPageLink(title) {
+      const projectId = sessionStorage.getItem("projectId");
+      return `/${title}`;
+    },
+/*
+    loadPages() {
+      const projectId = sessionStorage.getItem("projectId");
+      // 데이터가 이미 로드되었는지 확인
+      if (this.etcPages.length === 0) {
+        axios.get(`http://localhost:8090/api/plan/etc-pages/${projectId}`)
+          .then(response => {
+            this.etcPages = response.data;
+            console.log("15151515")
+          })
+          .catch(error => {
+            console.error("페이지 로드 실패:", error);
+          });
+      }
+    },
+*/
+
     createNewEtcPage() {
     this.showModal = true;
   },
 
-    createPage() {
-      localStorage.clear();
-      console.log('createPage method called');
-
-    this.addEtcPage(this.newPageTitle);
-    this.showModal = false;
-    this.newPageTitle = '';
-    console.log(this.etcPages);
-
-  },
+  createPage() {
+  if (this.$refs.pageForm.validate()) {
+    this.createNewPage(this.newPageTitle).then(response => {
+      this.showModal = false; 
+      this.newPageTitle = ''; 
+    }).catch(error => {
+      console.error('Page creation failed:', error);
+    });
+  } else {
+    console.log('유효하지 않은 제목');
+  }
+},
     
     requestProjectIdUpdate(newProjectId) {
       this.$emit('update-project-id', newProjectId);
@@ -216,50 +263,98 @@ export default {
         this.createNewPage(newPageTitle).then(response => {
             if (response && response.data) {
                 this.etcPages = [...this.etcPages, response.data];
-                 localStorage.setItem('etcPages', JSON.stringify(this.etcPages));
-                // 로컬스토리지 사용 부분 
-
-                // this.$router.push(`/${response.data.title}/${this.currentProjectId}`); 페이지 생성 후 이동 하는
+                // 새 페이지로 이동
+                //this.$router.push(`/${response.data.title}/${this.currentProjectId}`);
             }
         }).catch(error => {
             console.error('Page creation failed:', error);
         });
   },
+
+  /*
   createNewPage(title) {
-    console.log('Request URL:', this.createPageUrl);
-    return axios.post('http://localhost:8090/api/plan/create-page', { title: title, projectId: this.currentProjectId });
-  }
+  const projectId = sessionStorage.getItem("projectId");
+  return axios.post('http://localhost:8090/api/plan/create-page', {
+    title: title,
+    projectId: projectId
+  }).then(response => {
+    const newPage = response.data;
+    this.etcPages.push(newPage); 
+  }).catch(error => {
+    console.error('Page creation failed:', error);
+    alert(error.response.data.message || '페이지 생성 실패');
+  });
 },
+*/
+  mounted() {
+    this.loadPages();
+  },
 
-mounted(){
-  const savedPages = localStorage.getItem('etcPages');
-  if (savedPages) {
-    this.etcPages = JSON.parse(savedPages);
-  }
- },    
-
-
- computed: {
+  computed: {
     isPlanningVisible() {
       return this.currentProjectId || this.etcPages.length > 0;
     }
   }
-};
+}
+}
 </script>
-
 
 <style scoped>
 @import "../assets/css/sidebar.css";
 </style>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { expireToken } from "../api/config";
 import axios from "axios";
 const drawer = ref(true);
 const rail = ref(true);
 const projectId = sessionStorage.getItem("projectId");
 const modalData = ref(null);
+const newPageTitle = ref('');
+
+
+
+const etcPages = ref([]);
+const loadPages = () => {
+  axios.get(`http://localhost:8090/api/plan/etc-pages/` + projectId)
+    .then(response => {
+      etcPages.value = response.data;
+    })
+    .catch(err => {
+      console.error("페이지 로드 실패:", err);
+    }); 
+};
+
+const handleCreatePage = () => {
+  if (newPageTitle.value.trim()) {
+    createNewPageAndUpdateSidebar(newPageTitle.value.trim()).then(() => {
+      // 페이지 생성 후 모달 닫기 
+      showModal.value = false;
+      newPageTitle.value = ''; // 입력 필드 초기화
+    });
+  }
+};
+
+const createNewPageAndUpdateSidebar = async (title) => {
+  try {
+    const response = await axios.post('http://localhost:8090/api/plan/create-page', {
+      title: title,
+      projectId: projectId
+    });
+    // 새 페이지를 etcPages에 추가
+    etcPages.value.push(response.data);
+    // 사이드바 데이터를 다시 로드
+    await loadPages();
+  } catch (error) {
+    console.error('Page creation failed:', error);
+  }
+};
+
+
+onMounted(loadPages);
+
+
 
 let member_list = ref([])
 function loadData(){
