@@ -25,18 +25,22 @@ public class ProjectPlanService {
 
     @Autowired
     private ProjectPlanRepository projectPlanRepository;
-    private final Path srsLocation = Paths.get("C:\\kosastudy\\AM_PM\\Server\\src\\main\\resources\\static\\img\\plan");
-    private final Path erdLocation = Paths.get("C:\\kosastudy\\AM_PM\\Server\\src\\main\\resources\\static\\img\\plan");
+    private final Path srsLocation = Paths.get("Server/src/main/resources/static/img/plan");
+    private final Path erdLocation = Paths.get("Server/src/main/resources/static/img/plan");
 
-    private final Path usecaseLocation = Paths.get("C:\\kosastudy\\AM_PM\\Server\\src\\main\\resources\\static\\img\\plan");
-    private final Path uiLocation = Paths.get("C:\\kosastudy\\AM_PM\\Server\\src\\main\\resources\\static\\img\\plan");
+    private final Path usecaseLocation = Paths.get("Server/src/main/resources/static/img/plan");
+    private final Path uiLocation = Paths.get("Server/src/main/resources/static/img/plan");
+
+    private final Path planLocation = Paths.get("Server/src/main/resources/static/img/plan");
 
     public void createDefaultProjectPlans(int projectId) {
-        createDefaultPlan( projectId, "srs", "/img/plan/default-srs-image.png", "https://www.google.com/intl/ko_kr/sheets/about/");
-        createDefaultPlan( projectId, "erd", "/img/plan/default-erd-image.png", "https://www.erdcloud.com/");
-        createDefaultPlan( projectId, "usecase", "/img/plan/default-usecase-image.png", "https://example.com/usecase");
-        createDefaultPlan( projectId, "ui", "/img/plan/default-ui-image.png", "https://www.figma.com/");
+        createDefaultPlan( projectId, "srs", "/resources/static/img/plan/default-srs-image.png", "https://www.google.com/intl/ko_kr/sheets/about/");
+        createDefaultPlan( projectId, "erd", "/static/img/plan/default-erd-image.png", "https://www.erdcloud.com/");
+        createDefaultPlan( projectId, "usecase", "/resources/static/img/plan/default-usecase-image.png", "https://example.com/usecase");
+        createDefaultPlan( projectId, "ui", "/resources/static/img/plan/default-ui-image.png", "https://www.figma.com/");
+
     }
+
 
     public ProjectPlanDTO createNewPage(String title, int projectId) {
         // 중복 제목 검사
