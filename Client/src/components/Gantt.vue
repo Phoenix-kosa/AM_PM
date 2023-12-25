@@ -42,6 +42,7 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
+import { expireToken } from "../api/config";
 import {
   getProject,
   getTasks,
@@ -131,8 +132,7 @@ const addTaskHandler = () => {
       closeEditor();
     })
     .catch((err) => {
-      console.log(err)
-      expireToken(err, addTaskHandler)
+      expireToken(err, addTaskHandler);
     });
 };
 

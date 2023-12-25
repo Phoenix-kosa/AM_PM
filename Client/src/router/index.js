@@ -34,14 +34,38 @@ const index = createRouter({
       children: [
         { path: "dev", component: DevPage },
         { path: "mypage", component: MyPage },
+        { path: 'excel', component: Excel },
+
+        { path: 'testtoken', component: TestToken },
+        
+      
+        {
+          path: '/:pageType',
+          name: 'ProjectPlanPage',
+          component: ProjectPlan,
+          props: true 
+        },
+
+        /*
         { path: "excel", component: Excel },
         { path: "testtoken", component: TestToken },
         {
           path: "/:pageType/:projectId",
           name: "ProjectPlanPage",
           component: ProjectPlan,
-          props: true, // 모든 params를 props로 전달합니다.
+          props: true 
         },
+        */
+
+
+
+        { path: "question", component: QnaPage},
+        { path: "detail", component: QnaDetail},
+        { path: "team-chat", component: TeamChat},
+        { path: "/chat",
+          component: Chat,
+          name: "Chat"},
+       
         { path: "question", component: QnaPage },
         { path: "detail", component: QnaDetail },
         { path: "team-chat", component: TeamChat },

@@ -23,7 +23,7 @@
         </tr>
         <tr>
           <th class="text-center">제목</th>
-          <td>{{ title }}</td>
+          <td class="text-center">{{ title }}</td>
         </tr>
         <tr>
           <td  colspan="4" class="text-left" valign="top" height="200">
@@ -32,11 +32,20 @@
         </tr>
         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
           <button type="button" class="btn btn-outline-primary" v-on:click="fnUpdate">수정</button>
-          <button type="button" class="btn btn-outline-primary" v-on:click="fnDelete">삭제</button>
+          <button type="button" class="btn btn-outline-primary" v-on:click="fnQdelete">삭제</button>
           <button type="button" class="btn btn-outline-primary" v-on:click="fnList">목록</button>
         </div>
       </table>
       <hr><br>
+      <table>
+      <div class="mb-3">
+        <textarea name="" id="" cols="90" rows="10" v-model="comments" class="form-control form-control-sm" style="resize: none;" required></textarea>
+      </div>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+          <button type="button" class="btn btn-outline-primary" v-on:click="fnASave">저장</button>
+          <button type="button" class="btn btn-outline-primary" v-on:click="fnAdelete">삭제</button>
+        </div>
+      </table>
       <!-- <table class="table">
         <h2>답변</h2>
         <tr>
@@ -91,11 +100,11 @@ export default{
     }
   },
   mounted(){
-    this.fnGetView1()
+    this.fnGetQuestion()
     // this.fnGetView2()
   },
   methods: {
-    fnGetView1(){
+    fnGetQuestion(){
       axios.get("http://localhost:8090/api/question/"+this.id,{
         params: this.requestBody
       }).then((res) => {
@@ -105,20 +114,27 @@ export default{
         this.createdDate = res.data.createdDate
       })
     },
-    // fnGetView2(){
-    //   axios.get("http://localhost:8090/api/answer/"+this.id,{
-    //     params: this.requestBody
-    //   }).then((res) => {
-    //     this.title = res.data.title
-    //     this.bullentinId = res.data.bullentinId
-    //     this.content = res.data.content
-    //     this.createdDate = res.data.createdDate
-    //   })
-    // },
+    fnGetAnswer(){
+      axios.get("http://localhost:8090/api/answer/"+this.id,{
+        params: this.requestBody
+      }).then((res) => {
+        this.title = res.data.title
+        this.content = res.data.content
+        this.createdDate = res.data.createdDate
+      })
+    },
     fnList() {
       delete this.requestBody.id
       this.$router.push({
         path: './question',
+        query: this.requestBody
+      })
+    },
+
+    fnAList() {
+      delete this.requestBody.id
+      this.$router.push({
+        path: './answer',
         query: this.requestBody
       })
     },
@@ -128,16 +144,30 @@ export default{
         query: this.requestBody
       })
     },
-    fnDelete(){
-    if (!confirm("글을 삭제하시겠습니까?")) return
+    fnQdelete(){
+      if (!confirm("글을 삭제하시겠습니까?")) return
 
-    axios.delete("http://localhost:8090/api/question/"+this.id,{})
-      .then(() => {
-        alert('삭제되었습니다.')
-        this.fnList();
+      axios.delete("http://localhost:8090/api/question/"+this.id,{})
+        .then(() => {
+          alert('삭제되었습니다.')
+          this.fnList();
       })
     },
-    
+    fnASave(){
+      let apiUrl = "http://localhost:8090/api/answer"
+      this.form = {
+        "content": this.content
+      }
+    },
+    fnAdelete(){
+      if (!confirm("글을 삭제하시겠습니까?")) return
+
+        axios.delete("http://localhost:8090/api/answer/"+this.id,{})
+        .then(() => {
+          alert('삭제되었습니다.')
+        this.fnGetQuestion();
+      })
+    },
 
   }  
 }
