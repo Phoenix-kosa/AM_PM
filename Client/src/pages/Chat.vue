@@ -29,7 +29,10 @@ import axios from 'axios';
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { expireToken } from "../api/config";
+import { useRouter } from 'vue-router';
+import Swal from 'sweetalert2';
 
+const router = useRouter();
 const route = useRoute();
 const target = route.query.user;
 const targetData = ref(null);
@@ -41,7 +44,11 @@ onMounted(() => {
   window.scrollTo(0, 0);
   const projectId = sessionStorage.getItem("projectId");
   if (projectId === null) {
-    alert("프로젝트를 선택하세요.");
+    Swal.fire({
+      icon: 'warning',
+      title: '프로젝트 선택 안 됨',
+      text: '프로젝트를 선택하여주세요.',
+    });
     router.push("/project-list");
   }
 });

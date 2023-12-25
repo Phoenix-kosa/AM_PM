@@ -18,7 +18,7 @@
         <div v-if="userId == data.userId" class="contentContainerMy">
           <div class="message">
             <div class="details">
-              <span class="nickname">나</span>
+              <span class="myname">나</span>
               <span class="date">{{ data.createdDate.substring(0, 10) }} {{data.createdDate.substring(11, 16)}}</span>
               <span v-if="data.unread > 0" class="unread" v-text="data.unread"></span>
             </div>
@@ -56,6 +56,7 @@ import { onBeforeRouteLeave  } from 'vue-router';
 import Stomp from 'webstomp-client';
 import axios from 'axios';
 import { expireToken } from "../api/config";
+import Swal from 'sweetalert2';
 
 const msg = ref(null);
 const projectId = sessionStorage.getItem("projectId");
@@ -67,8 +68,12 @@ onMounted(() => {
   window.scrollTo(0, 0);
   const projectId = sessionStorage.getItem("projectId");
   if (projectId === null) {
-    alert("프로젝트를 선택하세요.");
-    router.push("/project-list");
+    Swal.fire({
+      icon: 'warning',
+      title: '프로젝트 선택 안 됨',
+      text: '프로젝트를 선택하여주세요.',
+    });
+    router.push("project-list");
   }
 });
 
@@ -89,7 +94,11 @@ function show(userId) {
       modalData.value = response.data;
     }
     else {
-        alert("다시 시도해주세요.");
+        Swal.fire({
+          icon: 'warning',
+          title: '오류 발생',
+          text: '다시 시도해주세요.',
+        });
     }
   })
   .catch((err) => {

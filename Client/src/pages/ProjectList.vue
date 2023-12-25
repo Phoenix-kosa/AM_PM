@@ -18,13 +18,14 @@ import axios from 'axios';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { expireToken } from "../api/config";
+import Swal from 'sweetalert2';
 
 const projectList = ref([]);
 const router = useRouter();
 
 function go(projectId) {
   sessionStorage.setItem("projectId", projectId);
-  router.push({path: "/srs/" + projectId});
+  router.push({ name: "ProjectPlanPage", params: { pageType: 'srs' } });
 }
 
 function loadData() {
@@ -38,7 +39,11 @@ function loadData() {
       projectList.value = response.data;
     }
     else {
-        alert("다시 시도해주세요.");
+      Swal.fire({
+        icon: 'warning',
+        title: '오류 발생',
+        text: '다시 시도해주세요.',
+      });
     }
   })
   .catch((err) => {

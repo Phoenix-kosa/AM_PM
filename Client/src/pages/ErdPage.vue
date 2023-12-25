@@ -1,6 +1,6 @@
 <template>
   <div>
-    <project-plan :page-type="'ERD'" :page-id="2"></project-plan>
+    <project-plan :page-type="'ERD'"></project-plan>
   </div>
 </template>
 

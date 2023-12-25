@@ -38,7 +38,7 @@ public class MembersController {
                                      @PathVariable("project-id") Integer projectId,
                                      @RequestBody RequestMembers requestMembers) {
         if(!membersService.checkAuthorization(userDetails.getUser().getId(), projectId))
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         try{
             membersService.addMembers(projectId, requestMembers);
@@ -53,7 +53,7 @@ public class MembersController {
     public ResponseEntity removeMembers(@AuthenticationPrincipal MyUserDetails userDetails, @PathVariable("project-id") Integer projectId,
                                      @RequestBody RequestMembers requestMembers) {
         if(!membersService.checkAuthorization(userDetails.getUser().getId(), projectId))
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         try{
             membersService.removeMembers(projectId, requestMembers);
@@ -65,17 +65,22 @@ public class MembersController {
     }
     // 프로젝트 대표 멤버 조회
     @GetMapping("/api/representative_member/{project-id}")
-    public ResponseEntity getRepresentativeMember(@PathVariable("project-id") Integer projectId) {
+    public ResponseEntity getRepresentativeMember(@PathVariable("project-id") Integer projectId,
+                                                 @AuthenticationPrincipal MyUserDetails userDetails) {
         ResponseMembers responseMembers = membersService.getRepresentativeMember(projectId);
-        return ResponseEntity.ok().body(responseMembers);
+
+        boolean result = (responseMembers.getUserId() == userDetails.getUser().getId()) ? true : false;
+        System.out.println("result == >>>>>>>>>>>>>>>>>>>>>>" + result);
+        return ResponseEntity.ok().body(result);
     }
     // 프로젝트 대표 멤버 변경
     @PutMapping("/api/representative_member/{project-id}")
     public ResponseEntity modifyRepresentativeMember(@PathVariable("project-id") Integer projectId,
                                                      @RequestBody RequestMembers requestMembers,
                                                      @AuthenticationPrincipal MyUserDetails userDetails) {
+        System.out.println("맴버 변경" + userDetails.getUser());
         if(!membersService.checkAuthorization(userDetails.getUser().getId(), projectId))
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         membersService.modifyRepresentativeMember(projectId, requestMembers);
         return new ResponseEntity(HttpStatus.RESET_CONTENT);

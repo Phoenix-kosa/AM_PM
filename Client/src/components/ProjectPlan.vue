@@ -3,12 +3,12 @@
 
     <h1>{{ pageTitle }}</h1>
     <div>
-      <p>참고 사이트: <a :href="sampleUrl" target="_blank">{{ sampleUrl }}</a></p>
+      <p>참고 사이트: <a :href="sampleUrl" target="_blank" >{{ sampleUrl }}</a></p>
       <input type="text" placeholder="원하는 Url로 수정하세요!" v-model="editableSampleUrl" />
-      <button @click="saveUrl">&nbsp저장</button>
+      <button class="b" @click="saveUrl">저장</button>
       <br><br>
       <input type="file" @change="handleFileUpload" />
-      <button @click="uploadFile">파일 업로드</button><br><br>
+      <button class="a" @click="uploadFile">파일 업로드</button><br><br>
       <br>
       <img :src="imagePreview" alt="Preview" v-if="imagePreview" height="800px" width="1200px"/>
 
@@ -41,6 +41,7 @@ export default {
   },
   data() {
     return {
+      projectId: sessionStorage.getItem("projectId"),
       pages: [],
       sampleUrl: '',
       editableSampleUrl: '',
@@ -54,7 +55,8 @@ export default {
       return pageTypeTitle.toUpperCase();
     },
     uploadUrl() {
-      return this.pageType ? `http://localhost:8090/api/plan/user-${this.pageType.toLowerCase()}/${this.projectId}` : '';
+      const projectId = sessionStorage.getItem("projectId");
+      return this.pageType ? `http://localhost:8090/api/plan/user-${this.pageType.toLowerCase()}/${projectId}` : '';
     },
     defaultData() {
     return {
@@ -88,17 +90,18 @@ export default {
 
   methods: {
     deletePage() {
+    const projectId = sessionStorage.getItem("projectId");
+
     const pageTitle = this.pageType; // 현재 페이지 타이틀
     
     if (!pageTitle) {
         console.error('undefined');
         return;
     }
-    const projectId = this.$route.params.projectId; // 프로젝트 ID 가져오기
     axios.delete(`http://localhost:8090/api/plan/${pageTitle}`)
         .then(response => {
             alert('페이지가 삭제되었습니다.');
-            this.$router.push(`/srs/${projectId}`); 
+            this.$router.push(`/srs`); 
         })
         .catch(error => {
             console.error('페이지 삭제 실패:', error);
@@ -152,7 +155,7 @@ export default {
 
 
 saveUrl() {
-  const projectId = this.$route.params.projectId;
+  const projectId = sessionStorage.getItem("projectId");
   const title = this.pageType; 
   axios.put(`http://localhost:8090/api/plan/update-url/${projectId}/${title}`, { newSampleUrl: this.editableSampleUrl })
     .then(response => {
@@ -170,8 +173,9 @@ saveUrl() {
     },
     fetchPageData() {
     if (this.pageType) {
-      const projectId = this.$route.params.projectId;
-      const url = `http://localhost:8090/api/plan/${this.pageType.toLowerCase()}-example/${projectId}`;
+      const projectId = sessionStorage.getItem("projectId");
+      if (this.pageType && projectId) {
+        const url = `http://localhost:8090/api/plan/${this.pageType.toLowerCase()}-example/${projectId}`;
       axios.get(url)
         .then(response => {
           const data = response.data;
@@ -181,6 +185,7 @@ saveUrl() {
         .catch(error => {
           console.error('데이터를 가져오는 데 실패했습니다:', error);
         });
+      }
     }
   },
   uploadFile() {
@@ -215,8 +220,9 @@ saveUrl() {
   },
   
   mounted() {
-    if (this.pageType && this.projectId) {
-    this.currentProjectId = this.projectId; 
+    
+    const projectId = sessionStorage.getItem("projectId");
+  if (this.pageType && projectId) {
     this.fetchPageData();
     }
   }
