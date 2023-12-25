@@ -8,6 +8,7 @@
         v-on:click="projectSelect"
       />
       <div class="login_container">
+        <img :src="profileImg" alt="profile_Img" class="header_profile_img" />
         <p>{{ name }}</p>
         <router-link to="/mypage">
           <p>MyPage</p>
@@ -66,6 +67,8 @@ const logout = () => {
 };
 
 const name = ref("");
+const profileImg = ref("");
+
 onMounted(() => {
   getName();
 });
@@ -76,6 +79,7 @@ const getName = () => {
       return res.data;
     })
     .then((data) => {
+      profileImg.value = data.profileImg;
       name.value = data.nickname;
     })
     .catch((err) => {
