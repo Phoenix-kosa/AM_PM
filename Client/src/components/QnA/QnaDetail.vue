@@ -37,7 +37,7 @@
         </div>
       </table>
       <hr><br>
-      <table>
+      <table v-show="isAdmin">
       <div class="mb-3">
         <textarea name="" id="" cols="90" rows="10" v-model="comments" class="form-control form-control-sm" style="resize: none;" required></textarea>
       </div>
@@ -85,6 +85,7 @@ import axios from 'axios';
 export default{
   data(){
     return {
+      isAdmin: false, 
       requestBody: this.$route.query,
       id: this.$route.query.id,
 
