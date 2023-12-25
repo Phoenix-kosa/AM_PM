@@ -9,18 +9,27 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.transaction.annotation.Transactional;
+import phoenix.AM_PM.domain.refrash.entity.RefreshToken;
+import phoenix.AM_PM.domain.refrash.repository.RefreshTokenRepository;
+import phoenix.AM_PM.domain.refrash.service.RefreshTokenService;
 import phoenix.AM_PM.domain.user.dto.LoginRequestDto;
 import phoenix.AM_PM.global.config.auth.MyUserDetails;
 
 public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFilter {//UsernamePasswordAuthenticationFilter{
 
 	private final AuthenticationManager authenticationManager;
+
+	@Autowired
+	private RefreshTokenService refreshTokenService;
+
 	private static final AntPathRequestMatcher DEFAULT_ANT_PATH_REQUEST_MATCHER = new AntPathRequestMatcher("/api/auth/local",
 			"POST");
 
@@ -82,12 +91,14 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 		System.out.println("successfulAuthentication ");
 		
 		MyUserDetails principalDetailis = (MyUserDetails) authResult.getPrincipal();
+		Integer id = principalDetailis.getUser().getId();
+		String userId = principalDetailis.getUser().getUserId();
 
 		String jwtToken = JWT.create()
 				.withSubject(principalDetailis.getUsername())
 				.withExpiresAt(new Date(System.currentTimeMillis()+JwtProperties.EXPIRATION_TIME))
-				.withClaim("id", principalDetailis.getUser().getId())
-				.withClaim("userId", principalDetailis.getUser().getUserId())
+				.withClaim("id", id)
+				.withClaim("userId", userId)
 				.sign(Algorithm.HMAC512(JwtProperties.SECRET));
 
 		response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX+jwtToken);
@@ -96,12 +107,16 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 		String refreshToken = JWT.create()
 				.withSubject(principalDetailis.getUsername())
 				.withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.REFRESH_TOKEN_EXPIRATION_TIME))
-				.withClaim("id", principalDetailis.getUser().getId())
-				.withClaim("userId", principalDetailis.getUser().getUserId())
+				.withClaim("id", id)
+				.withClaim("userId", userId)
 				.sign(Algorithm.HMAC512(JwtProperties.SECRET));
 
 		// Refresh Token을 헤더에 추가하여 클라이언트에 전달
 		response.addHeader(JwtProperties.REFRESH_TOKEN_HEADER, JwtProperties.REFRESH_TOKEN_PREFIX + refreshToken);
+		if(!refreshTokenService.check(userId))
+			refreshTokenService.save(RefreshToken.builder().userId(userId).token(refreshToken).build());
+		else
+			refreshTokenService.update(userId, refreshToken);
 	}
 	
 }

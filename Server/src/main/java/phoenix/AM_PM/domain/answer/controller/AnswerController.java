@@ -7,9 +7,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import phoenix.AM_PM.domain.answer.dto.AddAnswerRequest;
+import phoenix.AM_PM.domain.answer.dto.AnswerResponse;
+import phoenix.AM_PM.domain.answer.dto.UpdateAnswerRequest;
 import phoenix.AM_PM.domain.answer.entity.Answer;
 import phoenix.AM_PM.domain.answer.service.AnswerService;
 import phoenix.AM_PM.domain.question.service.QuestionService;
+
+import java.util.List;
 
 
 @Slf4j
@@ -20,42 +24,49 @@ public class AnswerController {
 //    @NonNull
 //    UserRepository uR;
 
-    private AnswerService answerService;
+    private  final AnswerService answerService;
     private QuestionService questionService;
 
 //    private JwtServiceImpl jwtService;
-
-    //가져오기
-//    @GetMapping("/{id}")
-//    public ResponseEntity<Answer> getBoardById(@PathVariable int id) {
-//        Answer answer = answerService.findById(id);
-//        return ResponseEntity.ok(answer);
-//    }
-    //게시물 조회
-//    @GetMapping("/{id}")
-//    public ResponseEntity getBoardById(@AuthenticationPrincipal MyUserDetails myUserDetails) {
-//        List<AnswerDTO> answer = answerService.getProjectList(myUserDetails.getUser().getId());
-//        return ResponseEntity.ok(answer);
-//    }
     //생성
     @PostMapping("/write")
     public ResponseEntity<Answer> create(@RequestBody AddAnswerRequest req) {
-//                                        @AuthenticationPrincipal MyUserDetails myUserDetails)
         Answer answer = answerService.save(req);
         //성공적으로 생성되었으며 응답 객체에 담아 전송
         return ResponseEntity.status(HttpStatus.CREATED).body(answer);
     }
 
+    //전체 조회
+    @GetMapping("")
+    public ResponseEntity<List<AnswerResponse>> findAll(){
+        List<AnswerResponse> answerResponses = answerService.findAll()
+                .stream()
+                .map(AnswerResponse::new)
+                .toList();
+        return ResponseEntity.ok().body(answerResponses);
+    }
+
+    //조회
+    @GetMapping("/{id}")
+    public ResponseEntity<AnswerResponse> findAnswer(@PathVariable(name = "id") int id) throws IllegalAccessException {
+        Answer answer = answerService.findById(id);
+        return ResponseEntity.ok().body(new AnswerResponse(answer));
+    }
+
+    //삭제
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable(name = "id") int id) {
+        answerService.delete(id);
+
+        return ResponseEntity.ok().build();
+    }
 
     //수정
-//    @PutMapping("/{postNo}/{id}")
-//    public ResponseEntity<String> update(@PathVariable int id, @RequestBody Answer answer) {
-//        answerService.update(id, answer);
-//        return ResponseEntity.ok("Board updated successfully");
-//    }
-    //삭제
-//    @DeleteMapping("/{postNo}/{id}")
-//    public void deleteById(int id){
-//        answerService.delete((int) id);
-//    }
+    @PutMapping("/{id}")
+    public ResponseEntity<Answer> update(@PathVariable(name = "id") int id, @RequestBody UpdateAnswerRequest req){
+        System.out.println(id);
+        System.out.println(req);
+        Answer updateAnswer = answerService.update(id, req);
+        return ResponseEntity.ok().body(updateAnswer);
+    }
 }

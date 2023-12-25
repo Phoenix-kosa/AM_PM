@@ -16,34 +16,33 @@ let refreshtoken = sessionStorage.getItem("refresh-token")
 
 let checkToken = () => {
     // 클라이언트에서 accesstoken 유효시간 검증
-    const token = sessionStorage.getItem('access-token');
-    console.log(token)
-    if (token) {
-    const tokenPayload = token.split('.')[1]; // 토큰의 페이로드에 접근
-    console.log(tokenPayload)
-    const decodedPayload = JSON.parse(atob(tokenPayload)); // 페이로드 디코딩
-    
-    console.log(decodedPayload)
-    const expirationTimeInSeconds = decodedPayload.exp; // 만료 시간(초 단위)
+    // const token = sessionStorage.getItem('access-token');
+    // console.log(token)
+    // if (token) {
+    // const tokenPayload = token.split('.')[1]; // 토큰의 페이로드에 접근
+    // console.log(tokenPayload)
+    // const decodedPayload = JSON.parse(atob(tokenPayload)); // 페이로드 디코딩
+    // console.log(decodedPayload)
+    // const expirationTimeInSeconds = decodedPayload.exp; // 만료 시간(초 단위)
 
-    console.log(expirationTimeInSeconds)
-    const currentTimestampInSeconds = Math.floor(Date.now() / 1000); // 현재 타임스탬프(초 단위)
+    // console.log(expirationTimeInSeconds)
+    // const currentTimestampInSeconds = Math.floor(Date.now() / 1000); // 현재 타임스탬프(초 단위)
 
-    console.log(currentTimestampInSeconds)
-    if (expirationTimeInSeconds && expirationTimeInSeconds > currentTimestampInSeconds) {
-        // 토큰이 아직 만료되지 않았습니다
-        const timeUntilExpiration = expirationTimeInSeconds - currentTimestampInSeconds;
-        console.log(`토큰 만료까지 ${timeUntilExpiration}초 남았습니다.`);
-    } else {
-        // 토큰이 만료되었습니다
-        console.log('토큰이 만료되었습니다.');
-        // 사용자 로그아웃 또는 토큰 갱신과 같은 필요한 작업 수행
-    }
-    } else {
-    // 세션 스토리지에서 토큰을 찾을 수 없습니다
-        console.log('토큰을 찾을 수 없습니다.');
-    // 로그인 페이지로 리다이렉트하는 등 필요한 작업 수행
-    }
+    // console.log(currentTimestampInSeconds)
+    // if (expirationTimeInSeconds && expirationTimeInSeconds > currentTimestampInSeconds) {
+    //     // 토큰이 아직 만료되지 않았습니다
+    //     const timeUntilExpiration = expirationTimeInSeconds - currentTimestampInSeconds;
+    //     console.log(`토큰 만료까지 ${timeUntilExpiration}초 남았습니다.`);
+    // } else {
+    //     // 토큰이 만료되었습니다
+    //     console.log('토큰이 만료되었습니다.');
+    //     // 사용자 로그아웃 또는 토큰 갱신과 같은 필요한 작업 수행
+    // }
+    // } else {
+    // // 세션 스토리지에서 토큰을 찾을 수 없습니다
+    //     console.log('토큰을 찾을 수 없습니다.');
+    // // 로그인 페이지로 리다이렉트하는 등 필요한 작업 수행
+    // }
 
     axios.get("http://localhost:8090/api/atoken", {
             headers: { 

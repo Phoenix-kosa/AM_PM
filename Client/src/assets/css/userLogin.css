@@ -12,6 +12,10 @@ img {
     /* padding-bottom: 30px; */
 }
 
+#google-btn {
+    width: 200px;
+}
+
 .mt-5 {
     display: block;
 }
@@ -25,6 +29,16 @@ button.btn.btn-primary.btn-block {
     margin-bottom: 8px;
     background-color: #166ADC;
 
+}
+
+#login-btn{
+    width: 80%;
+}
+
+#google-btn:hover {
+    /* width: 81%; */
+    width: 40%;
+    cursor: pointer;
 }
 
 button#register_button {

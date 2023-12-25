@@ -52,8 +52,8 @@ public class User {
     return new ArrayList<>();
   }
 
-//  public static User createUser(String userId, String pw, PasswordEncoder passwordEncoder, String nickname, String profileImg, String email,String role) {
-//    return new User(userId, passwordEncoder.encode(pw), nickname, profileImg, email, role);
-//  }
-
+  public User update(String nickname){
+    this.nickname = nickname;
+    return this;
+  }
 }

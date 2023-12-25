@@ -1,17 +1,26 @@
 package phoenix.AM_PM.domain.members.controller;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import phoenix.AM_PM.domain.members.dto.RequestMembers;
 import phoenix.AM_PM.domain.members.dto.ResponseMembers;
 import phoenix.AM_PM.domain.members.service.MembersService;
+import phoenix.AM_PM.global.config.auth.MyUserDetails;
+import phoenix.AM_PM.global.config.service.JwtService;
 
 import java.util.List;
 
+
+
 @RestController
 public class MembersController {
+
     private final MembersService membersService;
+    private JwtService jwtService;
 
     public MembersController(MembersService membersService) {
         this.membersService = membersService;
@@ -19,22 +28,38 @@ public class MembersController {
 
     // 프로젝트 멤버 조회
     @GetMapping("/api/members/{project-id}")
-    public ResponseEntity getMembers(@PathVariable("project-id") Integer projectId) {
+    public ResponseEntity getMembers(@RequestHeader(value = "Authorization", required = false) String token,@PathVariable("project-id") Integer projectId) {
+//        String name = jwtService.getId(token).get().getnickname();
         List<ResponseMembers> responseMembersList = membersService.getMembers(projectId);
         return ResponseEntity.ok().body(responseMembersList);
     }
     // 프로젝트 멤버 추가
     @PutMapping("/api/members/{project-id}")
-    public ResponseEntity addMembers(@PathVariable("project-id") Integer projectId,
+    public ResponseEntity addMembers(@AuthenticationPrincipal MyUserDetails userDetails, @PathVariable("project-id") Integer projectId,
                                      @RequestBody RequestMembers requestMembers) {
-        membersService.addMembers(projectId, requestMembers);
+        String userId = userDetails.getUser().getUserId();
+
+        try{
+            membersService.addMembers(projectId, requestMembers);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (Exception e){
+            System.out.println(e);
+        }
+//        requestMembers.getMembers().forEach(System.out::println);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
     // 프로젝트 멤버 삭제
     @DeleteMapping("/api/members/{project-id}")
-    public ResponseEntity removeMembers(@PathVariable("project-id") Integer projectId,
+    public ResponseEntity removeMembers(@AuthenticationPrincipal MyUserDetails userDetails, @PathVariable("project-id") Integer projectId,
                                      @RequestBody RequestMembers requestMembers) {
-        membersService.removeMembers(projectId, requestMembers);
+        requestMembers.getMembers().forEach(System.out::println);
+        userDetails.getUser().getUserId();
+        try{
+            membersService.removeMembers(projectId, requestMembers);
+        } catch (Exception e) {
+            System.out.println(e);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>(HttpStatus.RESET_CONTENT);
     }
     // 프로젝트 대표 멤버 조회

@@ -12,11 +12,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import phoenix.AM_PM.domain.refrash.repository.RefreshTokenRepository;
+import phoenix.AM_PM.domain.refrash.service.RefreshTokenService;
 import phoenix.AM_PM.domain.user.entity.User;
 import phoenix.AM_PM.domain.user.repository.UserRepository;
 import phoenix.AM_PM.global.config.auth.MyUserDetails;
@@ -25,6 +28,9 @@ import phoenix.AM_PM.global.config.auth.MyUserDetails;
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter{
 	
 	private UserRepository userRepository;
+
+	@Autowired
+	private RefreshTokenService refreshTokenService;
 	
 	public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
 		super(authenticationManager);
@@ -49,7 +55,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter{
 		String token = header.replace(JwtProperties.TOKEN_PREFIX, "");
 
 		if (rHeader != null && rHeader.startsWith(JwtProperties.REFRESH_TOKEN_PREFIX)) {
-			System.out.println("Refresh Token 재발급");
+			System.out.println("Access Token 재발급");
 			String refreshToken = rHeader.replace(JwtProperties.REFRESH_TOKEN_PREFIX, "");
 			System.out.println(refreshToken);
 
@@ -61,16 +67,28 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter{
 				String userId = decodedJWT.getSubject();
 				User user = userRepository.findByUserId(userId).get();
 
-				// Refresh Token의 사용자 정보를 기반으로 새로운 Access Token 발급
-				String newAccessToken = JWT.create()
-						.withSubject(user.getUserId())
-						.withExpiresAt(new Date(System.currentTimeMillis()+JwtProperties.EXPIRATION_TIME))
-						.withClaim("id", user.getId())
-						.withClaim("userId", user.getUserId())
-						.sign(algorithm);
+				System.out.println("Refresh Token 비교!");
+				System.out.println(refreshToken);
+				System.out.println(refreshTokenService.finduserId(userId).get().getToken());
 
-				// 새로 발급한 Access Token을 Response Header에 추가
-				response.setHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + newAccessToken);
+				if(refreshTokenService.finduserId(userId).get().getToken().equals(refreshToken)) {
+
+					// Refresh Token의 사용자 정보를 기반으로 새로운 Access Token 발급
+					String newAccessToken = JWT.create()
+							.withSubject(user.getUserId())
+							.withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME))
+							.withClaim("id", user.getId())
+							.withClaim("userId", user.getUserId())
+							.sign(algorithm);
+
+					// 새로 발급한 Access Token을 Response Header에 추가
+					response.setHeader(JwtProperties.HEADER_STRING,
+							JwtProperties.TOKEN_PREFIX + newAccessToken);
+				} else {
+					refreshTokenService.delete(userId);
+					System.out.println("서버의 Refresh 토큰과 검증한 Refresh 토큰 다름");
+					SecurityContextHolder.clearContext();
+				}
 			} catch (JWTVerificationException exception) {
 				// Refresh Token이 유효하지 않은 경우 처리
 				SecurityContextHolder.clearContext();

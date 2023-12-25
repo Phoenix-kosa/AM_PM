@@ -1,17 +1,27 @@
 <template>
   <div class="project-plan" :key="pageId">
+
     <h1>{{ pageTitle }}</h1>
     <div>
       <p>참고 사이트: <a :href="sampleUrl" target="_blank">{{ sampleUrl }}</a></p>
-      <input type="text" v-model="editableSampleUrl" />
-      <button @click="saveUrl">저장</button>
+      <input type="text" placeholder="원하는 Url로 수정하세요!" v-model="editableSampleUrl" />
+      <button @click="saveUrl">&nbsp저장</button>
       <br><br>
       <input type="file" @change="handleFileUpload" />
       <button @click="uploadFile">파일 업로드</button><br><br>
-      <button @click="createNewPage">새 페이지 추가</button>
       <br>
-      <img :src="imagePreview" alt="Preview" v-if="imagePreview" height="650px" width="850px"/>
+      <img :src="imagePreview" alt="Preview" v-if="imagePreview" height="800px" width="1200px"/>
+
+      <v-container>
+          <v-row align="end" justify="end">
+          <v-col cols="auto">
+            <v-btn @click="deletePage" icon="mdi-plus" size="small">X</v-btn>
+          </v-col>
+          </v-row>
+      </v-container>
+
     </div>
+    <Sidebar :currentProjectId="projectId" />
   </div>
 </template>
 
@@ -24,13 +34,14 @@ export default {
       type: String,
       required: true
     },
-    pageId: {
+    projectId: {
       type: Number,
       required: true
     }
   },
   data() {
     return {
+      pages: [],
       sampleUrl: '',
       editableSampleUrl: '',
       imagePreview: null,
@@ -39,28 +50,28 @@ export default {
   },
   computed: {
     pageTitle() {
-      return `${this.pageType} 페이지`;
+      const pageTypeTitle = `${this.pageType} Page`;
+      return pageTypeTitle.toUpperCase();
     },
     uploadUrl() {
-      return `http://localhost:8090/api/plan/user-${this.pageType.toLowerCase()}`;
+      return this.pageType ? `http://localhost:8090/api/plan/user-${this.pageType.toLowerCase()}/${this.projectId}` : '';
     },
     defaultData() {
-      const defaults = {
-        ERD: {
-          sampleUrl: 'https://www.erdcloud.com/',
-          imagePreview: 'http://localhost:8090/img/plan/default-erd-image.png'
-        },
-        USECASE: {
-          sampleUrl: 'https://darw.io/',
-          imagePreview: 'http://localhost:8090/img/plan/default-usecase-image.png'
-        },
-        UI: {
-          sampleUrl: 'https://www.figma.com/',
-          imagePreview: 'http://localhost:8090/img/plan/default-ui-image.png'
-        }
-      };
-      return defaults[this.pageType] || {};
-    }
+    return {
+      ERD: {
+        sampleUrl: 'https://www.erdcloud.com/',
+        imagePreview: 'http://localhost:8090/img/plan/default-erd-image.png'
+      },
+      USECASE: {
+        sampleUrl: 'https://darw.io/',
+        imagePreview: 'http://localhost:8090/img/plan/default-usecase-image.png'
+      },
+      ui: {
+        sampleUrl: 'https://www.figma.com/',
+        imagePreview: 'http://localhost:8090/img/plan/default-ui-image.png'
+      }
+    };
+  }
   },
   watch: {
   '$route.params.pageType': function(newType, oldType) {
@@ -76,43 +87,92 @@ export default {
 },
 
   methods: {
-    createNewPage() {
-    axios.post('/api/plan/create-page', {
-      projectId: yourProjectId, // 새 페이지를 추가할 프로젝트 ID
-      file: yourFile, // 업로드할 파일
-      sampleUrl: yourSampleUrl, // 샘플 URL
-      sampleImg: yourSampleImg // 샘플 이미지 URL
-    })
-    .then(response => {
-      const newPageData = response.data; 
+    deletePage() {
+    const pageTitle = this.pageType; // 현재 페이지 타이틀
+    
+    if (!pageTitle) {
+        console.error('undefined');
+        return;
+    }
+    const projectId = this.$route.params.projectId; // 프로젝트 ID 가져오기
+    axios.delete(`http://localhost:8090/api/plan/${pageTitle}`)
+        .then(response => {
+            alert('페이지가 삭제되었습니다.');
+            this.$router.push(`/srs/${projectId}`); 
+        })
+        .catch(error => {
+            console.error('페이지 삭제 실패:', error);
+            alert(error.response.data.message || '삭제 실패');
+        });
+},
+
+
+    addEtcPage(newPageTitle) {
+    this.etcPages.push({ title: newPageTitle, projectId: this.currentProjectId });
+  },
+
+
+  /* 사이드바에서 구현 
+  createNewPage() {
+    const projectId = this.$route.params.projectId;
+    const formData = new FormData();
+    formData.append('projectId', projectId);
+
+    if (this.uploadedFile) {
+      formData.append('file', this.uploadedFile);
+    }
+
+    const defaultDataForPageType = this.defaultData[this.pageType];
+    if (!defaultDataForPageType) {
+      console.error('Unknown page type:', this.pageType);
+      return;
+    }
+
+  formData.append('sampleUrl', defaultDataForPageType.sampleUrl);
+  formData.append('sampleImg', defaultDataForPageType.imagePreview);
+
+  axios.post('http://localhost:8090/api/plan/create-page', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
+  .then(response => {
+    const newPageData = response.data;
+    if (Array.isArray(this.pages)) {
       this.pages.push(newPageData);
-      this.$notify({
-        title: '새 페이지 생성됨',
-        message: `새로운 페이지가 생성되었습니다: ${newPageData.title}`,
-        type: 'success'
-      });
+      this.$emit('add-etc-page', `ETC${this.pages.length}`);
+    }
+    alert(`새로운 페이지가 생성되었습니다: ${newPageData.title}`);
+  })
+  .catch(error => {
+    console.error('페이지 생성 실패:', error);
+  });
+},
+*/
+
+
+saveUrl() {
+  const projectId = this.$route.params.projectId;
+  const title = this.pageType; 
+  axios.put(`http://localhost:8090/api/plan/update-url/${projectId}/${title}`, { newSampleUrl: this.editableSampleUrl })
+    .then(response => {
+      this.sampleUrl = this.editableSampleUrl;
+      console.log('URL 업데이트 성공:', response);
     })
     .catch(error => {
-      console.error('페이지 생성 실패:', error);
+      console.error('URL 업데이트 실패:', error);
     });
-  },
-    saveUrl() {
-    axios.put(`/api/plan/update-url/${this.pageId}`, { newSampleUrl: this.editableSampleUrl })
-      .then(response => {
-        this.sampleUrl = this.editableSampleUrl;
-        console.log('URL 업데이트 성공:', response);
-      })
-      .catch(error => {
-        console.error('URL 업데이트 실패:', error);
-      });
-  },
+},
     handleFileUpload(event) {
       const file = event.target.files[0];
       this.imagePreview = URL.createObjectURL(file);
       this.uploadedFile = file;
     },
     fetchPageData() {
-      axios.get(`http://localhost:8090/api/plan/${this.pageType.toLowerCase()}-example`, { params: { id: this.pageId } })
+    if (this.pageType) {
+      const projectId = this.$route.params.projectId;
+      const url = `http://localhost:8090/api/plan/${this.pageType.toLowerCase()}-example/${projectId}`;
+      axios.get(url)
         .then(response => {
           const data = response.data;
           this.sampleUrl = data.sampleUrl || this.defaultData.sampleUrl;
@@ -120,39 +180,47 @@ export default {
         })
         .catch(error => {
           console.error('데이터를 가져오는 데 실패했습니다:', error);
-          this.sampleUrl = this.defaultData.sampleUrl;
-          this.imagePreview = this.defaultData.imagePreview;
         });
-    },
-    uploadFile() {
-      const formData = new FormData();
-      formData.append('file', this.uploadedFile);
-      formData.append('id', this.pageId);
-
-      axios.post(this.uploadUrl, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      }).then(response => {
-        console.log('이미지 업로드 성공:', response);
-        this.fetchPageData();
-      }).catch(error => {
-        console.error('이미지 업로드 실패:', error);
-      });
-    },
-    beforeRouteUpdate(to, from, next) {
-    if (to.params.pageType !== from.params.pageType || to.params.pageId !== from.params.pageId) {
-      this.pageType = to.params.pageType;
-      this.pageId = to.params.pageId;
-      this.fetchPageData();
     }
-    next();
   },
-  },
-  mounted() {
+  uploadFile() {
+  if (!this.uploadUrl) return;
+
+  const formData = new FormData();
+  formData.append('file', this.uploadedFile);
+
+  const title = this.pageType; 
+  const uploadUrlWithTitle = `${this.uploadUrl}/${title}`;
+
+  axios.post(uploadUrlWithTitle, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  }).then(response => {
+    console.log('이미지 업로드 성공:', response);
+
+    this.imagePreview = `http://localhost:8090${response.data.sampleImg}`;
+
     this.fetchPageData();
+  }).catch(error => {
+    console.error('이미지 업로드 실패:', error);
+  });
+},
+    beforeRouteUpdate(to, from, next) {
+      if (to.params.pageType !== from.params.pageType || to.params.projectId !== from.params.projectId) {
+        this.fetchPageData();
+      }
+      next();
+    },
+  },
+  
+  mounted() {
+    if (this.pageType && this.projectId) {
+    this.currentProjectId = this.projectId; 
+    this.fetchPageData();
+    }
   }
-};
+}
 </script>
 
 <style scoped>

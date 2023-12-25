@@ -2,6 +2,7 @@ package phoenix.AM_PM.domain.user.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
@@ -11,11 +12,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.server.ResponseStatusException;
+import phoenix.AM_PM.domain.refrash.service.RefreshTokenService;
 import org.springframework.web.bind.annotation.*;
-import phoenix.AM_PM.domain.user.dto.EditUserDto;
-import phoenix.AM_PM.domain.user.dto.LoginRequestDto;
-import phoenix.AM_PM.domain.user.dto.MypageUserDto;
-import phoenix.AM_PM.domain.user.dto.SaveUserDto;
+import phoenix.AM_PM.domain.user.dto.*;
 import phoenix.AM_PM.domain.user.entity.User;
 import phoenix.AM_PM.domain.user.repository.UserRepository;
 import phoenix.AM_PM.domain.user.service.UserService;
@@ -27,39 +27,54 @@ import phoenix.AM_PM.global.config.service.JwtServiceImpl;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserRepository userRepository;
-    private final UserService userService;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final JwtServiceImpl jwtService;
+  private final UserRepository userRepository;
+  private final UserService userService;
+  private final BCryptPasswordEncoder bCryptPasswordEncoder;
+  private final JwtServiceImpl jwtService;
+  private final RefreshTokenService refreshTokenService;
 
-    private JwtProperties jwtProperties;
+  private JwtProperties jwtProperties;
 
-    // 로그인
-    @PostMapping("/api/auth/local")
-    public ResponseEntity<String> login(@RequestBody LoginRequestDto loginDto,
-                                        HttpServletResponse res) {
-        return new ResponseEntity<>("로그인 성공", HttpStatus.OK);
-    }
+  // 로그인
+  @PostMapping("/api/auth/local")
+  public ResponseEntity<String> login(@RequestBody LoginRequestDto loginDto,
+      HttpServletResponse res) {
+    return new ResponseEntity<>("로그인 성공", HttpStatus.OK);
+  }
 
-    // 회원 가입
-    @PostMapping("/api/user")
-    public ResponseEntity<String> join(@RequestBody SaveUserDto dto, HttpServletResponse res) {
-        if (userService.save(dto)) {
-            return new ResponseEntity<>("성공적으로 회원 가입이 진행되었습니다.", HttpStatus.CREATED);
-        }
-        return new ResponseEntity<>("회원가입 오류", HttpStatus.BAD_REQUEST);
+  @GetMapping("/api/auth/google")
+  public ResponseEntity<String> googlelogin(HttpServletResponse res) {
+    System.out.println("google login");
+    return new ResponseEntity<>("로그인 성공", HttpStatus.OK);
+  }
 
-    }
+  @GetMapping("/login/oauth2/code/google")
+  public ResponseEntity<String> googlelogin2(HttpServletResponse res) {
+    System.out.println("google login");
+    return new ResponseEntity<>("로그인 성공", HttpStatus.OK);
+  }
+
+  // 회원 가입
+  @PostMapping("/api/user")
+  public ResponseEntity<String> join(@RequestBody SaveUserDto dto, HttpServletResponse res) {
+      if (userService.save(dto)) {
+          return new ResponseEntity<>("성공적으로 회원 가입이 진행되었습니다.", HttpStatus.CREATED);
+      }
+      return new ResponseEntity<>("회원가입 오류", HttpStatus.BAD_REQUEST);
+
+  }
 
 
-    // 로그아웃
-    @DeleteMapping("/api/auth")
-    public ResponseEntity<String> logout(@RequestHeader(value = "Authorization", required = false) String token, HttpServletResponse res) {
-        System.out.println("로그아웃!!!!");
-        MultiValueMap<String, String> header = new LinkedMultiValueMap<>();
-        header.add("Authorization", "delete");
-        return new ResponseEntity<>("로그아웃 성공", header, HttpStatus.OK);
-    }
+  // 로그아웃
+  @DeleteMapping("/api/auth")
+  public ResponseEntity<String> logout(@RequestHeader(value = "Authorization", required = false) String token, HttpServletResponse res) {
+    System.out.println("로그아웃!!!!");
+    MultiValueMap<String, String> header = new LinkedMultiValueMap<>();
+    refreshTokenService.delete(jwtService.getId(token));
+    header.add("Authorization", "delete");
+
+    return new ResponseEntity<>("로그아웃 성공", header, HttpStatus.OK);
+  }
 
     @GetMapping("/api/atoken")
     public ResponseEntity<String> test1(@RequestHeader(value = "Authorization", required = false) String token, HttpServletResponse res) {
@@ -94,11 +109,17 @@ public class UserController {
         return new ResponseEntity<>(body, HttpStatus.OK);
     }
 
+    @GetMapping("/api/user/nickname")
+    public ResponseEntity<List<User>> findUserId(@RequestParam("nickname") String nickname) {
+
+        return new ResponseEntity<>(userService.findbynickname(nickname), HttpStatus.OK);
+    }
+
     @GetMapping("/api/user/email/{email}")
     public ResponseEntity<Boolean> checkEmail(@PathVariable("email") String email) {
         Boolean body;
         try {
-            userService.findbyEmail(email).get();
+            userService.findbyEmail(email);
             body = false;
         } catch (Exception e) {
             body = true;
@@ -148,4 +169,9 @@ public class UserController {
         }
     }
 
+    @GetMapping("/api/user/{user-id}")
+    public ResponseEntity getUserDetail(@PathVariable("user-id") Integer userId) {
+        ResponseUser responseUser = userService.getUserDetail(userId);
+        return ResponseEntity.ok(responseUser);
+    }
 }
