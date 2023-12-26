@@ -24,6 +24,7 @@
 
 <script>
 
+import Swal from 'sweetalert2';
 import { expireToken } from "@/api/config";
 import axios from 'axios'
 export default {

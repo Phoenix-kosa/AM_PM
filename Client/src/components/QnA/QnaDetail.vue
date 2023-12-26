@@ -38,14 +38,20 @@
       </table>
       <hr><br>
       <h2>답변</h2>
-      <div v-show="getTitle!=''" class="row row1">
-          <tr class="table-primary">
+      <div v-show="getTitle!=''" class="card-header">
+        <ul class="list-group">
+          <li class="list-group-item d-flex justify-content-between">
+            <div><p>제목: </p>{{ getTitle }}</div>
+            <div><p>내용: </p>{{ getContent }}</div>
+          </li>
+        </ul>
+          <!-- <tr class="table-primary">
             <th scope="row" class="text-center">제목: </th>
             <td class="text-center">{{ getTitle }}</td><br>
             <th scope="row" class="text-center warning">내용: </th>
             <td class="text-center">{{ getContent }}</td><br>
             <td>{{ AcreatedDate }}</td>
-          </tr>
+          </tr> -->
       </div>
 
       <table v-show="roles=='ROLE_ADMIN'">      
@@ -63,6 +69,8 @@
 </template>
 
 <script>
+
+import Swal from 'sweetalert2';
 import axios from 'axios';
 import { toHandlers } from 'vue';
 import { expireToken } from "@/api/config";

@@ -20,7 +20,7 @@
           <td><a v-on:click="fnView(`${row.id}`)">{{ row.title}}</a></td>
           <td>{{ row.userId }}</td>
           <td v-if="row.status == false" class="text-primary" style="">답변대기</td>
-          <td v-else="row.status == true" class="text-primary" style="background-color: black;">답변완료</td>
+          <td v-else="row.status == true" class="text-success" >답변완료</td>
           <td>{{ row.createdDate }}</td>
         </tr>
       </tbody>
@@ -30,6 +30,7 @@
 
 <script>
 
+import Swal from 'sweetalert2';
 import { expireToken } from "@/api/config";
 import axios from 'axios';
 import { reactive } from 'vue';
