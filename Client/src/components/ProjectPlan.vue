@@ -27,6 +27,7 @@
 
 <script>
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 export default {
   props: {
@@ -91,24 +92,36 @@ export default {
   methods: {
     deletePage() {
     const projectId = sessionStorage.getItem("projectId");
+    const pageTitle = this.pageType;
 
-    const pageTitle = this.pageType; // 현재 페이지 타이틀
-    
     if (!pageTitle) {
         console.error('undefined');
         return;
     }
+
     axios.delete(`http://localhost:8090/api/plan/${pageTitle}`)
         .then(response => {
-            alert('페이지가 삭제되었습니다.');
-            this.$router.push(`/srs`); 
+            Swal.fire({
+                title: 'Success!',
+                text: '페이지가 삭제되었습니다.',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.$router.push(`/srs`);
+                }
+            });
         })
         .catch(error => {
             console.error('페이지 삭제 실패:', error);
-            alert(error.response.data.message || '삭제 실패');
+            Swal.fire({
+                title: 'Error!',
+                text: error.response.data.message || '삭제 실패',
+                icon: 'error',
+                confirmButtonText: 'Close'
+            });        
         });
 },
-
 
     addEtcPage(newPageTitle) {
     this.etcPages.push({ title: newPageTitle, projectId: this.currentProjectId });
@@ -159,6 +172,12 @@ saveUrl() {
   const title = this.pageType; 
   axios.put(`http://localhost:8090/api/plan/update-url/${projectId}/${title}`, { newSampleUrl: this.editableSampleUrl })
     .then(response => {
+      Swal.fire({
+      title: 'Success!',
+      text: 'URL 수정 성공!',
+      icon: 'success',
+      confirmButtonText: 'OK'
+    });
       this.sampleUrl = this.editableSampleUrl;
       console.log('URL 업데이트 성공:', response);
     })
@@ -172,24 +191,25 @@ saveUrl() {
       this.uploadedFile = file;
     },
     fetchPageData() {
-    if (this.pageType) {
-      const projectId = sessionStorage.getItem("projectId");
-      if (this.pageType && projectId) {
-        const url = `http://localhost:8090/api/plan/${this.pageType.toLowerCase()}-example/${projectId}`;
+  if (this.pageType) {
+    const projectId = sessionStorage.getItem("projectId");
+    if (this.pageType && projectId) {
+      const url = `http://localhost:8090/api/plan/${this.pageType.toLowerCase()}-example/${projectId}`;
       axios.get(url)
         .then(response => {
           const data = response.data;
           this.sampleUrl = data.sampleUrl || this.defaultData.sampleUrl;
-          this.imagePreview = `http://localhost:8090${data.sampleImg}` || this.defaultData.imagePreview;
+          this.imagePreview = data.filePath || data.sampleImg || this.defaultData.imagePreview;
         })
         .catch(error => {
           console.error('데이터를 가져오는 데 실패했습니다:', error);
         });
-      }
     }
-  },
-  uploadFile() {
-  if (!this.uploadUrl) return;
+  }
+},
+
+uploadFile() {
+  if (!this.uploadUrl || !this.uploadedFile) return;
 
   const formData = new FormData();
   formData.append('file', this.uploadedFile);
@@ -202,11 +222,15 @@ saveUrl() {
       'Content-Type': 'multipart/form-data',
     },
   }).then(response => {
-    console.log('이미지 업로드 성공:', response);
-
-    this.imagePreview = `http://localhost:8090${response.data.sampleImg}`;
-
+    Swal.fire({
+      title: 'Success!',
+      text: '이미지 업로드 성공!',
+      icon: 'success',
+      confirmButtonText: 'OK'
+    });
+    this.imagePreview = response.data.filePath;
     this.fetchPageData();
+    console.log('이미지 업로드 성공:', response);
   }).catch(error => {
     console.error('이미지 업로드 실패:', error);
   });
