@@ -7,20 +7,21 @@ import TeamChat from "@/pages/TeamChat.vue";
 import Chat from "@/pages/Chat.vue";
 import MyPage from "@/pages/MyPage.vue";
 import MainLayout from "../layouts/MainLayout.vue";
-import Login from '@/pages/Auth/login.vue'
-import Register from "@/pages/Auth/register.vue"
-import TestToken from '@/pages/Auth/testtoken.vue'
-import Redirect from "@/pages/Auth/redirect.vue"
+import CreateProjectLayout from "../layouts/CreateProjectLayout.vue";
+import Login from "@/pages/Auth/login.vue";
+import Register from "@/pages/Auth/register.vue";
+import TestToken from "@/pages/Auth/testtoken.vue";
+import Redirect from "@/pages/Auth/redirect.vue";
 // import ProjectPlanPage from "@/pages/ProjectPlanPage.vue"
-import QnaPage from "@/pages/QnaPage.vue"
-import ProjectPlan from "@/components/ProjectPlan.vue"; 
+import QnaPage from "@/pages/QnaPage.vue";
+import ProjectPlan from "@/components/ProjectPlan.vue";
 import ProjectList from "@/pages/ProjectList.vue";
 import CreateProject from "@/pages/CreateProject.vue";
 import ModifyProject from "@/pages/ModifyProject.vue";
 import AddMember from "@/pages/AddMember.vue";
-import QnaDetail from "@/components/QnA/QnaDetail.vue"
-import QnaWrite from "@/components/QnA/QnaWrite.vue"
-import QnaAnswer from "@/components/QnA/QnaAnswer.vue"
+import QnaDetail from "@/components/QnA/QnaDetail.vue";
+import QnaWrite from "@/components/QnA/QnaWrite.vue";
+import QnaAnswer from "@/components/QnA/QnaAnswer.vue";
 import MemberList from "@/pages/MemberList.vue";
 import LeaderChange from "@/pages/LeaderChange.vue";
 const index = createRouter({
@@ -46,9 +47,11 @@ const index = createRouter({
         },
 
         /*
+        { path: "excel", component: Excel },
+        { path: "testtoken", component: TestToken },
         {
-          path: '/:pageType/:projectId',
-          name: 'ProjectPlanPage',
+          path: "/:pageType/:projectId",
+          name: "ProjectPlanPage",
           component: ProjectPlan,
           props: true 
         },
@@ -62,19 +65,30 @@ const index = createRouter({
         { path: "/chat",
           component: Chat,
           name: "Chat"},
-        { path: "project-list", component: ProjectList },
-        { path: "create-project", component: CreateProject },
+       
+        { path: "question", component: QnaPage },
+        { path: "detail", component: QnaDetail },
+        { path: "team-chat", component: TeamChat },
+        { path: "/chat", component: Chat, name: "Chat" },
         { path: "modify-project", component: ModifyProject },
         { path: "add-member", component: AddMember },
-        { path: "write", component: QnaWrite},
-        { path: "answer", component: QnaAnswer},
-        { path: "member-list", component: MemberList},
-        { path: "leader-change", component: LeaderChange},
+        { path: "write", component: QnaWrite },
+        { path: "answer", component: QnaAnswer },
+        { path: "member-list", component: MemberList },
+        { path: "leader-change", component: LeaderChange },
       ],
     },
-    { path: '/login', component: Login },
-    { path: '/register', component: Register },
-    { path: '/oauth2/redirect', component: Redirect}
+    {
+      path: "/",
+      component: CreateProjectLayout,
+      children: [
+        { path: "create-project", component: CreateProject },
+        { path: "project-list", component: ProjectList },
+      ],
+    },
+    { path: "/login", component: Login },
+    { path: "/register", component: Register },
+    { path: "/oauth2/redirect", component: Redirect },
   ],
 });
 

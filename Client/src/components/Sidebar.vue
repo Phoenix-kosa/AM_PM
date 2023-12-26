@@ -342,10 +342,12 @@ const createNewPageAndUpdateSidebar = async (title) => {
       title: title,
       projectId: projectId
     });
+    
     // 새 페이지를 etcPages에 추가
     etcPages.value.push(response.data);
     // 사이드바 데이터를 다시 로드
     await loadPages();
+    
   } catch (error) {
     console.error('Page creation failed:', error);
   }

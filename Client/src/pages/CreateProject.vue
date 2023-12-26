@@ -28,6 +28,9 @@ function createProject() {
   if(title.value == null) {
     window.alert("제목을 입력하세요.");
   }
+  else if(startDate.value == null || endDate.value == null) {
+    window.alert("날짜를 입력하세요.");
+  }
   else {
     var requestProject = {
       title:title.value,
@@ -50,73 +53,11 @@ function createProject() {
     })
     .catch((err) => {
       console.log(err)
-      if(err.response.status == 401) {
-        console.log("토큰 만료");
-
-        axios.get("http://localhost:8090/api/rtoken", {
-            headers: { 
-                "RefreshToken" : sessionStorage.getItem("refresh-token"),
-                "Authorization" : sessionStorage.getItem("access-token") }
-            }).then(response => {
-                console.log(response)
-                if(response.status == 200){
-                    console.log("토큰 재발급");
-                    console.log(response.headers.authorization);
-                    sessionStorage.setItem("access-token", response.headers.authorization);
-                } else {
-                    console.log("토큰 재발급 실패");
-                }
-            }).catch(error => {console.error(error);})
-      } 
+      expireToken(err, createProject);
     });
   }
 }
 </script>
 <style scoped>
-.container {
-  border-color: #166adc;
-  border-radius: 20px;
-  border-width: 1px;
-  border-style: dashed;
-  height: 600px;
-  min-width: 700px;
-}
-.inputBox {
-  width: 90%;
-  margin: 5%;
-}
-input {
-  background-color: #d9d9d9;
-  display: block;
-  margin-bottom: 10px;
-  width: 100%;
-}
-textarea {
-  background-color: #d9d9d9;
-  display: block;
-  width: 100%;
-  height: 200px;
-}
-.dateBox {
-  width: 90%;
-  margin: auto;
-}
-.dateBox > label {
-  width: 45%;
-  margin-right: 5%;
-}
-.buttonBox {
-  text-align: center;
-  width: 100%;
-  clear: both;
-}
-.buttonBox > button {
-  width: 150px;
-  height: 50px;
-  background-color: #166adc;
-  border-radius: 10px;
-  color: white;
-  margin-top: 50px;
-  margin-left: 10px;
-}
+@import "@/assets/css/createProject.css";
 </style>

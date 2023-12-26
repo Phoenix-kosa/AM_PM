@@ -72,4 +72,9 @@ public class MembersService {
         oldMembers.updateRoles(Roles.member);
         members.updateRoles(Roles.representative_member);
     }
+
+    public boolean checkAuthorization(Integer userId, Integer projectId) {
+        Members members = membersRepository.findAllByUserIdAndProjectId(userId, projectId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.PROJECT_NOT_FOUND));
+        return members.getRoles().equals(Roles.representative_member);
+    }
 }

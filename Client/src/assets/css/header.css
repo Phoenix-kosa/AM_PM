@@ -17,6 +17,7 @@
 
 .main_logo_img {
   height: 100px;
+  cursor: pointer;
 }
 
 .login_container {
@@ -32,4 +33,8 @@
 
 .login_container a {
   color: black;
+}
+
+.logout:hover {
+  cursor: pointer;
 }

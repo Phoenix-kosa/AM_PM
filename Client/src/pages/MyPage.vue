@@ -1,8 +1,22 @@
 <template>
   <div class="mypage_container">
     <div class="mypage_wrapper">
-      <img src="../assets/images/mainPage/santa_flying.png" alt="" />
-      <button class="profile_btn">프로필 이미지 변경</button>
+      <img
+        :src="editMyInfo.profileImg"
+        alt="profile_img"
+        class="profile_img_tag"
+      />
+      <label for="fileInput" class="custom-file-input-label">
+        이미지 변경
+      </label>
+      <input
+        style="display: none"
+        type="file"
+        id="fileInput"
+        ref="fileInput"
+        @change="editProfileImgHandler"
+        class="custom-file-input"
+      />
       <form @submit.prevent="submitForm" class="form_container">
         <div class="input_container">
           <label for="nickname">닉네임</label>
@@ -48,13 +62,13 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import { getMyInfoReq, editMyInfoReq } from "../api/common";
+import { getMyInfoReq, editMyInfoReq, editProfile } from "../api/common";
 import { expireToken } from "../api/config";
 
 const editMyInfo = ref({
   nickname: "",
   email: "",
-  profilImg: "dvvsd",
+  profileImg: "",
   password: "",
   confirmPassword: "",
 });
@@ -64,15 +78,29 @@ onMounted(() => {
   getMyInfo();
 });
 
+const editProfileImgHandler = (event) => {
+  const selectedFile = event.target.files[0];
+  const formData = new FormData();
+  formData.append("file", selectedFile);
+  editProfile(formData)
+    .then((res) => {
+      console.log(res);
+      getMyInfo();
+    })
+    .catch((error) => {
+      expireToken(error, editProfileImgHandler, event);
+    });
+};
+
 const getMyInfo = () => {
   getMyInfoReq()
     .then((res) => res.data)
     .then((data) => {
-      const { nickname, email, profilImg } = data;
+      const { nickname, email, profileImg } = data;
       editMyInfo.value = {
         nickname,
         email,
-        profilImg,
+        profileImg,
         password: "",
         confirmPassword: "",
       };
@@ -90,7 +118,6 @@ const submitForm = () => {
         console.log("성공");
         console.log(res.data);
         alert("회원정보 수정 완료");
-        // router.push("/login");
       })
       .catch((error) => {
         expireToken(error, submitForm);

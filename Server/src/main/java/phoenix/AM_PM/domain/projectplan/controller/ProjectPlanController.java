@@ -23,13 +23,6 @@ public class ProjectPlanController {
     @Autowired
     private ProjectPlanService projectPlanService;
 
-    @Autowired
-    private final S3UploadService s3UploadService;
-
-    public ProjectPlanController(S3UploadService s3UploadService) {
-        this.s3UploadService = s3UploadService;
-    }
-
     @GetMapping("/project-plan/{projectId}")
     public ResponseEntity<ProjectPlanDTO> getProjectPlanByProjectId(@PathVariable("projectId") int projectId) {
         ProjectPlanDTO projectPlanDTO = projectPlanService.getProjectPlanByProjectId(projectId);
@@ -166,35 +159,6 @@ public class ProjectPlanController {
 
 
 
-
-    @PostMapping("/user-{type}/{projectId}/{title}")
-    public ResponseEntity<?> upload(@PathVariable("type") String type,
-                                    @PathVariable("projectId") int projectId,
-                                    @PathVariable("title") String title,
-                                    @RequestParam("file") MultipartFile file) {
-        switch (type.toLowerCase()) {
-            case "srs":
-                projectPlanService.storeSrs(projectId, title, file);
-                return ResponseEntity.ok("SRS가 성공적으로 업로드 되었습니다");
-            case "erd":
-                projectPlanService.storeErd(projectId, title, file);
-                return ResponseEntity.ok("ERD가 성공적으로 업로드 되었습니다");
-            case "usecase":
-                projectPlanService.storeUsecase(projectId, title, file);
-                return ResponseEntity.ok("USECASE가 성공적으로 업로드 되었습니다.");
-            case "ui":
-                projectPlanService.storeUi(projectId, title, file);
-                return ResponseEntity.ok("UI가 성공적으로 업로드되었습니다.");
-            default:
-                projectPlanService.storeCustomType(projectId, title, file, type);
-                return ResponseEntity.ok(type + "가 성공적으로 업로드 되었습니다.");
-        }
-    }
-
-
-
-
-   /*
     @PostMapping("/user-{type}/{projectId}/{title}")
     public ResponseEntity<?> upload(@PathVariable("type") String type,
                                     @PathVariable("projectId") int projectId,
@@ -202,33 +166,27 @@ public class ProjectPlanController {
                                     @RequestParam("file") MultipartFile file) {
         try {
             switch (type.toLowerCase()) {
-            case "srs":
-                String fileUrl = s3UploadService.saveFile(file);
-                //projectPlanService.storeSrs(projectId, title, file);
-                return ResponseEntity.ok("SRS가 성공적으로 업로드 되었습니다");
-            case "erd":
-                //projectPlanService.storeErd(projectId, title, file);
-                return ResponseEntity.ok("ERD가 성공적으로 업로드 되었습니다");
-            case "usecase":
-                //projectPlanService.storeUsecase(projectId, title, file);
-                return ResponseEntity.ok("USECASE가 성공적으로 업로드 되었습니다.");
-            case "ui":
-                //projectPlanService.storeUi(projectId, title, file);
-                return ResponseEntity.ok("UI가 성공적으로 업로드되었습니다.");
-            default:
-                //projectPlanService.storeCustomType(projectId, title, file, type);
-                return ResponseEntity.ok(type + "가 성공적으로 업로드 되었습니다.");
+                case "srs":
+                    projectPlanService.storeSrs(projectId, title, file);
+                    break;
+                case "erd":
+                    projectPlanService.storeErd(projectId, title, file);
+                    break;
+                case "usecase":
+                    projectPlanService.storeUsecase(projectId, title, file);
+                    break;
+                case "ui":
+                    projectPlanService.storeUi(projectId, title, file);
+                    break;
+                default:
+                    projectPlanService.storeCustomType(projectId, title, file, type);
+                    break;
             }
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 업로드 중 오류 발생: " + e.getMessage());
+            return ResponseEntity.ok(type.toUpperCase() + "가 성공적으로 업로드 되었습니다");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("오류 발생: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(type.toUpperCase() + " 업로드 중 오류 발생: " + e.getMessage());
         }
     }
-    */
-
-
-
 
 
     @PutMapping("/update-url/{projectId}/{title}")
@@ -309,6 +267,5 @@ public class ProjectPlanController {
         projectPlanService.deleteProjectPlanByTitle(title);
         return ResponseEntity.ok().build();
     }
-
 
 }

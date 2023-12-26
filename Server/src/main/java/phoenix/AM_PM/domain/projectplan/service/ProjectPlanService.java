@@ -26,7 +26,8 @@ public class ProjectPlanService {
 
     @Autowired
     private ProjectPlanRepository projectPlanRepository;
-
+    @Autowired
+    private S3UploadService s3UploadService;
 
     private final Path srsLocation = Paths.get("C:\\kosastudy\\AM_PM\\Server\\src\\main\\resources\\static\\img\\plan");
     private final Path erdLocation = Paths.get("C:\\kosastudy\\AM_PM\\Server\\src\\main\\resources\\static\\img\\plan");
@@ -35,10 +36,10 @@ public class ProjectPlanService {
     private final Path uiLocation = Paths.get("C:\\kosastudy\\AM_PM\\Server\\src\\main\\resources\\static\\img\\plan");
 
     public void createDefaultProjectPlans(int projectId) {
-        createDefaultPlan( projectId, "srs", "/img/plan/default-srs-image.png", "https://www.google.com/intl/ko_kr/sheets/about/");
-        createDefaultPlan( projectId, "erd", "/img/plan/default-erd-image.png", "https://www.erdcloud.com/");
-        createDefaultPlan( projectId, "usecase", "/img/plan/default-usecase-image.png", "https://example.com/usecase");
-        createDefaultPlan( projectId, "ui", "/img/plan/default-ui-image.png", "https://www.figma.com/");
+        createDefaultPlan(projectId, "srs", "https://phoenixampmbucket.s3.ap-northeast-2.amazonaws.com/default-srs-image.png", "https://www.google.com/intl/ko_kr/sheets/about/");
+        createDefaultPlan(projectId, "erd", "https://phoenixampmbucket.s3.ap-northeast-2.amazonaws.com/default-erd-image.png", "https://www.erdcloud.com/");
+        createDefaultPlan(projectId, "usecase", "https://phoenixampmbucket.s3.ap-northeast-2.amazonaws.com/default-usecase-image.png", "https://example.com/usecase");
+        createDefaultPlan(projectId, "ui", "https://phoenixampmbucket.s3.ap-northeast-2.amazonaws.com/default-ui-image.png", "https://www.figma.com/");
     }
 
     public ProjectPlanDTO createNewPage(String title, int projectId) {
@@ -56,9 +57,9 @@ public class ProjectPlanService {
         ProjectPlan newPage = ProjectPlan.builder()
                 .projectId(projectId)
                 .title(title)
-                .filePath("") // 필요에 따라 설정
-                .sampleUrl("") // 필요에 따라 설정
-                .sampleImg("") // 필요에 따라 설정
+                .filePath("")
+                .sampleUrl("")
+                .sampleImg("")
                 .build();
 
         ProjectPlan savedPage = projectPlanRepository.save(newPage);
@@ -97,6 +98,7 @@ public class ProjectPlanService {
                 .orElseThrow(() -> new IllegalArgumentException("잘못된 아이디: " + projectId));
         return convertToDTO(projectPlan);
     }
+
     public ProjectPlanDTO getErdExampleByProjectId(int projectId) {
         ProjectPlan projectPlan = projectPlanRepository.findByProjectIdAndTitle(projectId, "ERD")
                 .orElseThrow(() -> new IllegalArgumentException("잘못된 아이디: " + projectId));
@@ -115,76 +117,49 @@ public class ProjectPlanService {
         return convertToDTO(projectPlan);
     }
 
+    public void storeSrs(int projectId, String title, MultipartFile file) {
+        String fileUrl = uploadFileToS3AndReturnUrl(file);
+        updateProjectPlanFile(projectId, title, fileUrl, "SRS");
+    }
 
+    public void storeErd(int projectId, String title, MultipartFile file) {
+        String fileUrl = uploadFileToS3AndReturnUrl(file);
+        updateProjectPlanFile(projectId, title, fileUrl, "ERD");
+    }
+
+    public void storeUsecase(int projectId, String title, MultipartFile file) {
+        String fileUrl = uploadFileToS3AndReturnUrl(file);
+        updateProjectPlanFile(projectId, title, fileUrl, "USECASE");
+    }
+
+    public void storeUi(int projectId, String title, MultipartFile file) {
+        String fileUrl = uploadFileToS3AndReturnUrl(file);
+        updateProjectPlanFile(projectId, title, fileUrl, "UI");
+    }
+
+    private String uploadFileToS3AndReturnUrl(MultipartFile file) {
+        try {
+            return s3UploadService.saveFile(file);
+        } catch (IOException e) {
+            throw new RuntimeException("S3 파일 업로드 실패", e);
+        }
+    }
+
+    private void updateProjectPlanFile(int projectId, String title, String fileUrl, String type) {
+        ProjectPlan projectPlan = projectPlanRepository.findByProjectIdAndTitle(projectId, title)
+                .orElseThrow(() -> new IllegalArgumentException(type + " 파일 정보를 찾을 수 없습니다: 프로젝트 ID " + projectId + ", 제목 " + title));
+
+        projectPlan.setFilePath(fileUrl);
+        projectPlanRepository.save(projectPlan);
+    }
+
+
+    /*
     public void storeSrs(int projectId, String title, MultipartFile file) {
             BiConsumer<ProjectPlan, String> setErdPath = ProjectPlan::setFilePath;
             storeFileByProjectIdAndTitle(projectId, title, file, srsLocation, setErdPath);
     }
-
-    public void storeErd(int projectId, String title, MultipartFile file) {
-        BiConsumer<ProjectPlan, String> setErdPath = ProjectPlan::setFilePath;
-        storeFileByProjectIdAndTitle(projectId, title, file, erdLocation, setErdPath);
-    }
-
-    public void storeUsecase(int projectId, String title, MultipartFile file) {
-        BiConsumer<ProjectPlan, String> setUsecasePath = ProjectPlan::setFilePath;
-        storeFileByProjectIdAndTitle(projectId, title, file, usecaseLocation, setUsecasePath);
-    }
-
-    public void storeUi(int projectId, String title, MultipartFile file) {
-        BiConsumer<ProjectPlan, String> setUiPath = ProjectPlan::setFilePath;
-        storeFileByProjectIdAndTitle(projectId, title, file, uiLocation, setUiPath);
-    }
-
-    public void storeImage(int id, int projectId, MultipartFile file) {
-        BiConsumer<ProjectPlan, String> setFilePath = ProjectPlan::setFilePath;
-        storeFileByIdAndProjectId(id, projectId, file, uiLocation, setFilePath);
-    }
-
-
-
-    private void storeFileByIdAndProjectId(int id, int projectId, MultipartFile file, Path location, BiConsumer<ProjectPlan, String> filePathSetter) {
-        try {
-            if (!Files.exists(location)) {
-                Files.createDirectories(location);
-            }
-
-            Path destinationFile = location.resolve(Paths.get(file.getOriginalFilename()))
-                    .normalize().toAbsolutePath();
-
-            Files.copy(file.getInputStream(), destinationFile, StandardCopyOption.REPLACE_EXISTING);
-
-            ProjectPlan projectPlan = projectPlanRepository.findByIdAndProjectId(id, projectId)
-                    .orElseThrow(() -> new IllegalArgumentException("ID와 프로젝트 ID에 해당하는 프로젝트 기획이 존재하지 않습니다: " + id + ", " + projectId));
-
-            filePathSetter.accept(projectPlan, destinationFile.toString());
-
-            String sampleImgPath = "/img/plan/" + file.getOriginalFilename();
-            projectPlan.setSampleImg(sampleImgPath);
-
-            projectPlanRepository.save(projectPlan);
-        } catch (IOException e) {
-            throw new RuntimeException("Could not store file", e);
-        }
-    }
-
-    public void updateErd(int projectId, String title, MultipartFile file) {
-        BiConsumer<ProjectPlan, String> setErdPath = ProjectPlan::setFilePath;
-        storeFileByProjectIdAndTitle(projectId, title, file, erdLocation, setErdPath);
-    }
-
-
-    public void updateUsecase(int projectId, String title, MultipartFile file) {
-        BiConsumer<ProjectPlan, String> setErdPath = ProjectPlan::setFilePath;
-        storeFileByProjectIdAndTitle(projectId, title, file, usecaseLocation, setErdPath);
-    }
-
-
-
-    public void updateUi(int projectId, String title, MultipartFile file) {
-        BiConsumer<ProjectPlan, String> setErdPath = ProjectPlan::setFilePath;
-        storeFileByProjectIdAndTitle(projectId, title, file, uiLocation, setErdPath);
-    }
+    */
 
 
     private void storeFileByProjectIdAndTitle(int projectId, String title, MultipartFile file,
@@ -212,6 +187,57 @@ public class ProjectPlanService {
             throw new RuntimeException("Could not store file", e);
         }
     }
+
+    public void storeImage(int id, int projectId, MultipartFile file) {
+        BiConsumer<ProjectPlan, String> setFilePath = ProjectPlan::setFilePath;
+        storeFileByIdAndProjectId(id, projectId, file, uiLocation, setFilePath);
+    }
+
+
+    private void storeFileByIdAndProjectId(int id, int projectId, MultipartFile file, Path location, BiConsumer<ProjectPlan, String> filePathSetter) {
+        try {
+            if (!Files.exists(location)) {
+                Files.createDirectories(location);
+            }
+
+            Path destinationFile = location.resolve(Paths.get(file.getOriginalFilename()))
+                    .normalize().toAbsolutePath();
+
+            Files.copy(file.getInputStream(), destinationFile, StandardCopyOption.REPLACE_EXISTING);
+
+            ProjectPlan projectPlan = projectPlanRepository.findByIdAndProjectId(id, projectId)
+                    .orElseThrow(() -> new IllegalArgumentException("ID와 프로젝트 ID에 해당하는 프로젝트 기획이 존재하지 않습니다: " + id + ", " + projectId));
+
+            filePathSetter.accept(projectPlan, destinationFile.toString());
+
+            String sampleImgPath = "/img/plan/" + file.getOriginalFilename();
+            projectPlan.setSampleImg(sampleImgPath);
+
+            projectPlanRepository.save(projectPlan);
+        } catch (IOException e) {
+            throw new RuntimeException("Could not store file", e);
+        }
+    }
+
+
+
+    public void updateErd(int projectId, String title, MultipartFile file) {
+        BiConsumer<ProjectPlan, String> setErdPath = ProjectPlan::setFilePath;
+        storeFileByProjectIdAndTitle(projectId, title, file, erdLocation, setErdPath);
+    }
+
+
+    public void updateUsecase(int projectId, String title, MultipartFile file) {
+        BiConsumer<ProjectPlan, String> setErdPath = ProjectPlan::setFilePath;
+        storeFileByProjectIdAndTitle(projectId, title, file, usecaseLocation, setErdPath);
+    }
+
+
+    public void updateUi(int projectId, String title, MultipartFile file) {
+        BiConsumer<ProjectPlan, String> setErdPath = ProjectPlan::setFilePath;
+        storeFileByProjectIdAndTitle(projectId, title, file, uiLocation, setErdPath);
+    }
+
 
 
 
@@ -242,9 +268,9 @@ public class ProjectPlanService {
 
 
     public List<ProjectPlanDTO> getAllEtcPages(int projectId) {
-            List<ProjectPlan> etcPages = projectPlanRepository.findByProjectIdAndTitleStartingWith(projectId, "ETC");
-            return etcPages.stream().map(this::convertToDTO).collect(Collectors.toList());
-        }
+        List<ProjectPlan> etcPages = projectPlanRepository.findByProjectIdAndTitleStartingWith(projectId, "ETC");
+        return etcPages.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
 
 
     public ProjectPlanDTO updateEtcPage(int id, String newSampleUrl, String newSampleImg) {
@@ -282,7 +308,6 @@ public class ProjectPlanService {
     }
 
 
-
     public ProjectPlanDTO updateSampleUrl(int projectId, String title, String newSampleUrl) {
         ProjectPlan projectPlan = projectPlanRepository.findByProjectIdAndTitle(projectId, title)
                 .orElseThrow(() -> new IllegalArgumentException("No project plan found with ID: " + projectId + " and title: " + title));
@@ -292,7 +317,7 @@ public class ProjectPlanService {
     }
 
 
-    private void createDefaultPlan( int projectId, String title, String sampleImg, String sampleUrl) {
+    private void createDefaultPlan(int projectId, String title, String sampleImg, String sampleUrl) {
         boolean exists = projectPlanRepository.existsByProjectIdAndTitle(projectId, title);
         if (!exists) {
             ProjectPlan projectPlan = new ProjectPlan();
@@ -305,20 +330,23 @@ public class ProjectPlanService {
     }
 
     public ProjectPlanDTO getCustomTypeExampleByProjectId(String title, int projectId) {
-        // 데이터베이스 또는 저장소에서 title과 projectId에 해당하는 데이터 조회
-        // 예시: title에 해당하는 특정 리소스를 조회하는 쿼리
         Optional<ProjectPlan> optionalProjectPlan = projectPlanRepository.findByTitleAndProjectId(title, projectId);
 
         if (optionalProjectPlan.isPresent()) {
             ProjectPlan projectPlan = optionalProjectPlan.get();
-            // 조회된 데이터를 DTO로 변환
             return convertToDTO(projectPlan);
         } else {
-            // 해당 title에 대한 데이터가 없는 경우
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found for title: " + title);
         }
     }
 
+    public void storeCustomType(int projectId, String title, MultipartFile file, String type) {
+        String fileUrl = uploadFileToS3AndReturnUrl(file); // S3에 파일 업로드하고 URL 반환
+        updateProjectPlanFile(projectId, title, fileUrl, type); // 파일 정보 업데이트
+    }
+
+
+    /*
     public void storeCustomType(int projectId, String title, MultipartFile file, String type) {
         Path location = determineLocationByType(type);
         BiConsumer<ProjectPlan, String> filePathSetter = (projectPlan, path) -> {
@@ -327,12 +355,12 @@ public class ProjectPlanService {
 
         storeFileByProjectIdAndTitle(projectId, title, file, location, filePathSetter);
     }
+
     private Path determineLocationByType(String type) {
         // 모든 파일을 'Server/src/main/resources/static/img/plan' 폴더에 저장
         return Paths.get("Server/src/main/resources/static/img/plan");
     }
-
-
+*/
 
     private ProjectPlanDTO convertToDTO(ProjectPlan projectPlan) {
         ProjectPlanDTO dto = new ProjectPlanDTO();
