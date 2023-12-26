@@ -23,6 +23,8 @@ public class Question {
 
   @Column(name="user_id")
   private String userId;
+
+  @Column(nullable = false)
   private Integer projectId;
   private String title;
   private String content;

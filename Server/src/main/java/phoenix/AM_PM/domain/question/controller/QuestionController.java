@@ -24,8 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/question")
 public class QuestionController {
-    @Autowired
-    private QuestionService questionService;
+    private final QuestionService questionService;
     private final UserService userService;
     private final JwtService jwtService;
     @GetMapping("")
@@ -56,7 +55,7 @@ public class QuestionController {
             questionService.create(questionDTO, name);
             result = true;
         } catch (Exception e) {
-            System.out.println("오류");
+            System.out.println("오류: " + e.getMessage());
         }
         return result;
     }

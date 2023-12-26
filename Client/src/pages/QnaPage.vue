@@ -44,7 +44,6 @@ export default {
   },
   mounted() {
     this.fnGetList()
-    this.fnGetAnswer()
   },
   methods: {
     fnGetList: function() {
@@ -64,15 +63,6 @@ export default {
         expireToken(err, this.fnGetList);
       })     
 
-    },
-    fnGetAnswer: function(){
-      axios.get("http://localhost:8090/api/answer/"+this.id,{
-      }).then((res) => {
-        console.log(res)
-        this.status = res.data.status
-      }).catch(err => {
-        expireToken(err, this.fnGetAnswer);
-      })
     },
 
     fnView(id){

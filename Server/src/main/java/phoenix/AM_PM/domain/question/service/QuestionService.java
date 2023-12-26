@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class QuestionService {
-    @Autowired
+
     private final QuestionRepository questionR;
 
 
@@ -46,6 +46,8 @@ public class QuestionService {
                 .title(questionDTO.getTitle())
                 .content(questionDTO.getContent())
                 .createdDate(LocalDateTime.now())
+                .projectId(0)
+                .status(false)
                 .build();
         return questionR.save(question);
     }
