@@ -38,6 +38,19 @@
 <script setup>
 import { defineProps } from "vue";
 import { deleteNoti, editNoti } from "../api/common";
+import Swal from "sweetalert2";
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 2000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener("mouseenter", Swal.stopTimer);
+    toast.addEventListener("mouseleave", Swal.resumeTimer);
+  },
+});
 
 const props = defineProps([
   "closeDetailModal",
@@ -54,7 +67,10 @@ const deleteNotiHandler = () => {
   console.log(props.DetailModalDTO.id);
   deleteNoti(props.DetailModalDTO.id)
     .then(() => {
-      alert("해당 Notice가 삭제 되었습니다.");
+      Toast.fire({
+        icon: "success",
+        title: "해당 Notice가 삭제 되었습니다.",
+      });
       closeModalFunction();
     })
     .catch((err) => {
@@ -68,11 +84,17 @@ const editNotiHandler = () => {
     content: props.DetailModalDTO.content,
   };
   if (!validation(data)) {
-    alert("내용을 입력해 주세요.");
+    Toast.fire({
+      icon: "error",
+      title: "내용을 입력해 주세요.",
+    });
   } else {
     editNoti(props.DetailModalDTO.id, data)
       .then(() => {
-        alert("해당 Notice가 수정 되었습니다.");
+        Toast.fire({
+          icon: "success",
+          title: "해당 Notice가 수정 되었습니다.",
+        });
         closeModalFunction();
       })
       .catch((err) => {

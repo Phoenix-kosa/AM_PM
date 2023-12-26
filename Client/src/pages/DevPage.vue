@@ -10,6 +10,7 @@ import Gantt from "@/components/Gantt.vue";
 import Notice from "@/components/Notice.vue";
 import { onMounted } from "vue";
 import { useRouter } from "vue-router";
+import Swal from "sweetalert2";
 
 const router = useRouter();
 
@@ -17,7 +18,10 @@ onMounted(() => {
   window.scrollTo(0, 0);
   const projectId = sessionStorage.getItem("projectId");
   if (projectId === null) {
-    alert("프로젝트를 선택하세요.");
+    Swal.fire({
+      icon: "error",
+      title: "프로젝트를 선택하세요.", // Alert 제목
+    });
     router.push("/project-list");
   }
 });

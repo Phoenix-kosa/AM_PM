@@ -3,19 +3,11 @@ package phoenix.AM_PM.domain.answer.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.jdt.internal.compiler.apt.model.ArrayTypeImpl;
 import org.springframework.stereotype.Service;
 import phoenix.AM_PM.domain.answer.dto.AddAnswerRequest;
-//import phoenix.AM_PM.domain.answer.dto.AnswerDTO;
 import phoenix.AM_PM.domain.answer.dto.UpdateAnswerRequest;
 import phoenix.AM_PM.domain.answer.entity.Answer;
 import phoenix.AM_PM.domain.answer.repository.AnswerRepository;
-
-//import phoenix.AM_PM.domain.member.entity.Roles;
-import phoenix.AM_PM.domain.question.repository.QuestionRepository;
-import phoenix.AM_PM.domain.user.entity.User;
-import phoenix.AM_PM.domain.user.repository.UserRepository;
-
 import java.util.List;
 
 @Slf4j
