@@ -50,6 +50,7 @@ import {
   deleteTask,
   editTask,
 } from "../api/common";
+import Swal from "sweetalert2";
 
 const projectStartDate = ref("2021-07-11 12:00");
 const projectEndDate = ref("2021-07-24 12:00");
@@ -69,6 +70,18 @@ onMounted(() => {
   getProjectDate();
 });
 
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 2000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener("mouseenter", Swal.stopTimer);
+    toast.addEventListener("mouseleave", Swal.resumeTimer);
+  },
+});
+
 const editTaskHandler = (event) => {
   event.stopPropagation();
   const index = editData.value.taskIndex - 1;
@@ -83,7 +96,10 @@ const editTaskHandler = (event) => {
 
   editTask(editData.value.taskId, data)
     .then(() => {
-      alert("Task 수정 완료");
+      Toast.fire({
+        icon: "success",
+        title: "Task 수정 완료",
+      });
       getTasksHandler(projectId);
       window.scrollTo(0, 0);
     })
@@ -96,7 +112,10 @@ const deleteTaskHandler = (event) => {
   event.stopPropagation();
   deleteTask(editData.value.taskId)
     .then(() => {
-      alert("Task 삭제 완료");
+      Toast.fire({
+        icon: "success",
+        title: "Task 삭제 완료",
+      });
       getTasksHandler(projectId);
       closeEditor();
     })
@@ -126,7 +145,10 @@ const addTaskHandler = () => {
   };
   addTasks(data)
     .then((res) => {
-      alert("Task 추가 완료");
+      Toast.fire({
+        icon: "success",
+        title: "Task 추가 완료",
+      });
       getTasksHandler(projectId);
       closeEditor();
     })
