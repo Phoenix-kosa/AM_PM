@@ -37,22 +37,21 @@
         </div>
       </table>
       <hr><br>
-      
-      <div class="row row1">
+      <h2>답변</h2>
+      <div v-show="getTitle!=''" class="row row1">
           <tr class="table-primary">
             <th scope="row" class="text-center">제목: </th>
-            <td class="text-center">{{ Atitle }}</td>
+            <td class="text-center">{{ getTitle }}</td><br>
             <th scope="row" class="text-center warning">내용: </th>
-            <td class="text-center">{{ Acontent }}</td>
+            <td class="text-center">{{ getContent }}</td><br>
+            <td>{{ AcreatedDate }}</td>
           </tr>
       </div>
 
-      <table v-show="isAdmin">      
+      <table v-show="roles=='ROLE_ADMIN'">      
         <div class="mb-3">
-          <label for="title" class="form-label">제목: </label>
           <input type="text" v-model="Atitle" class="form-control" placeholder="제목을 입력하세요.">
-          <label for="content" class="form-label">내용: </label>
-          <textarea name="" id="" cols="90" rows="10" v-model="comments" class="form-control form-control-sm" style="resize: none;" required></textarea>
+          <textarea name="" id="" cols="90" rows="10" v-model="Acontent" class="form-control form-control-sm" placeholder="내용을 입력하세요." style="resize: none;" required></textarea>
         </div>
         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
           <button type="button" class="btn btn-outline-primary" v-on:click="fnASave">저장</button>
@@ -66,11 +65,10 @@
 <script>
 import axios from 'axios';
 import { toHandlers } from 'vue';
-
+import { expireToken } from "@/api/config";
 export default{
   data(){
     return {
-      isAdmin: false, 
       requestBody: this.$route.query,
       id: this.$route.query.id,
       questionId: '',
@@ -79,38 +77,57 @@ export default{
       Qcontent: '',
       Atitle: '',
       Acontent: '',
-      createdDate: '',
-      comments: '',     
-      bullentinId: '',
+      AcreatedDate: '',
+      createdDate: '',     
+      getTitle: '',
+      getContent: '',
+      roles: '',
     }
   },
   mounted(){
     this.fnGetQuestion()
     this.fnGetAnswer()
+    this.fnGetUser()
     // this.fnGetView2()
   },
   methods: {
-    fnGetQuestion(){
+    fnGetQuestion: function(){
       axios.get("http://localhost:8090/api/question/"+this.id,{
         params: this.requestBody
       }).then((res) => {
         console.log(res)
-        // this.Qtitle = res.data.title
-        // this.userId = res.data.userId
-        // this.Qcontent = res.data.content
-        // this.createdDate = res.data.createdDate
-        // this.roles = res.data.roles
+        this.Qtitle = res.data.title
+        this.userId = res.data.userId
+        this.Qcontent = res.data.content
+        this.createdDate = res.data.createdDate
+      }).catch(err => {
+        expireToken(err, this.fnGetQuestion);
       })
     },
-    fnGetAnswer(){
+    fnGetAnswer: function(){
       axios.get("http://localhost:8090/api/answer/"+this.id,{
       }).then((res) => {
         console.log(res)
-        this.Atitle = res.data.title
-        this.Acontent = res.data.content
-        this.createdDate = res.data.createdDate
+        this.getTitle = res.data.title
+        this.getContent = res.data.content
+        this.AcreatedDate = res.data.createdDate
+      }).catch(err => {
+        expireToken(err, this.fnGetAnswer);
       })
     },
+
+    fnGetUser: function(){
+      axios.get("http://localhost:8090/api/user", {headers: { 
+          "Authorization" : sessionStorage.getItem("access-token") }       
+      }).then((res) => {
+        console.log(res)
+        this.roles = res.data.role;
+        
+      }).catch(err => {
+        expireToken(err, this.fnGetUser);
+      })
+    },
+
     fnList() {
       delete this.requestBody.id
       this.$router.push({
@@ -132,21 +149,40 @@ export default{
         query: this.requestBody
       })
     },
-    fnQdelete(){
+    fnQdelete: function(){
       if (!confirm("글을 삭제하시겠습니까?")) return
 
       axios.delete("http://localhost:8090/api/question/"+this.id,{})
         .then(() => {
           alert('삭제되었습니다.')
           this.fnList();
+      }).catch(err => {
+        expireToken(err, this.fnQdelete);
       })
     },
     fnASave(){
-      let apiUrl = "http://localhost:8090/api/answer"
+      let apiUrl = "http://localhost:8090/api/answer/write"
       this.form = {
+        "questionId": this.id,
         "title": this.Atitle,
         "content": this.Acontent
       }
+      
+
+      console.log(this.form)
+
+      axios.post(apiUrl, this.form)
+        .then(response => {
+          console.log(response.data);
+        }).catch(err => {
+          console.error(error);
+
+        });
+        this.$router.push({
+        path: './question',
+        query: this.requestBody
+      })
+      
     },
     fnAdelete(){
       if (!confirm("글을 삭제하시겠습니까?")) return

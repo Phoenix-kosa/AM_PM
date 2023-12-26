@@ -36,6 +36,7 @@ public class Answer {
 
   private Integer questionId;
 
+  private boolean status;
   @Column(name = "created_date")
   @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd HH:mm:ss")
   private LocalDateTime createdDate;

@@ -32,6 +32,8 @@ public class QAnswer extends EntityPathBase<Answer> {
 
     public final NumberPath<Integer> questionId = createNumber("questionId", Integer.class);
 
+    public final BooleanPath status = createBoolean("status");
+
     public final StringPath title = createString("title");
 
     public final phoenix.AM_PM.domain.user.entity.QUser user;

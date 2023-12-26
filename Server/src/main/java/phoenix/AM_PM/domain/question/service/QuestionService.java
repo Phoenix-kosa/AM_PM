@@ -1,5 +1,6 @@
 package phoenix.AM_PM.domain.question.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class QuestionService {
-
+    @Autowired
     private final QuestionRepository questionR;
 
 
@@ -61,5 +62,18 @@ public class QuestionService {
         questionR.delete(question);
     }
 
+    //Status 업데이트
+    @Transactional
+    public Question updateStatus(int id){
+        Question question = questionR.findById(id).orElseThrow(() -> new RuntimeException("게시글 x"));
+        question.setStatus(true);
+        return questionR.save(question);
+    }
 
+    @Transactional
+    public Question deleteStatus(int id){
+        Question question = questionR.findById(id).orElseThrow(() -> new RuntimeException("게시글 x"));
+        question.setStatus(false);
+        return questionR.save(question);
+    }
 }

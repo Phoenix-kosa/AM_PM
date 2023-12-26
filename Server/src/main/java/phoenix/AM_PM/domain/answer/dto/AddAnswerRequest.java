@@ -20,6 +20,7 @@ public class AddAnswerRequest {
     private String title;
     private String content;
     private Integer questionId;
+    private boolean status;
 
     public Answer toEntity() {
         return Answer.builder()
@@ -28,6 +29,7 @@ public class AddAnswerRequest {
                 .createdDate(LocalDateTime.now())
                 .title(title)
                 .content(content)
+                .status(true)
                 .build();
     }
 }
