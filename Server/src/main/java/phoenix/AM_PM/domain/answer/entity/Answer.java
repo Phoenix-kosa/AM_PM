@@ -47,10 +47,6 @@ public class Answer {
     this.content = content;
   }
 
-
-//  @ManyToOne(fetch = FetchType.LAZY)
-//  private Question question;    // 댓글이 달린 게시판
-
   @ManyToOne(fetch = FetchType.LAZY)
   private User user;  // 작성자
 
@@ -59,10 +55,4 @@ public class Answer {
     this.content = content;
   }
 
-//  public void changeUserId(User userId){
-//    this.user = userId;
-//  }
-//  public void changePost(Question question){
-//    this.question = question;
-//  }
 }

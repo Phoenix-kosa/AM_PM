@@ -24,7 +24,6 @@ public class AddAnswerRequest {
 
     public Answer toEntity() {
         return Answer.builder()
-//                .userId("관리자")
                 .questionId(questionId)
                 .createdDate(LocalDateTime.now())
                 .title(title)

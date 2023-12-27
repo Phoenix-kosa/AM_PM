@@ -23,13 +23,10 @@ import static phoenix.AM_PM.domain.answer.entity.QAnswer.answer;
 @RequiredArgsConstructor
 @RequestMapping("/api/answer")
 public class AnswerController {
-//    @NonNull
-//    UserRepository uR;
 
     private final AnswerService answerService;
     private final QuestionService questionService;
-    
-//    private JwtServiceImpl jwtService;
+
     //생성
     @PostMapping("/write")
     public ResponseEntity<Answer> create(@RequestBody AddAnswerRequest req) {

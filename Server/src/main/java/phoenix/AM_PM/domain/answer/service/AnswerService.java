@@ -24,8 +24,6 @@ import java.util.List;
 public class AnswerService {
 
     private final AnswerRepository answerR;
-//    private final QuestionRepository questionR;
-//    private final UserRepository userRepository;
 
     //저장
     public Answer save(AddAnswerRequest req){

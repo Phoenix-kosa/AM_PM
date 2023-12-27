@@ -17,7 +17,7 @@
       <tbody>
         <tr v-for="(row,idx) in list" :key="idx">
           <td>{{ row.id }}</td>
-          <td><a v-on:click="fnView(`${row.id}`)">{{ row.title}}</a></td>
+          <td><a v-on:click="fnView(`${row.id}`)" style="cursor:pointer">{{ row.title}}</a></td>
           <td>{{ row.userId }}</td>
           <td v-if="row.status == false" class="text-primary" style="">답변대기</td>
           <td v-else="row.status == true" class="text-success" >답변완료</td>
@@ -86,4 +86,8 @@ export default {
 
 <style scoped>
 /* @import '@/assets/css/question.css'; */
+
+.table {
+  text-align: center;
+}
 </style>

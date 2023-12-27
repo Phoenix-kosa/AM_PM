@@ -72,6 +72,7 @@ public class QuestionService {
         return questionR.save(question);
     }
 
+    //Status 업데이트
     @Transactional
     public Question deleteStatus(int id){
         Question question = questionR.findById(id).orElseThrow(() -> new RuntimeException("게시글 x"));

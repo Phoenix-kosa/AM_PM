@@ -34,9 +34,4 @@ public class Question {
 
   private boolean status;
 
-//  @ManyToOne
-//  @JoinColumn(name = "user_id")
-//  private User user;
-
-  // Constructors, getters, and setters
 }
