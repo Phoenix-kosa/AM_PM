@@ -2,6 +2,7 @@ package phoenix.AM_PM.domain.project.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import phoenix.AM_PM.domain.project.service.ProjectService;
 import phoenix.AM_PM.domain.projectplan.service.ProjectPlanService;
 import phoenix.AM_PM.domain.user.entity.User;
 import phoenix.AM_PM.global.config.auth.MyUserDetails;
+import phoenix.AM_PM.global.exception.BusinessLogicException;
 
 import java.util.List;
 
@@ -48,15 +50,28 @@ public class ProjectController {
         return new ResponseEntity(project, HttpStatus.CREATED);
     }
 
-
     // 수정
     @PutMapping("/{project-id}")
     public ResponseEntity modifyProject(@RequestBody RequestProject requestProject,
                                         @PathVariable("project-id") Integer projectId,
                                         @AuthenticationPrincipal MyUserDetails myUserDetails) {
-        projectService.modifyProject(projectId, requestProject, myUserDetails.getUser());
+        try{
+            projectService.modifyProject(projectId, requestProject, myUserDetails.getUser());
+        } catch (BusinessLogicException e) {
+            return new ResponseEntity(HttpStatusCode.valueOf(e.getExceptionCode().getStatus()));
+        }
         return new ResponseEntity(HttpStatus.RESET_CONTENT);
     }
 
-
+    // 삭제
+    @DeleteMapping("/{project-id}")
+    public ResponseEntity deleteProject(@PathVariable("project-id") Integer projectId,
+                                        @AuthenticationPrincipal MyUserDetails myUserDetails) {
+        try {
+            projectService.deleteProject(projectId, myUserDetails.getUser());
+        } catch (BusinessLogicException e) {
+            return new ResponseEntity(HttpStatusCode.valueOf(e.getExceptionCode().getStatus()));
+        }
+        return new ResponseEntity(HttpStatus.RESET_CONTENT);
+    }
 }

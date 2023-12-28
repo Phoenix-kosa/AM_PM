@@ -35,12 +35,21 @@ textarea {
   width: 100%;
   clear: both;
 }
-.buttonBox > button {
+.createButton {
   width: 150px;
   height: 50px;
   background-color: #166adc;
   border-radius: 10px;
   color: white;
+  margin-top: 50px;
+  margin-left: 10px;
+}
+.backButton {
+  width: 150px;
+  height: 50px;
+  background-color: #d9d9d9;
+  border-radius: 10px;
+  color: black;
   margin-top: 50px;
   margin-left: 10px;
 }
