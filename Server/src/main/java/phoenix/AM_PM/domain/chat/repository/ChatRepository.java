@@ -11,4 +11,6 @@ import java.util.List;
 public interface ChatRepository extends JpaRepository<Chat, Integer> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     List<Chat> findByProjectIdOrderByCreatedDate(Integer projectId);
+
+    void deleteAllByProjectId(Integer projectId);
 }

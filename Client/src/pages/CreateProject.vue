@@ -9,8 +9,8 @@
       <label>종료 날짜<input type="date" v-model="endDate"></label>
     </div>
     <div class="buttonBox">
-      <button @click="createProject">프로젝트 생성</button>
-      <button @click="$router.go(-1)">뒤로 가기</button>
+      <button class="createButton" @click="createProject">프로젝트 생성</button>
+      <button class="backButton" @click="$router.go(-1)">뒤로 가기</button>
     </div>
   </div>
 </template>
