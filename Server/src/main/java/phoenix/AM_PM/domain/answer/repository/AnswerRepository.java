@@ -2,12 +2,10 @@ package phoenix.AM_PM.domain.answer.repository;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import phoenix.AM_PM.domain.answer.entity.Answer;
 
-import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AnswerRepository extends JpaRepository<Answer, Integer> {
@@ -17,5 +15,6 @@ public interface AnswerRepository extends JpaRepository<Answer, Integer> {
 //    List<Answer> findAllByBulletinId(int bulletinId);
 //    List<Answer> findAllByUserId(String userId);
 
-
+    public Optional<Answer> findByQuestionId(Integer questionId);
+    public void deleteByQuestionId(Integer questionId);
 }

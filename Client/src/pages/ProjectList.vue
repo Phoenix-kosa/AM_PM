@@ -22,10 +22,27 @@ import Swal from 'sweetalert2';
 
 const projectList = ref([]);
 const router = useRouter();
-
 function go(projectId) {
   sessionStorage.setItem("projectId", projectId);
   router.push({ name: "ProjectPlanPage", params: { pageType: 'srs' } });
+}
+
+function checkAdmin() {
+  axios.get(`http://localhost:8090/api/user`, {
+    headers: { 
+        "Authorization" : sessionStorage.getItem("access-token") 
+    }
+  })
+  .then((response) => {
+    if(response.data.role == "ROLE_ADMIN"){
+      router.push("/question")
+    }
+
+  })
+  .catch((err) => {
+    console.log(err)
+    expireToken(err, checkAdmin);
+  });
 }
 
 function loadData() {
@@ -52,6 +69,7 @@ function loadData() {
   });
 }
 loadData();
+checkAdmin();
 </script>
 <style scoped>
 @import '@/assets/css/projectList.css';

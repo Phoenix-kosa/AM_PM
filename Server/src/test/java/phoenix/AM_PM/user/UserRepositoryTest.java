@@ -23,23 +23,23 @@ public class UserRepositoryTest {
 
   @Test
   @Transactional
-//  @Rollback(value = false)
+  @Rollback(value = false)
   public void save(){
 
     try {
       userR.save(User.builder()
-          .userId("ampm")
+          .userId("ampm1")
           .password(passwordEncoder.encode("1234"))
           .email("mmm@nae.com")
           .nickname("AM_PM")
           .roles("ROLE_ADMIN")
           .build());
       userR.save(User.builder()
-          .userId("admin")
+          .userId("admin1")
           .password(passwordEncoder.encode("1234"))
-          .email("admin@nae.com")
-          .nickname("불사조")
-          .roles("ROLE_USER")
+          .email("admin123@nae.com")
+          .nickname("불사조123")
+          .roles("ROLE_ADMIN")
           .build());
     } catch (Exception e){
       System.out.println(e);
