@@ -28,6 +28,11 @@
 import axios from 'axios';
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
+import { expireToken } from "../api/config";
+import { useRouter } from 'vue-router';
+import Swal from 'sweetalert2';
+
+const router = useRouter();
 const route = useRoute();
 const target = route.query.user;
 const targetData = ref(null);
@@ -39,7 +44,11 @@ onMounted(() => {
   window.scrollTo(0, 0);
   const projectId = sessionStorage.getItem("projectId");
   if (projectId === null) {
-    alert("프로젝트를 선택하세요.");
+    Swal.fire({
+      icon: 'warning',
+      title: '프로젝트 선택 안 됨',
+      text: '프로젝트를 선택하여주세요.',
+    });
     router.push("/project-list");
   }
 });
@@ -65,7 +74,12 @@ function loadData() {
     }
   })
   .then((response) => {
-    projectData.value = response.data;
+    if(response.status == 200) {
+      projectData.value = response.data;
+    }
+    else {
+        alert("다시 시도해주세요.");
+    }
   })
   .catch((err) => {
     expireToken(err, loadData);
@@ -77,6 +91,9 @@ function loadData() {
     }
   })
   .then((response) => {
+    if(response.status != 200) {
+      alert("다시 시도해주세요.");
+    }
     for(let member of response.data) {
       if(member.userId == target) {
         isMember.value = true;
@@ -90,5 +107,5 @@ function loadData() {
 }
 </script>
 <style scoped>
-@import '@/assets/css/modifyProject.css';
+@import '@/assets/css/chat.css';
 </style>

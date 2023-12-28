@@ -16,14 +16,9 @@
     <div class="msgContainer" id="msgScroll">
       <div id="msgArea" v-for="data in chatList">
         <div v-if="userId == data.userId" class="contentContainerMy">
-          <div @click="show(data.userId)" class="imgContainer">
-            <img v-if="data.user" :src="data.user.profileImg"/>
-            <img v-else="data.user" :src="data.profileImg"/>
-          </div>
           <div class="message">
             <div class="details">
-              <span v-if="data.user" @click="show(data.userId)" class="nickname" v-text="data.user.nickname"></span>
-              <span v-else="data.user" @click="show(data.userId)" class="nickname" v-text="data.nickName"></span>
+              <span class="myname">나</span>
               <span class="date">{{ data.createdDate.substring(0, 10) }} {{data.createdDate.substring(11, 16)}}</span>
               <span v-if="data.unread > 0" class="unread" v-text="data.unread"></span>
             </div>
@@ -60,6 +55,8 @@ import { ref, onMounted } from 'vue';
 import { onBeforeRouteLeave  } from 'vue-router';
 import Stomp from 'webstomp-client';
 import axios from 'axios';
+import { expireToken } from "../api/config";
+import Swal from 'sweetalert2';
 
 const msg = ref(null);
 const projectId = sessionStorage.getItem("projectId");
@@ -71,8 +68,12 @@ onMounted(() => {
   window.scrollTo(0, 0);
   const projectId = sessionStorage.getItem("projectId");
   if (projectId === null) {
-    alert("프로젝트를 선택하세요.");
-    router.push("/project-list");
+    Swal.fire({
+      icon: 'warning',
+      title: '프로젝트 선택 안 됨',
+      text: '프로젝트를 선택하여주세요.',
+    });
+    router.push("project-list");
   }
 });
 
@@ -89,7 +90,16 @@ function show(userId) {
     }
   })
   .then((response) => {
-    modalData.value = response.data;
+    if(response.status == 200) {
+      modalData.value = response.data;
+    }
+    else {
+        Swal.fire({
+          icon: 'warning',
+          title: '오류 발생',
+          text: '다시 시도해주세요.',
+        });
+    }
   })
   .catch((err) => {
     console.log(err)
@@ -104,7 +114,7 @@ function close() {
 const decodedPayload = decodeToken(sessionStorage.getItem("access-token"));
 userId.value = decodedPayload.id;
 
-let websocket = new WebSocket('ws://localhost:8090/chat');
+let websocket = new WebSocket('ws://localhost:8090/api/chat');
 let stomp = Stomp.over(websocket);
 stomp.connect({}, function() {
   stomp.subscribe("/sub/load/" + projectId, function(chat) {

@@ -18,6 +18,8 @@
 import axios from 'axios';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { expireToken } from "../api/config";
+import Swal from 'sweetalert2';
 
 const router = useRouter();
 const title = ref(null);
@@ -26,10 +28,18 @@ const startDate = ref(null);
 const endDate = ref(null);
 function createProject() {
   if(title.value == null) {
-    window.alert("제목을 입력하세요.");
+    Swal.fire({
+      icon: 'warning',
+      title: '제목을 입력하세요.',
+      text: '제목이 비어 있습니다.',
+    });
   }
   else if(startDate.value == null || endDate.value == null) {
-    window.alert("날짜를 입력하세요.");
+    Swal.fire({
+      icon: 'warning',
+      title: '날짜를 입력하세요.',
+      text: '날짜가 지정되지 않았습니다.',
+    });
   }
   else {
     var requestProject = {
@@ -47,8 +57,19 @@ function createProject() {
     })
     .then((response) => {
       if(response.status == 201) {
-      alert("생성이 완료되었습니다.");
+        Swal.fire({
+          icon: 'success',
+          title: '생성이 완료되었습니다.',
+          text: '프로젝트가 성공적으로 생성되었습니다.',
+        });
       router.push({path: "/project-list"});
+      }
+      else {
+        Swal.fire({
+          icon: 'warning',
+          title: '오류 발생',
+          text: '다시 시도해주세요.',
+        });
       }
     })
     .catch((err) => {

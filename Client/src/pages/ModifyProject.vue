@@ -17,6 +17,8 @@
 import axios from 'axios';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { expireToken } from "../api/config";
+import Swal from 'sweetalert2';
 
 const router = useRouter();
 const projectId = sessionStorage.getItem("projectId");
@@ -32,7 +34,11 @@ onMounted(() => {
   window.scrollTo(0, 0);
   const projectId = sessionStorage.getItem("projectId");
   if (projectId === null) {
-    alert("프로젝트를 선택하세요.");
+    Swal.fire({
+      icon: 'warning',
+      title: '프로젝트 선택 안 됨',
+      text: '프로젝트를 선택하여주세요.',
+    });
     router.push("/project-list");
   }
 });
@@ -53,11 +59,19 @@ function modifyProject() {
   })
   .then((response) => {
     if(response.status == 205) {
-      alert("수정이 완료되었습니다.");
-      router.go();
+      Swal.fire({
+        icon: 'success',
+        title: '수정이 완료되었습니다.',
+        text: '프로젝트가 성공적으로 수정되었습니다.',
+      });
+      router.push("project-list");
     }
     else {
-      window.alert("권한이 없습니다.");
+      Swal.fire({
+        icon: 'warning',
+        title: '오류 발생',
+        text: '권한이 없거나 수정 중 오류가 발생했습니다.',
+      });
     }
   })
   .catch((err) => {
