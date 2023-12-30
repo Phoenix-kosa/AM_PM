@@ -14,9 +14,9 @@ import java.time.LocalDateTime;
 @Builder
 
 public class QuestionDTO implements Serializable {
-    private int id;
+    private Integer id;
     private String userId;
-    private int projectId;
+    private Integer projectId;
     private String title;
     private String content;
     private String createdDate;

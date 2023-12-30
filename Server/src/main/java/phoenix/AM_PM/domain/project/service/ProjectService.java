@@ -2,6 +2,7 @@ package phoenix.AM_PM.domain.project.service;
 
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import phoenix.AM_PM.domain.chat.repository.ChatRepository;
 import phoenix.AM_PM.domain.members.entity.Members;
 import phoenix.AM_PM.domain.members.entity.Roles;
 import phoenix.AM_PM.domain.members.repository.MembersRepository;
@@ -23,11 +24,13 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final MembersRepository memberRepository;
     private final UserRepository userRepository;
+    private final ChatRepository chatRepository;
 
-    ProjectService(ProjectRepository projectRepository, MembersRepository memberRepository, UserRepository userRepository) {
+    ProjectService(ProjectRepository projectRepository, MembersRepository memberRepository, UserRepository userRepository, ChatRepository chatRepository) {
         this.projectRepository = projectRepository;
         this.memberRepository = memberRepository;
         this.userRepository = userRepository;
+        this.chatRepository = chatRepository;
     }
 
     public List<ResponseProject> getProjectList(Integer userId) {
@@ -58,12 +61,25 @@ public class ProjectService {
     @Transactional
     public void modifyProject(Integer projectId, RequestProject requestProject, User user) {
         Project project = projectRepository.findById(projectId).orElseThrow(()->new BusinessLogicException(ExceptionCode.PROJECT_NOT_FOUND));
-        Members members = memberRepository.findAllByUserIdAndProjectId(user.getId(), projectId).orElseThrow(()->new BusinessLogicException(ExceptionCode.PROJECT_NOT_FOUND));
+        Members members = memberRepository.findAllByUserIdAndProjectId(user.getId(), projectId).orElseThrow(()->new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
         if(members.getRoles() != Roles.representative_member)
             throw new BusinessLogicException(ExceptionCode.NO_PERMISSION);
         Optional.ofNullable(requestProject.getTitle()).ifPresent(project::updateTitle);
         Optional.ofNullable(requestProject.getContent()).ifPresent(project::updateContent);
         Optional.ofNullable(requestProject.getStartDate()).ifPresent(project::updateStartDate);
         Optional.ofNullable(requestProject.getEndDate()).ifPresent(project::updateEndDate);
+    }
+
+    @Transactional
+    public void deleteProject(Integer projectId, User user) {
+        Project project = projectRepository.findById(projectId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.PROJECT_NOT_FOUND));
+        Members members = memberRepository.findAllByUserIdAndProjectId(user.getId(), projectId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
+        if(members.getRoles() != Roles.representative_member)
+            throw new BusinessLogicException(ExceptionCode.NO_PERMISSION);
+        if(memberRepository.countByProjectId(projectId) > 1)
+            throw new BusinessLogicException(ExceptionCode.CONDITION_NOT_MET);
+        memberRepository.delete(members);
+        chatRepository.deleteAllByProjectId(projectId);
+        projectRepository.delete(project);
     }
 }

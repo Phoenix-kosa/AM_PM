@@ -114,7 +114,7 @@ function close() {
 const decodedPayload = decodeToken(sessionStorage.getItem("access-token"));
 userId.value = decodedPayload.id;
 
-let websocket = new WebSocket('ws://localhost:8090/chat');
+let websocket = new WebSocket('ws://localhost:8090/api/chat');
 let stomp = Stomp.over(websocket);
 stomp.connect({}, function() {
   stomp.subscribe("/sub/load/" + projectId, function(chat) {
